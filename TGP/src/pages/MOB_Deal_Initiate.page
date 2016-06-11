@@ -1,0 +1,18 @@
+<apex:page standardController="Deal_TGP__c">
+    <apex:form id="frm">
+        <apex:pageBlock >
+            <apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Deal Name "/>
+                    <apex:inputField value="{!Deal_TGP__c.name}"> 
+                    </apex:inputField> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Governance Lead Name "/>
+                    <apex:inputField value="{!Deal_TGP__c.Governance_Lead_Name_New__c}"> 
+                    </apex:inputField> 
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

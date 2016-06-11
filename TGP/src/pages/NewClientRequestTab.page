@@ -1,0 +1,25 @@
+<apex:page standardController="Client_Visit_Request__c" tabStyle="Client_Visit_Request__c">
+<apex:includeScript value="/soap/ajax/28.0/connection.js"/>
+<apex:includeScript value="/soap/ajax/28.0/apex.js"/>
+<script type="text/javascript"> 
+
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    try{
+    var query = "Select Id, name From RecordType  Where SobjectType = 'Client_Visit_Request__c' "; 
+    
+    var rec = sforce.connection.query(query);}
+    catch(error){
+    alert(error.faultstring);
+    }
+ 
+    var recname;
+    for(var i=0;i<rec.records.length;i++){
+    if(rec.records[i].get("Name")=='Client Visit W/O Opp'){ 
+    recname=  rec.records[i].get("Id");
+ }
+}
+
+    window.location="/a6c/e?retURL=%2Fa6c%2Fo&RecordType="+recname+"&ent=012E0000000NJNg&nooverride=0";
+</script>
+</apex:page>

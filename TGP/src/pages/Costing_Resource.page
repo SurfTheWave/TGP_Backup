@@ -1,0 +1,5 @@
+<apex:page controller="BPOSECanvas" action="{!generateJSONContentResource}" standardStylesheets="false">
+
+    <apex:canvasApp applicationName="BPOSE_QA"  parameters="{!paramList}" width="100%" height="1000" border="0" scrolling="yes"  />
+
+</apex:page>

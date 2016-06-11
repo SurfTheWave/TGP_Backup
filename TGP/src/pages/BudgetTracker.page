@@ -1,0 +1,175 @@
+<!--
+Author : Varsha Chougle
+Story  : Story-0093/MOB_052  
+Description :initiate Budget Tracker. 
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+-->
+<apex:page standardController="Wave_Plan_Version__c" extensions="BudgetTrackerController" showHeader="true" sidebar="true">
+<style>
+.activeTab {background-color: #236FBD; color:white; 
+         background-image:none}
+      .inactiveTab { background-color: lightgrey; color:black; 
+         background-image:none}
+</style>
+<script>
+ var newWin=null;
+ function openPopup()
+ {
+    var url="/resource/BudgetTrackerHelpImage";
+    newWin=window.open(url, "Popup","height=500,width=800,left=200,top=200,resizable=no,scrollbars=yes,toolbar=no,status=no");
+    newWin.focus();
+     
+    return false;
+ }
+                  
+                  
+  function closePopup()
+  {
+    if (null!=newWin)
+    {
+      newWin.close();
+    }  
+  }
+</script>
+<script>
+var strurl = location.href;
+var newUrl = strurl.replace('&inline=1', '');
+if(newUrl != strurl )
+{
+    window.top.location=newUrl;
+}
+</script>  
+<script>
+    function f1()
+    {
+        var ua = navigator.userAgent.toLowerCase();
+        if(ua.indexOf('chrome')!= -1)
+        {
+            functionF1_ChromeFF();
+        }
+        else
+        {
+            functionF1_IE();
+        }
+        //window.top.location='/apex/BudgetTracker?id={!Wave_Plan_Version__c.id}&tab=tab1';
+    }
+    function f2()
+    {
+        var ua = navigator.userAgent.toLowerCase();
+        if(ua.indexOf('chrome')!= -1)
+        {
+            functionF2_ChromeFF();
+        }
+        else
+        {
+            functionF2_IE();
+        }       
+        //window.top.location='/apex/BudgetTracker?id={!Wave_Plan_Version__c.id}&tab=tab2';
+    }
+    function f3()
+    {
+        var ua = navigator.userAgent.toLowerCase();
+        if(ua.indexOf('chrome')!= -1)
+        {
+            functionF3_ChromeFF();
+        }
+        else
+        {
+            functionF3_IE();
+        }        
+        //window.top.location='/apex/BudgetTracker?id={!Wave_Plan_Version__c.id}&tab=tab3';
+    }
+    function f4()
+    {
+        var ua = navigator.userAgent.toLowerCase();
+        if(ua.indexOf('chrome')!= -1)
+        {
+            functionF4_ChromeFF();
+        }
+        else
+        {
+            functionF4_IE();
+        }        
+        //window.top.location='/apex/BudgetTracker?id={!Wave_Plan_Version__c.id}&tab=tab4';
+    }
+    function f5()
+    {
+        var ua = navigator.userAgent.toLowerCase();
+        if(ua.indexOf('chrome')!= -1)
+        {
+            functionF5_ChromeFF();
+        }
+        else
+        {
+            functionF5_IE();
+        }        
+        //window.top.location='/apex/BudgetTracker?id={!Wave_Plan_Version__c.id}&tab=tab5';
+    }
+    function f6()
+    {
+        var ua = navigator.userAgent.toLowerCase();
+        if(ua.indexOf('chrome')!= -1)
+        {
+            functionF6_ChromeFF();
+        }
+        else
+        {
+            functionF6_IE();
+        }        
+        //window.top.location='/apex/BudgetTracker?id={!Wave_Plan_Version__c.id}&tab=tab6';
+    }
+</script>
+    <apex:form >
+        <apex:actionFunction name="functionF1_IE" action="{!functionF1}" oncomplete=""/>
+        <apex:actionFunction name="functionF2_IE" action="{!functionF2}" oncomplete=""/>
+        <apex:actionFunction name="functionF3_IE" action="{!functionF3}" oncomplete=""/>
+        <apex:actionFunction name="functionF4_IE" action="{!functionF4}" oncomplete=""/>
+        <apex:actionFunction name="functionF5_IE" action="{!functionF5}" oncomplete=""/>
+        <apex:actionFunction name="functionF6_IE" action="{!functionF6}" oncomplete=""/>
+
+        <apex:actionFunction name="functionF1_ChromeFF" action="{!functionF1}" />
+        <apex:actionFunction name="functionF2_ChromeFF" action="{!functionF2}" />
+        <apex:actionFunction name="functionF3_ChromeFF" action="{!functionF3}" />
+        <apex:actionFunction name="functionF4_ChromeFF" action="{!functionF4}"/>
+        <apex:actionFunction name="functionF5_ChromeFF" action="{!functionF5}"/>
+        <apex:actionFunction name="functionF6_ChromeFF" action="{!functionF6}"/>
+    </apex:form>
+    <apex:form >
+    <apex:pageBlock >
+            <apex:pageBlockButtons location="top">
+            <apex:commandButton onclick="openPopup();" value="Help" />
+            </apex:pageBlockButtons>
+        <apex:pageBlockSection >
+            <apex:outputField value="{!Wave_Plan_Version__c.Deal__c}"/>
+            <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="High Level Mobilization Plan Name"/>
+                     <apex:outputLink value="/{!Wave_Plan_Version__c.id}">{!Wave_Plan_Version__c.Name}</apex:outputLink>
+              </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    </apex:form>
+    <apex:tabPanel switchType="server" value="{!selectedTab1}" id="theTabPanel" inactiveTabClass="inactiveTab" >
+        <apex:tab label="Budget Solution" name="tab1" id="tabOne" switchType="server" ontabenter="f1();">
+            <apex:include pageName="Mob_Budgetsolution"/>
+        </apex:tab>
+        <apex:tab label="Forecast" name="tab2" id="tabTwo" switchType="server" ontabenter="f2();">
+            
+            <apex:include pageName="Mob_BudgetReforecast"/>
+        </apex:tab>
+        <apex:tab label="Actuals" name="tab3" id="tabThree" switchType="server" ontabenter="f3();">
+            <apex:include pageName="Mob_BudgetActuals"/>
+        </apex:tab>
+        <apex:tab label="Variance Analysis" name="tab4" id="tabFour" switchType="server" ontabenter="f4();">
+            <apex:include pageName="Mob_VarianceAnalysis"/>
+        </apex:tab>
+        <apex:tab label="Contingency Management" name="tab5" id="tabFive" switchType="server" ontabenter="f5();">
+            <apex:include pageName="Mob_ContingencyManagement"/>
+        </apex:tab>
+        <apex:tab label="Contingency Allocation" name="tab6" id="tabSix" switchType="server" rendered="{!isSubmit}" ontabenter="f6();">
+            <apex:include pageName="Mob_ContingecyAllocation"/>
+        </apex:tab>
+    </apex:tabPanel>    
+</apex:page>

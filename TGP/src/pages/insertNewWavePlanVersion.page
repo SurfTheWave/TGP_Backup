@@ -1,0 +1,116 @@
+<apex:page tabStyle="Wave_Plan_Version__c" standardController="Wave_Plan_Version__c"  extensions="insertNewWavePlanVersionController">
+  <apex:sectionHeader title="High Level Mobilization Plan Edit" subtitle="New High Level Mobilization Plan"/>
+  <style>
+    #drop
+    {
+        border:2px dashed #000000;
+        -moz-border-radius:5px;
+        -webkit-border-radius:5px;
+        border-radius:5px;
+        padding:25px;
+        text-align:center;
+        font:20pt bold,"Vollkorn";color:#000000;
+        background-color:#66BDFF;
+    }
+    #b64data
+    {
+        width:100%;
+    }
+  
+     /* This is for the full screen DIV */
+    .popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+    
+        /* Dimensions */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        
+        /* Mouse */
+        cursor:wait;
+    }
+ 
+    /* This is for the message DIV */
+    .PopupPanel {
+        /* Background color */
+        border: solid 2px blue;
+        background-color: white;
+ 
+        /* Dimensions */
+        left: 50%;
+        width: 200px;
+        margin-left: -100px;
+        top: 50%;
+        height: 50px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+    }
+
+    </style>
+  <apex:form id="frm">
+  <apex:actionStatus startText="In progress..." id="myStatus" >
+    <apex:facet name="start">
+        <div>
+            <div class="popupBackground" />
+            <div class="PopupPanel">
+                <table border="0" width="100%" height="100%">
+                    <tr>
+                        <td align="center"><b>In progress...</b></td>
+                    </tr>
+                    <tr>
+                        <td align="center"><img src="{!$Resource.Loading}"/></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </apex:facet>
+    </apex:actionStatus>
+      <apex:pageMessages />
+      <apex:pageBlock title="High Level Mobilization Plan Edit" rendered="{!isWPVAccess}" id="PB1">
+          <apex:pageBlockButtons >
+              <apex:commandButton value="Save" action="{!SaveRecord}" rerender="frm" status="myStatus"/> <!-- onClick="specialcharecter(this.form)" -->
+              <apex:commandButton value="Cancel" action="{!CancelRecord}" immediate="true"/>
+          </apex:pageBlockButtons>
+          <apex:pageBlockSection columns="1" title="Information" collapsible="false" id="PBS1">
+              <apex:outputField value="{!Wave_Plan_Version__c.Deal__c}" />   
+              <apex:inputField value="{!Wave_Plan_Version__c.name}" required="true" id="textValue" onkeyup="Validate(this)"/>
+              <apex:outputField value="{!Wave_Plan_Version__c.Version__c}"/>
+              
+          </apex:pageBlockSection>
+      </apex:pageBlock>
+  </apex:form>
+  
+<script>
+function specialcharecter(form1)
+{
+//var iChars = "!`@#$%^&*()+=-[]\\\';,./{}|\":<>?~_?";  
+  var iChars = "*\\\/|\":<>?"; 
+  var data = document.getElementById('{!$Component.frm.PB1.PBS1.textValue}').value;
+    for (var i = 0; i < data.length; i++)
+    {      
+        if (iChars.indexOf(data.charAt(i)) != -1)
+        {    
+        alert ("Wave Name can't contain any of the following characters: \n                 "+iChars);
+       //alert ("Your string has special characters. \nThese are not allowed.");
+        document.getElementById('{!$Component.frm.PB1.PBS1.textValue}').value = "";
+        return false; 
+        } 
+    }
+}
+
+function Validate(txt) {
+            txt.value = txt.value.replace(/[*\\\/|\":<>?]+/g, '');           
+        }
+</script>
+
+</apex:page>

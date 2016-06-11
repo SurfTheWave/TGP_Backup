@@ -1,0 +1,122 @@
+<!--
+Author : Varsha Chougle
+Story  : Story-0299/MOB_159
+Description :Contingency Management tab.
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+-->
+<apex:page standardController="Wave_Plan_Version__c" extensions="Mob_ContingencyManagementController">
+<style type="text/css">
+    .empty-column-content {
+        display: none;
+    }
+</style>
+
+    <apex:form id="formMsg" rendered="{!disableMsg}">
+        <apex:pageMessage severity="INFO" strength="2" summary="{!msg}"></apex:pageMessage>   
+    </apex:form>
+    <apex:form id="form0">
+        <apex:pagemessages ></apex:pagemessages>
+    </apex:form>
+    <apex:form id="form1" rendered="{!if(disableMsg,false,true)}">
+
+        <apex:pageblock >
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!saveContingencyManagement}" reRender="form0,form1"  rendered="{!if(isSubmit,false,true)}"/>
+                <apex:commandButton value="Cancel" action="{!cancelContingencyManagement}" reRender="form0,form1" rendered="{!if(isSubmit,false,true)}"/>
+                <apex:commandButton value="Submit to Governance Lead" action="{!SubmitContingencyManagement}"  onclick="return confirm('Are you sure you want to Submit?');" rendered="{!if(showSubmitButton,false,true)}" />
+                
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection columns="1" id="section1">
+                <apex:outputPanel >
+                    <center>
+                        <apex:commandButton action="{!showPreviousMonths}" reRender="form0,form1" value="< Previous" rendered="{!showPrevious}"/>  
+                        <apex:commandButton action="{!showNextMonths}" reRender="form0,form1" value="Next >" rendered="{!showNext}"/>
+                    </center>
+                </apex:outputPanel>
+                <b><apex:outputLabel value="Change Orders" style="font-size:13pt; text-decoration : underline; background-color:green; "/></b>
+                <apex:pageBlockTable value="{!ListOfBudgetSolution}" var="BudgetSolution">
+                    <apex:column headerValue="Cost Heads" style="background-color:{!BudgetSolution.bgColor};" width="400">
+                        <b><apex:outputField value="{!BudgetSolution.newBudgetSolution.name}"/></b>
+                    </apex:column>
+                    <apex:column headerValue="Solution (in $ ‘000)" style="background-color:{!BudgetSolution.bgColor};" width="100">
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.CTA_Cost_Model_Estimates__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="EAC (in $ ‘000)" style="background-color:{!BudgetSolution.bgColor};" width="100">
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.EAC__c}"  rendered="{!BudgetSolution.isDisableInputMonth}"/>
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.EAC__c}"  rendered="{!BudgetSolution.isDisableOutputMonth}"/>
+                    </apex:column>
+                    <apex:column headerValue="Difference (in $ ‘000)" style="background-color:{!BudgetSolution.bgColor};" width="100">
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.Difference__c}" rendered="{!BudgetSolution.isDisableInputMonth}"/>
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.Difference__c}" rendered="{!BudgetSolution.isDisableOutputMonth}"/>
+                    </apex:column>
+                    <apex:repeat value="{!BudgetSolution.listBudgetContingency}" var="listBudgetContingency">
+                        <apex:column style="background-color:{!BudgetSolution.bgColor};" width="80">  
+                            <apex:inputField value="{!listBudgetContingency.newBudgetContingency.Change_Orders_per_Month__c}" rendered="{!BudgetSolution.isDisableInputMonth}" style="width:100px;"/>     
+                            <apex:outputField value="{!listBudgetContingency.newBudgetContingency.Change_Orders_per_Month__c}" rendered="{!BudgetSolution.isDisableOutputMonth}"/>
+                        </apex:column>
+                    </apex:repeat>
+                    <apex:repeat var="header" value="{!Months}">
+                    <apex:column headerValue="{!header} (in $ ‘000)" styleClass="empty-column-content"/>
+                    </apex:repeat>
+                    <apex:column headerValue="Comments" style="background-color:{!BudgetSolution.bgColor};" width="200">
+                        <apex:inputField value="{!BudgetSolution.newBudgetSolution.Comments_for_Change_Orders__c}" rendered="{!BudgetSolution.isDisableInputMonth}"/>
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.Comments_for_Change_Orders__c}" rendered="{!BudgetSolution.isDisableOutputMonth}"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            <br/>
+            <apex:pageBlockSection columns="1">
+                <b><apex:outputLabel value="Cost Overruns" style="font-size:13pt; text-decoration : underline; background-color:green;"/></b>
+                
+                <apex:pageBlockTable value="{!ListOfBudgetSolution}" var="BudgetSolution">
+                    <apex:column headerValue="Cost Heads" style="background-color:{!BudgetSolution.bgColor};" width="400">
+                        <b><apex:outputField value="{!BudgetSolution.newBudgetSolution.name}"/></b>
+                    </apex:column>
+                    <apex:column headerValue="Solution (in $ ‘000)" style="background-color:{!BudgetSolution.bgColor};" width="100">
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.CTA_Cost_Model_Estimates__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="EAC (in $ ‘000)" style="background-color:{!BudgetSolution.bgColor};" width="100">
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.EAC__c}"  rendered="{!BudgetSolution.isDisableInputMonth}"/>
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.EAC__c}"  rendered="{!BudgetSolution.isDisableOutputMonth}"/>
+                    </apex:column>
+                    <apex:column headerValue="Difference (in $ ‘000)" style="background-color:{!BudgetSolution.bgColor};" width="100">
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.Difference__c}" rendered="{!BudgetSolution.isDisableInputMonth}"/>
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.Difference__c}" rendered="{!BudgetSolution.isDisableOutputMonth}"/>
+                    </apex:column>
+                    <apex:repeat value="{!BudgetSolution.listBudgetContingency}" var="listBudgetContingency">
+                        <apex:column style="background-color:{!BudgetSolution.bgColor};" width="80">  
+                            <apex:inputField value="{!listBudgetContingency.newBudgetContingency.Cost_Overruns_per_Month__c}" rendered="{!BudgetSolution.isDisableInputMonth}" style="width:100px;"/>     
+                            <apex:outputField value="{!listBudgetContingency.newBudgetContingency.Cost_Overruns_per_Month__c}" rendered="{!BudgetSolution.isDisableOutputMonth}"/>
+                        </apex:column>
+                    </apex:repeat>
+                    <apex:repeat var="header" value="{!Months}">
+                    <apex:column headerValue="{!header} (in $ ‘000)" styleClass="empty-column-content"/>
+                    </apex:repeat>
+                    <apex:column headerValue="Comments" style="background-color:{!BudgetSolution.bgColor};" width="200">
+                        <apex:inputField value="{!BudgetSolution.newBudgetSolution.Comments_for_Cost_Overruns__c}" rendered="{!BudgetSolution.isDisableInputMonth}"/>
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.Comments_for_Cost_Overruns__c}" rendered="{!BudgetSolution.isDisableOutputMonth}"/>
+                    </apex:column>
+                </apex:pageBlockTable> 
+            </apex:pageBlockSection>
+        </apex:pageblock> 
+        <apex:actionFunction name="isError" action="{!refreshPage}"  reRender="form0"/>   
+        <apex:actionFunction name="isNoError" action="{!refreshPage}" reRender="form0,form1"/>
+    </apex:form> 
+    <script>
+        function function1(val)
+        {
+            if(val=='form0')
+            {
+                isError();
+            }
+            if(val=='form0,form1')
+            {
+                isNoError();
+            }
+        }
+    </script>   
+</apex:page>

@@ -1,0 +1,5 @@
+<apex:page standardController="Scratchpad_Opportunity__c" extensions="BPOSEWhatIf">
+
+    <apex:canvasApp applicationName="BPOSE_QA"  parameters="{!generateJSONContent}" width="100%" height="1200" border="0" scrolling="no" />
+
+</apex:page>

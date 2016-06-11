@@ -1,0 +1,26 @@
+<apex:page standardController="Opportunity_Offering__c" extensions="ExportAssumptionController" contentType="application/vnd.ms-excel" showHeader="false" sidebar="false"  cache="true" readOnly="true">
+   
+   <!-- <apex:form id="form3"> -->
+     <apex:pageBlock title="Assumption Details">
+        
+
+        
+                <apex:pageBlockTable value="{!lstAssume}" var="profDetail" >
+                        <apex:column headerValue="Category" value="{!profDetail.Category_Master__r.name}"/>
+                                                
+                        <apex:column headerValue="Assumptions" value="{!profDetail.Assumption__c}" />
+                            
+                        <apex:column headerValue="Services" value="{!profDetail.Services_per_Offering__c}"/ >
+                            
+                        <apex:column value="{!profDetail.Classification__c}"/ >
+                           
+                        <apex:column value="{!profDetail.Editable_form__c}" />
+       
+                        <apex:column value="{!profDetail.Applicable_form__c}"/ >
+                        
+                </apex:pageBlockTable>
+            
+      </apex:pageBlock>
+<!--    </apex:form>  -->
+
+</apex:page>

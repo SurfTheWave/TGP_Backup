@@ -1,0 +1,20 @@
+<!--
+Author : Shridhar Patankar
+Story :  Story-0150/SOL_057   
+Description : Notes and Attachment in opportunity detail page.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Opportunity_TGP__c">
+  <apex:pageBlock >
+           <apex:pageBlockSection columns="1" >
+              <apex:pageBlockSectionItem >
+                  <apex:relatedList subject="{!Opportunity_TGP__c}" list="NotesAndAttachments" />
+              </apex:pageBlockSectionItem>
+           </apex:pageBlockSection>
+        </apex:pageBlock>
+</apex:page>

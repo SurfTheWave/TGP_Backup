@@ -1,0 +1,219 @@
+<apex:page standardController="SRAT_Tracker__c"  showHeader="true" sidebar="true" extensions="ServReadRevContr" id="ServiceReadinessPage">
+ <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
+ <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js'></script>
+ <apex:stylesheet value="{!URLFOR($Resource.jQuery_BlogForce9_162, 'css/ui-lightness/jquery-ui-1.8.16.custom.css')}" id="styleTag"/>
+ <style>
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+            /* add padding to account for vertical scrollbar */
+            padding-right: 20px;
+        }
+ </style>   
+ <apex:form id="formId">
+     <apex:outputPanel id="errPan">
+      <!--
+      <apex:Messages styleClass="errorMsg" ></apex:Messages>
+      <apex:Message styleClass="errorMsg" ></apex:Message>
+      -->
+      <apex:PageMessages id="pageMessagesid"></apex:PageMessages>
+  </apex:outputPanel>
+  <apex:sectionHeader title="Service Readiness Review Item Edit" subtitle="{!SRAT_Tracker__c.Name}" id="SectionHeaderid"/>
+  
+  <apex:pageBlock title="Service Readiness Review Item Edit" mode="edit" id="pgb1">
+    <apex:pageBlockButtons id="pgbButtons1">
+        <input type="Button" class="btn" onclick="Javascript:callSave();" value="Save"/>
+            <apex:actionFunction name="SaveRec" action="{!saveRecord}" reRender="ItemError,DaysError,SendLocError,errPan" id="SaveFunctionid"/>
+        <apex:commandButton action="{!Cancel}" value="Cancel" id="Cancelid"/>
+    </apex:pageBlockButtons>
+    
+
+   <apex:pageBlockSection title="Information" columns="2" id="pgbsection1">
+         <apex:inputField value="{!sratTracker.Wave__c}"  rendered="{!!editWave}" id="SinputWave"/>
+         <apex:outputField value="{!sratTracker.Wave__c}" rendered="{!editWave}" id="SoutputWave"/>
+     <apex:outputPanel >
+         <tbody>
+             <tr>
+                 <td class="labelCol requiredInput">
+                     <label >Item</label>
+                 </td>
+                 <td class="dataCol ">
+                     <div class="requiredInput">
+                     <div class="requiredBlock"></div>
+                         <apex:inputText value="{!sratTracker.Name}" id="itemId" />
+                         <apex:outputPanel style="{!diplayErrorItemStr}" id="ItemError">
+                             <font color="red"><strong>Error:</strong> You must enter a value</font>
+                         </apex:outputPanel>
+                     </div>    
+                  </td>
+             </tr>
+         </tbody>   
+     </apex:outputPanel>
+     <!--<apex:inputField value="{!sratTracker.Name}" required="true"/>-->
+     <apex:inputField value="{!sratTracker.Item_Order__c}" rendered="{!!makeReadOnly}" id="SItemOrder"/>
+     <apex:outputField value="{!sratTracker.Item_Order__c}" rendered="{!makeReadOnly}"/>
+     
+     <apex:outputPanel id="OPanel1">
+         <tbody>
+             <tr>
+                 <td class="labelCol requiredInput">
+                     <label >Days Before Go Live</label>
+                 </td>
+                 <td class="dataCol ">
+                     <div class="requiredInput">
+                     <div class="requiredBlock"></div>
+                         <apex:inputText value="{!sratTracker.Days_Before_Go_Live__c}" id="daysId" />
+                         <apex:outputPanel style="{!diplayDaysBfGoLvStr}" id="DaysError">
+                             <font color="red"><strong>Error:</strong> You must enter a value</font>
+                         </apex:outputPanel>
+                     </div>    
+                  </td>
+             </tr>
+         </tbody>   
+     </apex:outputPanel>
+     <!--<apex:inputField value="{!sratTracker.Days_Before_Go_Live__c}" required="true"/>-->
+     <!--<apex:inputField value="{!SRAT_Tracker__c.Location__c}" required="true"/>-->
+     
+     <apex:outputField value="{!sratTracker.Location__c}" rendered="{!makeReadOnly}" /> 
+     <apex:outputPanel id="OPanel2" rendered="{!!makeReadOnly}">
+         <tbody>
+             <tr>
+                 <td class="labelCol requiredInput">
+                     <label >Location</label>
+                 </td>
+                 <td class="dataCol ">
+                     <div class="requiredInput">
+                     <div class="requiredBlock"></div>
+                         <apex:inputText value="{!LocLookUpStr}" styleClass="autoCompClassSending" id="SendLocTxtId" />
+                         <apex:outputPanel styleClass="errorMsg" style="{!diplayErrorLocLookUpStr}" id="SendLocError" >
+                             <font color="red"><strong>Error:</strong> You must enter a value</font>
+                         </apex:outputPanel>
+                     </div>    
+                  </td>
+             </tr>
+         </tbody>   
+     </apex:outputPanel>
+     
+     <apex:inputField value="{!sratTracker.Active__c}" rendered="{!!makeReadOnly}" id="SActive"/>
+     <apex:outputField value="{!sratTracker.Active__c}" rendered="{!makeReadOnly}"/>
+     
+     <apex:inputField value="{!sratTracker.Milestone__c}" rendered="{!!makeReadOnly}" id="SMilestone"/>
+     <apex:outputField value="{!sratTracker.Milestone__c}" rendered="{!makeReadOnly}"/>
+     
+     
+     <apex:inputField value="{!sratTracker.Send_Checklist_for_Review__c}" rendered="{!checkTrackingOn && !makeReadOnly}" id="SSendChecklist"/>
+     
+     <apex:outputField value="{!sratTracker.Send_Checklist_for_Review__c}" rendered="{!checkTrackingOn && makeReadOnly}" />
+     
+     <apex:inputField value="{!sratTracker.Checklist_Reviewed__c}" rendered="{!checkTrackingOn && !makeReadOnly}" id="SChecklistRev"/>
+     <apex:outputField value="{!sratTracker.Checklist_Reviewed__c}" rendered="{!checkTrackingOn && makeReadOnly}" />
+     
+     
+     <apex:inputTextarea value="{!sratTracker.Comments__c}" cols="50" rows="3" style="width:100 px;height:50px;" id="SComments"/>
+     
+     <apex:inputField value="{!sratTracker.Checklist_Reviewer__c}" rendered="{!checkTrackingOn && !makeReadOnly}" id="SchecklistReviewer"/>
+     <apex:outputField value="{!sratTracker.Checklist_Reviewer__c}" rendered="{!checkTrackingOn && makeReadOnly}" />
+     
+     <apex:inputHidden value="{!sratTracker.Location__c}" id="hiddenSendLocId"/>
+    
+   </apex:pageBlockSection>
+   
+                       
+   <apex:outputPanel id="ajaxrequest" rendered="{!checkTrackingOn}">  
+   <apex:pageBlockSection title="Tracking" columns="2"  id="pgbsec2">
+     
+     <apex:inputField value="{!sratTracker.Actual_Date__c}" rendered="{!!makeReadOnly}" id="SActualDate"/>
+     <apex:outputField value="{!sratTracker.Actual_Date__c}" rendered="{!makeReadOnly}" />
+     
+     <apex:inputField value="{!sratTracker.RAG_Status__c}" rendered="{!!makeReadOnly}" id="SRAGStatus"/>
+     <apex:outputField value="{!sratTracker.RAG_Status__c}" rendered="{!makeReadOnly}"/>
+     
+     <apex:inputTextarea value="{!sratTracker.Tracking_Comments__c}" cols="20" rows="5" id="STracComments"/>
+     <apex:inputField value="{!sratTracker.Completed__c}" rendered="{!!makeReadOnly}" id="SCompleted"/>
+     <apex:outputField value="{!sratTracker.Completed__c}" rendered="{!makeReadOnly}" />
+     
+      <apex:pageBlockSectionItem id="pgbsecItem1"></apex:pageBlockSectionItem>
+     <apex:inputField value="{!sratTracker.Checklist_Status__c}" rendered="{!!makeReadOnly}" id="ScheckStatus"/>
+     <apex:outputField value="{!sratTracker.Checklist_Status__c}" rendered="{!makeReadOnly}" />
+   </apex:pageBlockSection>
+   
+   </apex:outputPanel>
+   
+  
+</apex:pageBlock>
+</apex:form>
+     <script>
+         function callSave(){
+             if(jQuery('[id$=SendLocTxtId]').val().trim()==''){
+                 jQuery('[id$=hiddenSendLocId]').val(''); 
+             }
+             var cl = setTimeout(SaveRec,10);
+         }
+         /**check if jquery is loaded if not load jquery again
+         **/
+         if(typeof jQuery != 'undefined'){
+           $j =jQuery.noConflict();
+         }
+        
+       $j(function(){
+            $j( ".autoCompClassSending" ).autocomplete({
+                source: function(request, response) {
+                   queryDataAutoComp(response ,request.term);
+                },
+                minLength: 0,
+                select: function(event, ui) {
+                                    //pass the selected value to hidden input field
+                                    $j(this).val(ui.item.label);
+                                    jQuery('[id$=hiddenSendLocId]').val(ui.item.value);
+                                    return false;
+                                },
+                focus: function( event, ui ) {
+                        $j(this).val( ui.item.label );
+                        return false;  
+                }
+            });
+            
+            $j( ".autoCompClassSending" ).change(function() {
+               if($j(this).val().trim()==''){
+                   jQuery('[id$=hiddenSendLocId]').val('');    
+               }
+            });
+        });
+        
+        function queryDataAutoComp(response,param){
+           Visualforce.remoting.Manager.invokeAction(
+                     '{!$RemoteAction.ServReadRevContr.getData}',param,
+                     function(result, event){
+                         //if success
+                         if(event.status){ 
+                            var data = [];  
+                            $j.each(result,function(){
+                                 var obj = new Object();
+                                 for (var field in this) { 
+                                     //match the passed label and returned value to populate the label and value                                  
+                                     if((field.toUpperCase()=='Name'.toUpperCase())){
+                                         obj.label = this[field];                                                                               
+                                     }
+                                     else if((field.toUpperCase()=='Id'.toUpperCase())){
+                                         obj.value= this[field];                                                                               
+                                     }                                    
+                                }                                
+                                 data.push(obj);
+                             });
+                             //return the dataa
+                             response( data);
+                         }
+                         else{
+                              alert('Invalid Field/Object API Name : '+event.message);
+                         }
+                         
+                     }, 
+                      {escape: true}
+                );
+            }
+             
+        </script>
+  
+</apex:page>

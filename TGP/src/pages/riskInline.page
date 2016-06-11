@@ -1,0 +1,454 @@
+<!--
+Author : Shridhar Patankar
+Story  : Story-0044/SOL_011  
+Description : Display logic for Risk. 
+
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    Sol_148                    5/15/2013        Sol UAM-Release 2
+
+-->
+<apex:page standardController="Opportunity_Offering__c" title="addnewRecord"  extensions="RiskInlineController" id="pg" sidebar="true" showHeader="true" >
+<script>
+           var url = location.href;
+           var match = url.match(/inline=1/);
+                if (match != null) { 
+                    var newUrl = url.replace(/inline=1/, '');
+                     window.top.location=newUrl;
+                }
+       function openNewWindow()
+        {
+          window.open("/apex/ExportRiskPage?id={!oppOffId}"," _Blank");
+        }
+</script>
+<style>
+.reqSelect {
+}
+
+table.inlineEditTbl td{
+    height: 26px !important; 
+}
+table.inlineEditTbl input[type="text"] {
+    width: 80px;
+}
+body {
+    font-size: 75% important;
+}
+table.inlineEditTbl2 td{
+    height: 50px !important; 
+}
+
+</style>
+ 
+<apex:outputPanel id="refresh1" rendered="{!refreshPage}">
+</apex:outputPanel>
+ <apex:form id="form1">
+    <apex:pageBlock mode="edit" id="block1" >
+     <table cellpadding="2" cellspacing="2" id="table1"> 
+      <tr id="row1">
+     <td>
+       <apex:commandButton action="{!applyFilter}" value="{!valueFilter}" rendered="{!apply}" />
+       <apex:commandButton action="{!clearFilter}" value="{!valueFilter}" rendered="{!cancel}" />
+    </td>
+    <td>
+    </td>
+    <td>
+    </td>
+    <td>
+    </td>
+    <td>
+    </td>
+    <apex:outputPanel id="outp" rendered="{!appFilter}">
+       <apex:actionFunction name="searchServer" action="{!searchServer}" reRender="form3,debug" >
+          <apex:param name="Categ"  assignTo="{!cat}" value=""/>
+          <apex:param name="edit" assignTo="{!edit}" value="" />
+          <apex:param name="Applic" assignTo="{!app}" value="" />
+          <apex:param name="ser" assignTo="{!serv}" value="" />
+          <apex:param name="riskImpact" assignTo="{!riskImpact}" value="" />
+          <apex:param name="riskProb" assignTo="{!riskProb}" value="" />
+          <apex:param name="raisedBy" assignTo="{!raisedBy}" value="" />
+          <apex:param name="raisedOn" assignTo="{!raisedOn}" value="" />
+       </apex:actionFunction>
+     
+        <td style="font-weight:bold;">Category<br/>
+        
+             <apex:selectList id="Categ" size="1" value="{!categoryMasterFilter}" required="true" onchange="search1234();">
+                            <apex:selectOptions value="{!CategoryFilter}"></apex:selectOptions>
+             </apex:selectList>
+         
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td style="font-weight:bold;">Services<br/>
+            <apex:selectList id="servic" size="1" value="{!ServiceFilter}"  onchange="search1234();">
+                   <apex:selectOptions value="{!ServicesFilter}"></apex:selectOptions>
+            </apex:selectList>
+        
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td style="font-weight:bold;">Risk Impact<br/>
+        <input type="text" id="riskImpact" value="{!riskImpact}" onkeyup="search1234();"/>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td style="font-weight:bold;">Risk Probability %<br/>
+        <apex:inputField id="riskProb" value="{!Opportunity_Offering__c.Probability__c}" onkeyup="search1234();"/>
+        <!--<input type="Number" id="riskProb" value="{!riskProb}" onkeyup="search1234();"/>-->
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td style="font-weight:bold;">Raised By<br/>
+        <input type="text" id="raisedBy" value="{!raisedBy}" onkeyup="search1234();"/>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td style="font-weight:bold;">Raised On<br/>
+        <apex:inputField id="raisedOn" value="{!Opportunity_Offering__c.Date__c}" onchange="search1234();"/>
+         <!--<input type="Date" id="raisedOn" value="{!raisedOn}" onchange="search1234();"/>-->
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td style="font-weight:bold;">Edited<br/>
+        <apex:inputCheckbox id="edit" value="{!edit}" onchange="search1234();"/>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td style="font-weight:bold;">Applicable<br/>
+        <apex:inputCheckbox id="Applic" value="{!app}" onchange="search1234();" />
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </apex:outputPanel>
+      </tr>
+   </table>
+  </apex:pageBlock>
+  </apex:form>
+  <apex:form id="form3">
+     <apex:pageMessages id="pgmsg" />
+     <apex:pageBlock >
+            <apex:pageBlockButtons rendered="{!saveEditButtonRender}" location="top">
+               <apex:commandButton value="Save" action="{!saveAccProfileDetails}" id="saveButton" />              
+               <apex:commandButton action="{!doCancel}" id="cancelNow" value="Cancel" reRender="riskDetail,frm,form3,form1"  />    
+              
+             <apex:commandButton value="Export"  onclick="openNewWindow();"  />      
+            </apex:pageBlockButtons>
+            
+   <apex:pageBlockSection title="Risk Details" columns="1" id="riskDetail" collapsible="false" rendered="{!if(readOnlyMode,false,true)}">
+        <apex:outputPanel id="table1">
+            <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                <apex:pageBlockTable value="{!lstRisk}" var="profDetail" styleClass="inlineEditTbl" id="NewPage">
+                       <apex:column headerValue="Category" >
+                            <apex:facet name="header">
+                              <apex:commandLink value="Category" action="{!toggleSort}" reRender="form3">
+                                <apex:param name="sortField" value="Category_Master__r.Name" assignTo="{!sortField}" />
+                               </apex:commandLink>
+                            </apex:facet>
+                            <apex:selectList size="1" value="{!profDetail.newRisk.Category_Master__c}">
+                                <apex:selectOptions value="{!category}"></apex:selectOptions>
+                            </apex:selectList> 
+                        </apex:column>
+                        <apex:column headerValue="Risk"  width="550"  >
+                           <apex:outputField value="{!profDetail.newRisk.Risk__c}"  style="width: 1000px; height: 20px ; font-size: 20px">
+                         <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" />
+                         </apex:outputField>                       
+                        </apex:column>
+                      
+                       <apex:column headerValue="Services" width="120">
+                        <apex:outputField value="{!profDetail.newRisk.Services_per_Offering__c}" rendered="{!profDetail.flagMaster1}"/>
+                            <apex:selectList size="1" value="{!profDetail.newRisk.Services_per_Offering__c}" id="serviceList" rendered="{!profDetail.flagMaster2}">
+                            <apex:selectOptions value="{!Servicesdrop}"></apex:selectOptions>
+                            </apex:selectList>
+                        </apex:column>
+                        <apex:column headerValue="Classification" width="120">
+                            <apex:inputField value="{!profDetail.newRisk.Classification__c}"/>                           
+                        </apex:column>
+                         <apex:column headerValue="Risk Impact" width="180">
+                           <apex:outputField value="{!profDetail.newRisk.Risk_Impact__c}" >
+                         <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" />
+                         </apex:outputField>                       
+                        </apex:column>
+                        <apex:column headerValue="Potential Impact" width="180">
+                           <apex:outputField value="{!profDetail.newRisk.Potential_Impact__c}" >
+                         <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" />
+                         </apex:outputField>                       
+                        </apex:column>
+                        <apex:column headerValue="Mitigation" width="180">
+                           <apex:outputField value="{!profDetail.newRisk.Mitigation__c}">
+                         <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" />
+                         </apex:outputField>                       
+                        </apex:column>
+                        <apex:column headerValue="Risk Probability %" width="180" >
+                           <apex:outputField value="{!profDetail.newRisk.Risk_probability__c}" >
+                         <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" />
+                         </apex:outputField>                       
+                        </apex:column>
+                       
+                        <apex:column headerValue="Raised by" width="180" >
+                           <apex:outputField value="{!profDetail.newRisk.Raised_by__c}" >
+                         <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" />
+                         </apex:outputField>                       
+                        </apex:column>
+                        <apex:column headerValue="Raised on" width="180" >
+                         <apex:outputField value="{!profDetail.newRisk.Raised_On__c}" >
+                         <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" />
+                         </apex:outputField>                       
+                        </apex:column>
+                        
+                        <apex:column headerValue="Edited" >
+                      <apex:outputField value="{!profDetail.newRisk.Editable__c}" id="edit"/>
+                       </apex:column>
+                        <apex:column headerValue="Applicable" >
+                        <apex:outputField value="{!profDetail.newRisk.Applicable__c}">
+                         <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" />
+                         </apex:outputField>
+                       </apex:column>
+                       <apex:column headerValue="Link to Risk Master" >
+                           <apex:commandButton value="{!profDetail.newRisk.Click_Here__c}" onclick="myFunction('{!profDetail.newRisk.Risk_Master__c}')" rendered="{!profDetail.flagMaster3}"/>
+                       </apex:column>
+                       <apex:column rendered="{!deleteButtonRender}" >                
+                         <apex:commandLink action="{!deleteFile}" value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" rendered="{!if(profDetail.flagMaster3,false,true)}">
+                             <apex:param name="fileIdDelete" value="{!profDetail.newRisk.id}" assignTo="{!fileIdDelete}"/>
+                         </apex:commandLink>
+                       </apex:column>  
+                 </apex:pageBlockTable>
+             </apex:outputPanel>
+          </apex:outputPanel>
+      </apex:pageBlockSection>
+      <!--Read Only Mode Detail List-->
+      <apex:pageBlockSection title="Risk Details" columns="1" id="riskDetailRead" collapsible="false" rendered="{!readOnlyMode}">
+        <apex:outputPanel id="tableRead">
+            <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                <apex:pageBlockTable value="{!lstRisk}" var="profDetail" styleClass="inlineEditTbl" id="NewPage">
+                       <apex:column headerValue="Category" >
+                            <apex:facet name="header">
+                                <apex:commandLink value="Category" action="{!toggleSort}" reRender="form3">
+                                    <apex:param name="sortField" value="Category_Master__r.Name" assignTo="{!sortField}" />
+                                </apex:commandLink>
+                            </apex:facet>
+                            <!-- <apex:selectList size="1" value="{!profDetail.newRisk.Category_Master__c}">
+                                <apex:selectOptions value="{!category}"></apex:selectOptions>
+                            </apex:selectList> -->
+                           <apex:outputField value="{!profDetail.newRisk.Category_Master__c}"/>                           
+                        </apex:column>
+                        <apex:column headerValue="Risk"  width="550"  >
+                            <apex:outputField value="{!profDetail.newRisk.Risk__c}"  style="width: 500px; height: 20px">                         
+                            </apex:outputField>                       
+                        </apex:column>                      
+                        <apex:column headerValue="Services" width="120">
+                            <apex:outputField value="{!profDetail.newRisk.Services_per_Offering__c}"/>                            
+                        </apex:column>
+                        <apex:column headerValue="Classification" width="120">
+                            <apex:outputField value="{!profDetail.newRisk.Classification__c}"/>
+                        </apex:column>
+                         <apex:column headerValue="Risk Impact" width="180">
+                             <apex:outputField value="{!profDetail.newRisk.Risk_Impact__c}" />                        
+                                                    
+                        </apex:column>
+                        <apex:column headerValue="Potential Impact" width="180">
+                           <apex:outputField value="{!profDetail.newRisk.Potential_Impact__c}" >
+                           </apex:outputField>                       
+                        </apex:column>
+                        <apex:column headerValue="Mitigation" width="180">
+                           <apex:outputField value="{!profDetail.newRisk.Mitigation__c}">                         
+                         </apex:outputField>                       
+                        </apex:column>
+                        <apex:column headerValue="Risk Probability %" width="180" >
+                           <apex:outputField value="{!profDetail.newRisk.Risk_probability__c}" >                         
+                         </apex:outputField>                       
+                        </apex:column>
+                       
+                        <apex:column headerValue="Raised by" width="180" >
+                           <apex:outputField value="{!profDetail.newRisk.Raised_by__c}" >                         
+                         </apex:outputField>                       
+                        </apex:column>
+                        <apex:column headerValue="Raised on" width="180" >
+                           <apex:outputField value="{!profDetail.newRisk.Raised_On__c}" >                         
+                         </apex:outputField>                       
+                        </apex:column>
+                        
+                        <apex:column headerValue="Edited" >
+                          <apex:outputField value="{!profDetail.newRisk.Editable__c}" id="edit"/>
+                       </apex:column>
+                        <apex:column headerValue="Applicable" >
+                            <apex:outputField value="{!profDetail.newRisk.Applicable__c}">                             
+                             </apex:outputField>
+                       </apex:column>
+                       <apex:column headerValue="Link to Risk Master" >
+                           <apex:commandButton value="{!profDetail.newRisk.Click_Here__c}" onclick="myFunction('{!profDetail.newRisk.Risk_Master__c}')" rendered="{!profDetail.flagMaster3}"/>
+                       </apex:column>
+                       <apex:column rendered="{!deleteButtonRender}" >                
+                         <apex:commandLink action="{!deleteFile}" value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" rendered="{!if(profDetail.flagMaster3,false,true)}">
+                             <apex:param name="fileIdDelete" value="{!profDetail.newRisk.id}" assignTo="{!fileIdDelete}"/>
+                         </apex:commandLink>
+                       </apex:column>  
+                 </apex:pageBlockTable>
+             </apex:outputPanel>
+          </apex:outputPanel>
+      </apex:pageBlockSection>
+  </apex:pageBlock>
+</apex:form> 
+         
+        <apex:form rendered="{!addButtonRender}" id="frm"> 
+       
+       <apex:outputpanel id="counter">
+        <apex:pageBlock >
+                 
+            <apex:pageBlockSection title="Add Risk" columns="1" collapsible="false" >
+               <apex:pageBlockTable value="{!newRisk }" var="newRisk" >
+                     <apex:column headerValue="Category">
+                        <apex:outputPanel styleClass="requiredInput" layout="block" id="panel">
+                        <apex:outputPanel styleClass="requiredBlock"/>    
+                          <apex:selectList size="1" value="{!categoryMaster}" required="true">
+                            <apex:selectOptions value="{!category}"></apex:selectOptions>
+                          </apex:selectList>
+                        </apex:outputPanel>
+                     </apex:column>
+                           
+                     <apex:column headerValue="Risks" width="550px"  >
+                       <apex:outputPanel styleClass="requiredInput" layout="block">
+                       <apex:outputPanel styleClass="requiredBlock"/>
+                     <apex:inputField value="{!newRisk.Risk__c}" style="width: 90%; height: 90px ; font-size: 13px"/>
+                     </apex:outputPanel>
+                      </apex:column>
+                     <apex:column headerValue="Services"  id="service" width="180px">
+                      <apex:selectList size="1" value="{!Service}" id="serviceList" >
+                            <apex:selectOptions value="{!Servicesdrop}"></apex:selectOptions>
+                      </apex:selectList>
+                     </apex:column>
+                     <apex:column headerValue="Classification" >
+                        <apex:outputPanel styleClass="requiredInput" layout="block" id="panelClass">
+                        <apex:outputPanel styleClass="requiredBlock"/>    
+                            <apex:inputField value="{!newRisk.Classification__c}"/>
+                        </apex:outputPanel>
+                      </apex:column>
+                     <apex:column headerValue="Risk Impact" width="180px">
+                     <apex:inputField value="{!newRisk.Risk_Impact__c}" style="width:60%;"/>
+                     </apex:column>
+                    
+        </apex:pageBlockTable>
+        <br/>
+         <apex:pageBlockTable value="{!newRisk }" var="newRisk" styleClass="inlineEditTbl">
+         <apex:column headerValue="Potential Impact" width="180">
+          <apex:inputField value="{!newRisk.Potential_Impact__c}" style="width: 90%;" />
+          </apex:column>
+         <apex:column headerValue="Mitigation" width="180">
+          <apex:inputField value="{!newRisk.Mitigation__c}" style="width: 90%;"/>
+           </apex:column>
+          <apex:column headerValue="Risk Probability %" width="180">
+          <apex:inputField value="{!newRisk.Risk_probability__c}" style="width: 90%;"/>
+           </apex:column>
+        
+         <apex:column headerValue="Raised by" width="180">
+          <apex:inputField value="{!newRisk.Raised_by__c}" style="width: 90%;"/>
+           </apex:column>
+          <apex:column headerValue="Raised on" width="220">
+          <apex:inputField value="{!newRisk.Raised_On__c}" />
+           </apex:column>
+            <apex:column >
+             <apex:commandButton action="{!addNewOppOffer}" value="Add" reRender="frm,form3"/>                      
+             </apex:column>
+          
+         </apex:pageBlockTable>
+        
+        </apex:pageBlockSection>
+        </apex:pageBlock>
+     </apex:outputpanel>
+    <!-- <apex:pageBlock title="Debug - SOQL" id="debug">
+        <apex:outputText value="{!debugSoql}" />    
+     </apex:pageBlock>-->
+  </apex:form>
+ <script>
+  
+   function search1234(){
+   
+   var cat = document.getElementById("{!$Component.form1.block1.Categ}").value;
+   var serv = document.getElementById("{!$Component.form1.block1.servic}").value;
+   
+   var edit1 = document.getElementById("{!$Component.form1.block1.edit}").checked;
+   
+   var app1 = document.getElementById("{!$Component.form1.block1.Applic}").checked;
+  
+   var riskProb = document.getElementById("{!$Component.form1.block1.riskProb}").value;
+   
+   var riskImpact = document.getElementById("riskImpact").value;
+   
+   var raisedBy = document.getElementById("raisedBy").value;
+   
+   var raisedOn = document.getElementById("{!$Component.form1.block1.raisedOn}").value;
+  
+   
+   searchServer(cat,edit1,app1,serv,riskImpact,riskProb,raisedBy,raisedOn);
+    
+          
+   }
+ </script>        
+ <script>
+ 
+ function myFunction(risk)
+    {
+        
+        var w = 500;
+        var h = 200;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/2)-(h/2));
+       
+        window.open('/apex/riskDisplayPopup?id='+risk,'Risk','scrollbars=yes,width=500,height=200,left=' + left + ',top='+ top );
+        return true;
+    }
+</script> 
+</apex:page>

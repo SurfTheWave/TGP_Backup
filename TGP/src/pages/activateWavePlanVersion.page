@@ -1,0 +1,3 @@
+<apex:page standardController="Wave_Plan_Version__c" extensions="VFC_ActivateWavePlan" showHeader="false" action="{!activateWavePaln}">
+
+</apex:page>

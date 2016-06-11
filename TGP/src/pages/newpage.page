@@ -1,0 +1,51 @@
+<apex:page standardController="Account" renderAs="pdf" applyBodyTag="false"><!--bcoz we defined Body tag statistically ....-->
+ 
+    <head>
+ 
+        <style>
+ 
+            body
+ 
+            {
+ 
+                font-family:'Arial Unicode MS';
+ 
+            }
+ 
+            .AccountName
+ 
+            {
+ 
+                font:bold 30px;
+ 
+                color:red;
+ 
+            }
+ 
+        </style>
+ 
+    </head>
+ 
+    
+ 
+    <body>
+ 
+        <center>
+ 
+                <h1>New Account Name!</h1>
+ 
+                
+ 
+                <apex:panelGrid columns="1" width="100%">
+ 
+                    <apex:outputText value="{!account.name}" styleClass="AccountName"/>
+ 
+                    <apex:outputText value="{!Now()}"/>
+ 
+                </apex:panelGrid>
+ 
+         </center>       
+ 
+    </body>    
+ 
+</apex:page>

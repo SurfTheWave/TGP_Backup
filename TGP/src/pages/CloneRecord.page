@@ -1,0 +1,3 @@
+<apex:page standardController="SRAT_VERSION__c" extensions="cloneExtension" action="{!cloneRecord}">
+    <apex:pageMessages />
+</apex:page>

@@ -1,0 +1,174 @@
+<apex:page controller="OSLassignmentController"  sidebar="true" showHeader="true">
+<script>
+    function hideSAPID(newval)
+    {    
+        if(newval=='No')
+        {   
+            NoFunc();    
+        }
+        else
+        {            
+            YesFunc();
+        }
+    }
+   function doSearch() {
+            var StatusSelect = document.getElementById("j_id0:form1:newPageBlock:t1:j_id34:0:StatusSelect").value;
+            document.getElementById("{!$Component.form1.selectedStatusValueHidden}").value = StatusSelect; 
+       }    
+       
+</script>
+<!-- Style Panel Satrts--->   
+    <style type="text/css">   
+        .imgclass:hover{   
+            background-image: url(/img/help/helpOrbs.gif);   
+            background-repeat: no-repeat;   
+            width: 16px;   
+            height: 15px;      
+            background-position: right;   
+          
+        }   
+        .imgclass{   
+            background-image: url(/img/help/helpOrbs.gif);   
+            background-repeat: no-repeat;   
+            width: 16px;   
+            height: 15px;   
+        }
+        
+        #drop
+    {
+        border:2px dashed #000000;
+        -moz-border-radius:5px;
+        -webkit-border-radius:5px;
+        border-radius:5px;
+        padding:25px;
+        text-align:center;
+        font:20pt bold,"Vollkorn";color:#000000;
+        background-color:#66BDFF;
+    }
+    #b64data
+    {
+        width:100%;
+    }
+  
+     /* This is for the full screen DIV */
+    .popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+    
+        /* Dimensions */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        
+        /* Mouse */
+        cursor:wait;
+    }
+ 
+    /* This is for the message DIV */
+    .PopupPanel {
+        /* Background color */
+        border: solid 2px blue;
+        background-color: white;
+ 
+        /* Dimensions */
+        left: 50%;
+        width: 200px;
+        margin-left: -100px;
+        top: 50%;
+        height: 50px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+    }   
+    </style>   
+<!-- Style Panel Ends--->  
+<apex:form id="form1">
+<apex:actionStatus startText="In progress..." id="myStatus" >
+    <apex:facet name="start">
+        <div>
+            <div class="popupBackground" />
+            <div class="PopupPanel">
+                <table border="0" width="100%" height="100%">
+                    <tr>
+                        <td align="center"><b>In progress...</b></td>
+                    </tr>
+                    <tr>
+                        <td align="center"><img src="{!$Resource.Loading}"/></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </apex:facet>
+    </apex:actionStatus>
+<apex:inputHidden value="{!statusValue}" id="selectedStatusValueHidden" />
+     <apex:pageMessages id="msg"/>   
+        <apex:actionFunction action="{!NoSAPID}" name="NoFunc" immediate="true"/>
+        <apex:actionFunction action="{!YesSAPID}" name="YesFunc" immediate="true"/>
+        <apex:pageblock id="Table">
+            <apex:pageBlockSection columns="3" id="criteria">
+                 <apex:outputLabel value="MMS ID available?(Y/N)" rendered="{!field2}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <apex:selectList value="{!Option}" multiselect="false" size="1" onchange="hideSAPID(this.value);" id="selectList"> 
+                        <apex:selectOptions value="{!SAPOMIDOptions}"/>
+                    </apex:selectList>
+                </apex:outputLabel>
+                
+                <apex:inputField value="{!ccatRecord.SAP_OM_Opportunity__c}" label="MMS ID" rendered="{!field1}"></apex:inputField>
+                <apex:commandButton value="Next" action="{!NextSection}" reRender="newPageBlock,form1" rendered="{!displayButton}"></apex:commandButton>  
+            </apex:pageBlockSection>
+
+        </apex:pageblock>
+        <apex:pageBlock id="newPageBlock" rendered="{!gridVisible}">
+            <apex:pageBlockSection columns="1" id="t1">
+                <apex:pageBlockTable value="{!ccatRecord}" var="task">
+                    <apex:column headerValue="Opportunity Name">
+                        <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>   
+                            <apex:inputfield value="{!task.Opportunity_TGP__c}" rendered="{!displayOppName}" /><apex:outputfield value="{!task.Opportunity_TGP__c}" rendered="{!if(displayOppName=false,true,false)}" />
+                        </apex:outputPanel>
+                    </apex:column>
+                    <apex:column headerValue="Client Name">
+                        <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>    
+                           <!--  <apex:inputfield value="{!task.Client_Name_Master__c}" /> -->
+                            <apex:inputfield value="{!task.Client_Name_Master__c}" rendered="{!displayOppName}" />
+                            <apex:outputfield value="{!task.Client_Name_Master__c}" rendered="{!if(displayOppName=false,true,false)}" />
+                        </apex:outputPanel>
+                    </apex:column>                   
+                  <!--  <apex:column headerValue="Staffing Status">                       
+                           <apex:selectList id="StatusSelect" size="1" value="{!oppSoluLeadTask.Staffing_Status__c}">
+                                <apex:selectOptions value="{!statusOptions}"/>
+                            </apex:selectList>
+                    </apex:column> -->
+                    
+                    <apex:column headerValue="Staffing Status">                       
+                           <apex:selectList value="{!StatusSelectNEW}" size="1">
+                                <apex:selectOptions value="{!statusOptionsNew}" />
+                            </apex:selectList>
+                    </apex:column>
+                    
+                    <apex:column headerValue="Lead Solution Architect - BPO">                       
+                            <apex:inputfield value="{!task.Opportunity_Solution_Lead_New__c}"/>
+                             &nbsp;
+                            <img src="/s.gif" Class="imgclass" title="Required if Staffing Status is equal to Assigned."/>                            
+                    </apex:column>                
+                                  
+                    <apex:column headerValue="MMS ID" rendered="{!field1}">
+                        <apex:outputfield value="{!task.SAP_OM_Opportunity__c}"/>
+                    </apex:column> 
+                    <apex:column headerValue="Add Opportunity" > <!-- Assign OSL -->
+                        <apex:commandButton value="Add" reRender="form1" action="{!AssignSolutionLead}" rerender="form1" status="myStatus">
+                        </apex:commandButton>
+                    </apex:column>  
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>    
+        </apex:pageBlock>
+    </apex:form>            
+</apex:page>

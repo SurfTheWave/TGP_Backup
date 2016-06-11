@@ -1,0 +1,318 @@
+<!--
+Author : Mayank Tayal
+Story  :   SOL_077
+Description :As a PMO, I should be able to schedule approval meeting on a shared calendar 
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    Sol_148                    5/15/2013          Sol UAM-Release 2
+Mayank Tayal    SOL_154                    21 May 2013        Change in Flow for Meeting Request & Scheduling Call
+
+-->
+<apex:page standardController="Event" extensions="CreateNewCalendarEventPageController"  showHeader="{!headValue}" sidebar="{!sideValue}" tabStyle="Calendar_Event__c"  id="pageId">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />
+<script type="text/javascript"  >      
+      function fillApprover()
+      {
+          getApproverValue();
+      }
+      function getInvitees()
+      {
+          getInviteeList();
+      }
+      function redirect(msg)
+      {
+          if(msg=='true')
+          {
+              var strUrl= document.getElementById("{!$Component.form1.strUrlHidden}").value;
+              window.top.location=strUrl + '/apex/ApprovalProcessPage?tabValue=tab1';
+          }                      
+      }
+      function changeApprover()
+      {
+          chgApproverWarn();
+      }
+      function changeMeeting()
+      {
+          chgMeetingRec();
+      }
+      function redirectCancel()
+      {
+          var strUrl= document.getElementById("{!$Component.form1.strUrlHidden}").value;
+          window.top.location=strUrl + '/apex/ApprovalProcessPage?tabValue=tab1';                                
+      }
+      function prevPage()
+      {
+          var strUrl= document.getElementById("{!$Component.formMsg.strUrlPrev}").value;
+          window.top.location=strUrl + '/apex/ApprovalProcessPage?tabValue=tab1';                                
+      }
+      function opportunityPage()
+      {
+          var strUrl= document.getElementById("{!$Component.form1.strUrlHidden}").value;
+          
+          window.top.location=strUrl + '/{!meetingRecord.BPO_Opportunity__c}';                                
+      }
+</script>
+    <apex:form id="formMsg" rendered="{!showFormMsg}">
+        <apex:inputHidden id="strUrlPrev" value="{!strUrl}"/>
+        <apex:pageMessages ></apex:pageMessages>
+        <br/>
+        <h1>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            Click &nbsp;<apex:outputLink onclick="prevPage();">Here</apex:outputLink> to Return to Previous Page!
+        </h1>
+    </apex:form>
+    
+  <apex:form id="form1" rendered="{!showForm}">
+      <apex:inputHidden id="strUrlHidden" value="{!strUrl}"/> 
+      <apex:actionFunction name="getApproverValue" action="{!fillApproverValue}" reRender="form1"/>
+      <apex:actionFunction name="getInviteeList" action="{!addNewInvitees}" reRender="form1"/> 
+      <apex:actionFunction name="chgApproverWarn" action="{!changeApprover}" reRender="appPanel"/> 
+      <apex:actionFunction name="chgMeetingRec" action="{!changeMeeting}" reRender="oppDetails"/>      
+      <apex:sectionHeader subtitle="{!sectionTitle}" title="Calendar"/>
+      <apex:outputPanel id="appPanel">
+          <apex:pageBlock id="blockMsg" rendered="{!showMainMsg}">
+              <apex:pageMessages ></apex:pageMessages>
+              <br/>
+              <apex:commandButton value="Yes" action="{!continueSaveApprover}" immediate="true"/>
+              <apex:commandButton value="No" action="{!notSaveApprover}" immediate="true"/>
+          </apex:pageBlock>
+      </apex:outputPanel>
+      <apex:variable value="{!newCalEvent}" var="newEvent"/>
+      <apex:pageBlock >
+          <apex:outputPanel id="mainMsgPan">      
+              <apex:pageMessages rendered="{!mainMsg}" ></apex:pageMessages>
+               <script type="text/javascript">
+ 
+                $(document).ready(function() {
+                var errorMsg='{!showerrorMsg}';
+                var errorMsg1='{!mainMsg}'
+                 
+                   //alert('errorMsg'+errorMsg+'--'+'errorMsg1'+errorMsg1);
+                    $('.saveBtn').click(function() { 
+                         if(errorMsg=='false' && errorMsg1=='false'){
+                            $('.saveBtn').attr('disabled', 'disabled');
+                             redirect('{!redirect}');
+                        }
+                    });
+                    if(errorMsg=='true' && errorMsg1=='true') {
+                                $('.saveBtn').removeAttr('disabled');
+                        }
+                });
+                </script>                      
+          </apex:outputPanel>
+          <apex:pageBlockButtons title="Event Edit" rendered="{!addButtonRender}" >
+              <apex:commandButton value="Save" action="{!saveEvent}" oncomplete="redirect('{!redirect}');" reRender="mainMsgPan" styleclass="saveBtn"/> 
+              <apex:commandButton value="Save & New Event" action="{!saveEvent}"/>
+              <apex:commandButton value="Cancel" onclick="redirectCancel();" />              
+          </apex:pageBlockButtons>
+          <apex:pageBlock id="oppDetails" >
+          <apex:pageBlockSection title="Opportunity Information" columns="2" collapsible="false" id="oppSec" rendered="{!showOppSection}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Opportunity Name"/>
+                    <apex:outputLink onclick="opportunityPage();">
+                       <!-- <apex:outputField value="{!meetingRecord.Opportunity_Name__c}"/>-->
+                    <a href='/apex/BPO_Opportunity_tab?id={!meetingRecord.BPO_Opportunity__c}' onclick="opportunityPage();">{!meetingRecord.Opportunity_Name__c}</a>
+                    </apex:outputLink>                                   
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Client Name"/>
+                    <apex:outputField value="{!meetingRecord.Client_Name__c}"/>                                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="SAP OM ID"/>
+                    <apex:outputField value="{!meetingRecord.Opportunity_ID__c}"/>                                    
+                </apex:pageBlockSectionItem>
+                <!-- <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Client GEO Area"/>
+                    <apex:outputField value="{!meetingRecord.Client_Geo_Area__c}"/>                                    
+                </apex:pageBlockSectionItem> -->
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Client Geo Unit"/>
+                    <apex:outputField value="{!meetingRecord.Client_Geo_Unit__c}"/>                                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Offering"/>
+                    <apex:outputField value="{!meetingRecord.Offering__c}"/>                                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Operating Group"/>
+                    <apex:outputField value="{!meetingRecord.Operating_Group__c}"/>                                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Solution Specialist"/>
+                    <apex:outputField value="{!meetingRecord.Solution_Specialist__c}"/>                                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Lead Solution Architect - BPO"/>
+                    <apex:outputField value="{!meetingRecord.Opportunity_Solution_lead__c}"/>                                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Complex Cost Architect"/>
+                    <apex:outputField value="{!meetingRecord.Complex_Cost_Architect__c}"/>                                    
+                </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >BPO Net Revenue (SAP OM)<br/>(Thousands)</apex:outputlabel>                           
+                                    <apex:outputField value="{!meetingRecord.TCV_M__c}"/>                            
+                                </apex:pageBlockSectionItem>
+            
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2" collapsible="false" rendered="{!meetIDEdit}" id="meetIdEdit" >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Meeting ID"></apex:outputLabel>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock"/>
+                        <apex:inputField value="{!newEvent.Review_Meeting_Request__c}" required="false" onchange="changeMeeting();"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2" collapsible="false" rendered="{!meetIDRead}" id="meetid" >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Meeting ID"></apex:outputLabel>
+                    <apex:outputText value="{!readOnlyMeetingID}" />                    
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2" collapsible="false" id="meetSec" rendered="{!showOppSection}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Meeting Type"/>
+                    <apex:outputField value="{!meetingRecord.Review_Process__r.Review_Stage_Master__r.name}"/>                                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <!-- <apex:outputlabel value="Title"/>
+                    <apex:outputField value="{!meetingRecord.Title__c}"/> -->                                   
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!EditFlag}">
+                    <apex:outputlabel value="Status"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock"/>
+                        <apex:selectList value="{!statusValue}" size="1" > 
+                            <apex:selectOptions value="{!StatusValues}"/>
+                        </apex:selectList>
+                    </apex:outputPanel>                                   
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!ROflag}">
+                        <apex:outputlabel value="Status"/>
+                        <apex:outputField value="{!meetingRecord.Status__c}"/>     
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Comments"/>
+                    <apex:outputField value="{!meetingRecord.Comments__c}"/>                                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Requestor"/>
+                    <apex:outputField value="{!meetingRecord.Requester_User__r.name}"/>                                    
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Date Request Submitted"/>
+                    <apex:outputField value="{!meetingRecord.LastModifiedDate}"/>                                    
+                </apex:pageBlockSectionItem>                
+          </apex:pageBlockSection>
+          
+          <apex:pageBlockSection title="Calendar Details" columns="2" collapsible="false" id="caldetail">
+              <!-- <apex:inputField value="{!newEvent.Assigned_To__c}" required="true"/> -->
+              <apex:pageBlockSectionItem rendered="{!EditFlag}">
+                  <apex:outputLabel value="Start"></apex:outputLabel>
+                  <apex:outputPanel styleClass="requiredInput" layout="block">
+                      <apex:outputPanel styleClass="requiredBlock"/>
+                      <c:noDateLink >                    
+                       <apex:inputField value="{!newEvent.Start_Date__c}" required="false"/>
+                       </c:noDateLink>
+
+                  </apex:outputPanel>
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem rendered="{!ROflag}">
+                  <apex:outputlabel value="Start"/>
+                          <c:noDateLink >
+                  <apex:outputField value="{!newEvent.Start_Date__c}" />
+                                 </c:noDateLink>
+
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem rendered="{!EditFlag}" >
+                  <apex:outputLabel value="End"></apex:outputLabel>
+                  <apex:outputPanel styleClass="requiredInput" layout="block">
+                      <apex:outputPanel styleClass="requiredBlock"/>
+                        <c:noDateLink >
+                     
+                      <apex:inputField value="{!newEvent.End_Date__c}" required="false"/>
+                        </c:noDateLink>
+                     
+                  </apex:outputPanel>
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem rendered="{!ROflag}">
+                  <apex:outputlabel value="End"/>
+                        <c:noDateLink >
+                 
+                  <apex:outputField value="{!newEvent.End_Date__c}" />
+                        </c:noDateLink>
+                 
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="Subject"></apex:outputLabel>
+                  <apex:outputField value="{!newEvent.Subject__c}" />                  
+              </apex:pageBlockSectionItem>                             
+          </apex:pageBlockSection>
+          
+          <apex:pageBlockSection id="approverSec" columns="2" rendered="{!regionMandatory}">
+              <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="Client Geo Area"></apex:outputLabel>
+                  <apex:outputField value="{!newEvent.Region__c}" />
+                  <!-- <apex:outputPanel styleClass="requiredInput" layout="block">
+                      <apex:outputPanel styleClass="requiredBlock"/>
+                      <apex:inputField value="{!newEvent.Region__c}" required="false" onchange="fillApprover();"/>
+                  </apex:outputPanel> -->
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="Approver"></apex:outputLabel>
+                  <apex:outputPanel styleClass="requiredInput" layout="block">
+                      <apex:outputPanel styleClass="requiredBlock"/>
+                      <apex:inputField value="{!newEvent.Approver_Master__c}" label="Approver" required="false" onchange="changeApprover();"/>
+                  </apex:outputPanel>
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem rendered="{!ROflag}" >
+                  <apex:outputlabel value="Approver"/>
+                  <apex:outputField value="{!newEvent.Approver_Master__c}" label="Approver" />
+              </apex:pageBlockSectionItem>
+          </apex:pageBlockSection>
+          
+          <apex:pageBlockSection id="approverSecNot" columns="2" rendered="{!regionNotMandatory}">
+              <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="Client Geo Area"></apex:outputLabel>
+                  <apex:outputField value="{!newEvent.Region__c}" />                 
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem rendered="{!EditFlag}">
+                  <apex:outputLabel value="Approver"></apex:outputLabel>
+                  <apex:outputPanel styleClass="requiredInput" layout="block" >
+                      <apex:outputPanel styleClass="requiredBlock"/>
+                      <apex:inputField value="{!newEvent.Approver_Master__c}" label="Approver" required="false" onchange="changeApprover();"/>
+                  </apex:outputPanel>
+                  
+              </apex:pageBlockSectionItem>
+              
+              <apex:pageBlockSectionItem rendered="{!ROflag}" >
+                  <apex:outputlabel value="Approver"/>
+                  <apex:outputField value="{!newEvent.Approver_Master__c}" label="Approver" />
+              </apex:pageBlockSectionItem>
+          </apex:pageBlockSection>                            
+       </apex:pageBlock>
+       <apex:pageBlock >
+          <apex:pageBlockSection title="Description Information" columns="1" collapsible="false">
+              <apex:inputField value="{!newEvent.Description__c}" style="width: 80%; height: 90px" rendered="{!EditFlag}"/>
+              <apex:outputField value="{!newEvent.Description__c}" style="width: 80%; height: 90px" rendered="{!ROflag}"/>
+          </apex:pageBlockSection>
+
+          <apex:pageBlockSection title="Invite Others" columns="2" collapsible="false" id="inviteeSec" rendered="{!EditFlag}">
+              <apex:pageBlockSection >
+                  <apex:commandButton value="Add Invitees" action="{!addNewInvitees}" reRender="inviteeSec" />
+                  <apex:selectList size="5" value="{!approverList}" multiselect="true" tabindex="1" style="width:170px;" rendered="{!inviteeSecVisible}">
+                      <apex:selectOptions value="{!Approvers}"></apex:selectOptions>                                    
+                  </apex:selectList>
+              </apex:pageBlockSection>                                                          
+                  
+          </apex:pageBlockSection> 
+          <apex:pageBlockSection title="Invite Others" columns="2" collapsible="false" id="inviteeSec1" rendered="{!ROflag}">
+                
+          </apex:pageBlockSection>           
+      </apex:pageBlock>
+      </apex:pageBlock>      
+  </apex:form> 
+</apex:page>

@@ -1,0 +1,90 @@
+<apex:page standardController="Deal_Track__c" extensions="VFC_Deal_Track_Controller" sidebar="false" showHeader="false">
+<script>
+    function OpenHistoryPopup(RecordID,ObjName,Field1, Field2,Field3, Field4,Field5)
+    {
+        var w = 500;
+        var h = 400;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/3)-(h/2));
+        var url = '/apex/MaintainHistory?ID='+RecordID+'&ObjName='+ObjName+'&Field1='+Field1+'&Field2='+Field2+'&Field3='+Field3+'&Field4='+Field4+'&Field5='+Field5;
+      //  var myWindow = window.open(url,'Mob_Deal_Track','scrollbars=no,width=650,height=500, resizable=no, chrome=yes, minimizable=no, z-index: 9999,location=no, left=' + left + ',top='+ top );
+      
+        var myWindow = window.open(url,'Mob_Deal_Track','scrollbars=yes,fullscreen=yes,resizable=yes, minimizable=yes, z-index: 9999,location=no');       
+        myWindow.focus();
+        return false;        
+    }
+    function OpenReportPopup(RecordID)
+    { 
+        var w = 900;
+        var h = 400;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/3)-(h/2));
+        var url = '/apex/MileStoneReportPage?ID='+RecordID;
+        var myWindow = window.open(url,'Mob_Deal_Track','scrollbars=yes,fullscreen=yes,resizable=yes,z-index: 9999,location=no');
+        myWindow.focus();
+        return false;        
+    }          
+ function OpenLink(RecordID)
+    {
+        var url = '/'+RecordID;
+        window.top.location.replace(url);
+    }     
+</script>
+<script>
+ var newWin=null;
+ function openPopup()
+ {
+    var url="/resource/DealTrackingHelpImage";
+    newWin=window.open(url, "Popup","height=500,width=800,left=200,top=200,resizable=no,scrollbars=yes,toolbar=no,status=no");
+    newWin.focus();
+     
+    return false;
+ }
+                  
+                  
+  function closePopup()
+  {
+    if (null!=newWin)
+    {
+      newWin.close();
+    }  
+  }
+</script>
+<script language="javascript">
+    <body onload="setFocus()">
+</script>
+<apex:pageMessages ></apex:pageMessages>
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockButtons location="top" rendered="{!isEditVisible}" >
+                <apex:commandButton value="Save" id="saveButton" action="{!SaveDealTrackFields}"/>
+                <apex:commandButton value="Cancel" action="{!Cancel}" />
+                <apex:commandButton onclick="openPopup();" value="Help" />&nbsp;&nbsp; 
+                <apex:commandLink value="Milestone Report" onclick="return OpenReportPopup('{!wpv.Id}');"/>&nbsp;&nbsp;
+                <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!strDealTGP.Id}','Deal_TGP__c','Deal_RAG_Status__c','Deal_Status__c','','','');"/>  
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2">
+            
+                <apex:inputField value="{!strDealTGP.Deal_RAG_Status__c}" style="width:140px;background-color:#FFFFFF;" rendered="{!isRecordAccess}" id="DealRagStatus">
+                  </apex:inputField>
+                    <apex:outputField value="{!strDealTGP.Deal_RAG_Status__c}" style="width:140px;background-color:#FFFFFF;" rendered="{!if(isRecordAccess,false,true)}"/>
+                    <apex:inputField value="{!wpv.Pre_Contract__c}" style="width:140px;background-color:#FFFFFF;" rendered="{!isRecordAccess}"/>       
+                  <apex:outputField value="{!wpv.Pre_Contract__c}" style="width:140px;background-color:#FFFFFF;" rendered="{!if(isRecordAccess,false,true)}"/>
+                  <apex:inputField value="{!wpv.Go_Live_Critical_Path__c}" style="width:140px;background-color:#FFFFFF;" rendered="{!isRecordAccess}"/>       
+                  <apex:outputField value="{!wpv.Go_Live_Critical_Path__c}" style="width:140px;background-color:#FFFFFF;" rendered="{!if(isRecordAccess,false,true)}"/>
+                <apex:inputField value="{!strDealTGP.Lead__c}" style="width:140px;background-color:#FFFFFF;" rendered="{!isRecordAccess}"/>       
+                <apex:outputField value="{!strDealTGP.Lead__c}" style="width:140px;background-color:#FFFFFF;" rendered="{!if(isRecordAccess,false,true)}"/>  
+            </apex:pageBlockSection>
+            <apex:pageblockSection columns="1">
+              <apex:inputField value="{!wpv.Issue1__c}" style="width:800px;background-color:#FFFFFF;" rendered="{!isRecordAccess}"/>       
+              <apex:outputField value="{!wpv.Issue1__c}" style="width:800px;background-color:#FFFFFF;" rendered="{!if(isRecordAccess,false,true)}"/> 
+              <apex:inputField value="{!wpv.Action1__c}" style="width:800px;background-color:#FFFFFF;" rendered="{!isRecordAccess}"/>       
+              <apex:outputField value="{!wpv.Action1__c}" style="width:800px;background-color:#FFFFFF;" rendered="{!if(isRecordAccess,false,true)}"/> 
+              
+              <apex:inputField value="{!wpv.Overall_Deal_RAG_Comments1__c}" style="width:800px;background-color:#FFFFFF;" rendered="{!isRecordAccess}">      
+              </apex:inputField>
+              <apex:outputField value="{!wpv.Overall_Deal_RAG_Comments1__c}" style="width:800px;background-color:#FFFFFF;" rendered="{!if(isRecordAccess,false,true)}"/> 
+              </apex:pageblockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

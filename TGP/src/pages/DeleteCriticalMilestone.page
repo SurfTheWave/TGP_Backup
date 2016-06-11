@@ -1,0 +1,3 @@
+<apex:page standardcontroller="Critical_Milestone__c" extensions="CheckDeleteSWB" action="{!CheckDeleteSWB}">
+<apex:pageMessages />
+</apex:page>

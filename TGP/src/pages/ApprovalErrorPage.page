@@ -1,0 +1,40 @@
+<apex:page showHeader="true" sidebar="true" standardController="approval_request__c" extensions="ApprovalSection">
+<script>
+   
+     var url = location.href;
+     var match = url.match('&inline=1');
+    if (match != null) { 
+        var newUrl = url.replace('&inline=1', '');
+        window.top.location=newUrl;
+    }
+</script>
+  <apex:form rendered="{!match}">
+      <table>
+          <tr>
+<td><span style="font-weight: bold; font-size: 12pt;">Approval action cannot be completed!</span></td>
+              </tr><tr>
+<td>
+Final Approval can be recorded after outstanding supporting approvals are approved.You will receive an email from Solution Workbench when the supporting approvals are in an approved status.
+    <br/> <br/>
+	Click <apex:commandLink value="here" action="{!GoTOOpportunity}"/>  to return to the previous page.
+
+</td>
+ </tr>
+</table>
+  </apex:form>
+    
+    <apex:form rendered="{!if((match==false),true,false)}">
+      <table>
+          <tr>
+<td><span style="font-weight: bold; font-size: 12pt;">Approval action cannot be completed!</span></td>
+              </tr><tr>
+<td>
+ Operational  Approval can be recorded after outstanding supporting BPO and IO final approval are approved.You will receive an email from Solution Workbench when the supporting approvals are in an approved status.
+  <br/> <br/>
+	Click <apex:commandLink value="here" action="{!GoTOOpportunity}"/>  to return to the previous page.
+
+</td>
+ </tr>
+</table>
+  </apex:form>
+</apex:page>

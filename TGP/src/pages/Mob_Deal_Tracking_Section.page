@@ -1,0 +1,59 @@
+<!--
+Author : Varsha Chougule.
+Story  :  MOB_128   
+Description : initiate tracking deal 
+
+Updated by        Story no                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Varsha Chougule  MOB_128  
+
+-->
+
+<apex:page standardController="Wave_Plan_Version__c" sidebar="false" showHeader="false" extensions="Mob_Deal_Tracking_SectionController">
+    <apex:outputPanel id="refresh" rendered="true">
+        <apex:outputPanel id="refresh1" rendered="{!refreshPage}">
+        <script>
+           window.top.location='/{!pageId}';
+        </script>
+        </apex:outputPanel>
+    </apex:outputPanel> 
+    <apex:outputPanel id="msg"> 
+        <apex:pageMessages />
+    </apex:outputPanel> 
+    <apex:form id="form1" rendered="{!Wave_Plan_Version__c.Active__c}">
+        <br/> 
+        <apex:outputPanel id="Panel1">
+        <table border="0" align="center" id="table1">
+            <tr id="tr1">
+            <td width="400" id="td1">
+                <apex:commandButton value="Initiate Tracking" action="{!InitiateTracking}" disabled="{!disable}" id="button1" rendered="{!IF(isVisible && isNA,true,false)}">
+                    <apex:actionSupport event="onclick" reRender="Panel1" />
+                </apex:commandButton>
+                <apex:outputPanel rendered="{!isVisible1}">
+                    <apex:outputLink id="btnFullSearch1" styleClass="btn fullsearchbutton" style="text-decoration: none;" value="{!Dealtrack}" target="_top" >
+                       <apex:actionSupport event="onClick" action="{!getDealtrack}" status="workstatustwo" />
+                        Go To Deal Tracking
+                    </apex:outputLink>                   
+                </apex:outputPanel>
+            </td>
+            <td width="600">
+                <apex:outputLabel rendered="{!IF(visibleCheckBox && isNA,true,false)}" value="All the deal setup information, wave plans and high level mobilization plans are validated." >
+                    <apex:inputCheckbox rendered="{!IF(visibleCheckBox && isNA,true,false)}" value="{!checkBoxValue}"> 
+                        <apex:actionSupport event="onchange" action="{!ButtonEnable}" rerender="Panel1,msg"/>
+                    </apex:inputCheckbox>
+                 </apex:outputLabel>
+                 <font size="3">
+                     <apex:outputLabel value="{!Wave_Plan_Version__c.Display_tracking_message__c}" style="color:green;" rendered="{!isVisible1}"></apex:outputLabel>
+                 </font>
+            </td>
+            </tr>
+        </table>
+        </apex:outputPanel>
+    </apex:form> 
+    <script>
+        function GoToDealTrackingPage()
+        {
+            window.open('/apex/Mob_Deal_Track?id={!pageId}','_Self');
+        }
+    </script>     
+</apex:page>

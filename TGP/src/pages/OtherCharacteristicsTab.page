@@ -1,0 +1,505 @@
+<!--
+Author :  Mayank Tayal
+Story  : Story-0123  
+Description : Opportunity Timeline/Client Background Tab under Opportunity Context.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    Sol_148                    5/15/2013        Sol UAM-Release 2
+Shridhar Patankar    D-1715                27/08/2013       Field Changes.
+-->
+<apex:page standardController="Opportunity_TGP__c"  extensions="BPO_Opportunity_tabController"  id="page1">
+
+<script>
+
+   
+   function hideSAPID(newval)
+    {   
+          
+        if(newval=='No')
+        {   
+            NoFunc();    
+        }
+        else
+        {      
+           
+            YesFunc();
+            
+        }
+    }
+    function showCapacitySer(newValue){
+    
+        if(newValue =='No')
+        {   
+            NoFuncForCapSer();    
+        }
+        else
+        {      
+           
+            YesFuncForCapSer();
+            
+        }
+    }
+    
+    function getSubOffering()
+    {
+        subOffering();
+    }
+function myFunction(){
+ window.onload=pagerefresh();
+  
+  
+}
+function getServiceValue()
+{
+    alert('in alert');
+    getValues();
+}
+  function doSearchBssSm()
+    {                                          
+      var bssSmId = document.getElementById("j_id0:j_id676:j_id677:form1:block2:PbSection2:bssSmId").value;
+      if(bssSmId=="Other")
+        {
+          var r=confirm("Do you want to enter your own value for BSS SM!");
+          if(r==true)
+            {
+               document.getElementById("j_id0:j_id676:j_id677:form1:block2:PbSection2:bssSmOwnVal").focus();
+            }
+           else 
+            {
+              document.getElementById("j_id0:j_id676:j_id677:form1:block2:PbSection2:bssSmOwnVal").blur();
+            }
+        }
+    }
+   function doSearchBssEdm()
+    {    
+      var bssEdmId = document.getElementById("j_id0:j_id676:j_id677:form1:block2:PbSection2:bssEdmId").value;
+      if(bssEdmId =="Other")
+      {
+         var r=confirm("Do you want to enter your own value for BSS EDM!");
+         if(r==true)
+           {
+             document.getElementById("j_id0:j_id676:j_id677:form1:block2:PbSection2:bssEdmOwnValId").focus();
+           }
+          else
+           {
+             document.getElementById("j_id0:j_id676:j_id677:form1:block2:PbSection2:bssEdmOwnValId").blur();
+           }
+       }
+     }  
+     function doSearchBssCommCen()
+        {
+         var bssCommCenId = document.getElementById("j_id0:j_id676:j_id677:form1:block2:PbSection2:bssCommCenId").value;
+         if(bssCommCenId =="Other")
+          {
+             var r=confirm("Do you want to enter your own value for BSS command center!");
+             if(r==true)
+               {
+                 document.getElementById("j_id0:j_id676:j_id677:form1:block2:PbSection2:bssCommCenOwnValId").focus();
+               }
+              else
+                {
+                  document.getElementById("j_id0:j_id676:j_id677:form1:block2:PbSection2:bssCommCenOwnValId").blur();
+                }
+
+           }    
+        }
+
+    function doSearchBPOTech()
+     {  
+    
+      var bpoTechId = document.getElementById("j_id0:j_id676:j_id677:form1:block2:PbSection2:bpoTechId").value;
+    
+       if(bpoTechId =="Other")
+        {
+         var r=confirm("Do you want to enter your own value for BPO tech!");
+         if(r==true)
+           {
+             document.getElementById("j_id0:j_id676:j_id677:form1:block2:PbSection2:bpoTechOwnvalId").focus();
+           }
+          else
+           {
+             document.getElementById("j_id0:j_id676:j_id677:form1:block2:PbSection2:bpoTechOwnvalId").blur();
+           }
+       }
+    }
+</script>
+<!-- Style Panel Satrts--->   
+    <style type="text/css">   
+        .imgclass:hover{   
+            background-image: url(/img/help/helpOrbs.gif);   
+            background-repeat: no-repeat;   
+            width: 16px;   
+            height: 15px;      
+            background-position: right;   
+          
+        }   
+        .imgclass{   
+            background-image: url(/img/help/helpOrbs.gif);   
+            background-repeat: no-repeat;   
+            width: 16px;   
+            height: 15px;
+        .blue{
+         color :blue;     
+        }   
+    </style>   
+    <!-- Style Panel Ends--->   
+ 
+  <apex:variable value="{!Opportunity_TGP__c}" var="o"/>
+ <!-- <apex:variable value="{!oppList}" var="oList"/> -->
+  <apex:variable var="AnalyticsScopeValue" value="{!o.Analytics_in_Scope__c}"/>
+   <apex:variable var="CapacityServicesInScope" value="{!o.Capacity_Services_in_Scope__c}"/>
+  <apex:variable var="SAPOMValue" value="{!o.SAP_OM_ID_available_Y_N_del__c}"/>
+  <apex:form id="form1" >
+  
+
+      
+  <apex:actionFunction name="pagerefresh"/>
+      <apex:pageBlock id="block1" rendered="{!flagOtherChar}" >
+          <apex:pageBlockButtons location="top">
+              <apex:commandButton value="Edit" action="{!edit}" reRender="form1" rendered="{!saveEditButtonRender}" />
+          </apex:pageBlockButtons>
+          
+          
+          <apex:pageMessages id="msg"/>  
+          <apex:pageBlockSection title="Third Party Involvement" collapsible="false" columns="2">
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel styleclass="blue">Third Party Advisor</apex:outputLabel>
+                <apex:outputField value="{!o.Third_party_Advisors__c}">
+                </apex:outputField>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Third Party Advisors - Comments" ></apex:outputLabel>
+                <apex:outputField value="{!o.Third_Party_Advisors_Comments__c}">
+                </apex:outputField>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Third Party Vendors in scope">
+                &nbsp;
+                <img src="/s.gif" Class="imgclass" title="This checkbox will be automatically checked if there are third party vendors in scope for an offering in scope."/>   
+                
+                </apex:outputLabel>
+                <apex:outputField value="{!o.X3rd_Party_Vendors_in_scope__c}" >
+                </apex:outputField>
+                </apex:pageBlockSectionItem>
+                
+                </apex:pageBlockSection>
+                          
+           <!--<apex:pageBlockSection title="Pricing Type" collapsible="false" >
+                <apex:outputField value="{!o.Fixed__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.FTE__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.Transaction_or_volume_based__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.Others__c}">
+                </apex:outputField>
+
+                </apex:pageBlockSection>-->
+           
+           <!-- BCP Section Start Here--->
+           <apex:pageBlockSection title="BSS Details" collapsible="false" >
+                <apex:outputField value="{!o.BSS_SC__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.BSS_SC_OWN_VALUE__c}">
+                </apex:outputField>
+
+                <apex:outputField value="{!o.BSS_SM__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.BSS_SM_OWN_VALUE__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.BSS_EDM__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.BSS_EDM_OWN_VALUE__c}">
+                </apex:outputField>
+
+                <apex:outputField value="{!o.BSS_Command_Center__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.BSS_Command_own_value__c}">
+                </apex:outputField>
+               <!-- <apex:outputField value="{!o.BSS_Operation_New__c}">                
+                </apex:outputField> -->
+                                               
+           </apex:pageBlockSection>
+           <!-- BCP Section End Here--->
+           <apex:pageBlockSection title="Technology Details" collapsible="false" >
+                <apex:outputField value="{!o.Tech_Scope__c}">
+                </apex:outputField>
+                 <apex:outputField value="{!o.Tech_Manager__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.BPO_Tech__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.BPO_TECH_OWN_VALUE__c}">
+                </apex:outputField>
+          </apex:pageBlockSection>
+          
+          <apex:pageBlockSection title="Analytics" collapsible="false" >                      
+               
+               <!--<apex:outputField value="{!StatusSelectNEW}">
+                </apex:outputField>-->
+                <apex:outputField value="{!o.Analytics_in_Scope__c}">
+                </apex:outputField><br/>
+                <apex:outputField value="{!o.Analytics_Offerings__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField>  
+                    
+                <apex:outputField value="{!o.Analytics_Sub_Offering__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField>      
+                <!-- <apex:outputField value="{!o.Analytics_Sub_Offering__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField> -->
+                <apex:outputField value="{!o.Analytics_Total_Revenue_thousands__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField>
+                 <apex:outputField value="{!o.Analytics_YTD_Revenue_thousands__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}" label="Analytics Current FY Revenue - Projected (thousand)">
+                </apex:outputField>
+                <apex:outputField value="{!o.Analytics_Total_CCI__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField>
+                <apex:outputField value="{!o.Analytics_Deal_Classification__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField> 
+                <apex:outputField value="{!o.Analytics_Pipeline_Source__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField>    
+                <apex:outputField value="{!o.Analytics_Commercial_Arrangement__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField>           
+                <apex:outputField value="{!o.Analytics_RAG_Status__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField> 
+                <apex:outputField value="{!o.Analytics_Solution_Lead__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField>               
+                <apex:outputField value="{!o.Analytics_Functional_Architect__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}"><br/>
+                </apex:outputField>
+                <!-- <apex:outputField value="{!o.Competitors__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField>               
+                <apex:outputField value="{!o.Pricing_Type__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField>
+                <apex:outputField value="{!o.Win_Probability__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField> -->
+                <!-- <apex:outputField value="{!o.Transition_start_Date__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField> --> 
+                <apex:outputField value="{!o.FTE_count__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField> 
+                <apex:outputField value="{!o.Analytics_Delivery_Lead__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField> 
+                <apex:outputField value="{!o.Delivery_Location__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:outputField> 
+                
+           </apex:pageBlockSection>
+           
+           <apex:pageBlockSection title="Capacity Services" collapsible="false" >
+                <apex:outputField value="{!o.Capacity_Services_in_Scope__c}" >
+                </apex:outputField><br/>
+                
+                <apex:outputField value="{!o.Talent_Segment_items__c}" rendered="{!if(CapacityServicesInScope == 'Yes',true,false)}" >
+                </apex:outputField>
+                
+            </apex:pageBlockSection>
+
+
+           <apex:pageBlockSection title="Additional Opportunity Characteristics" collapsible="false" >
+                <apex:outputField value="{!o.BCP_Value__c}" label="Business Continuity Plan">
+                </apex:outputField>
+                <apex:outputField value="{!o.Deal_in_BPOSE__c}">
+                </apex:outputField>
+                <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="SSRT Requirement">
+                        &nbsp;
+                        <img src="/s.gif" Class="imgclass" title="Request SSRT support via email to SSRT@accenture.com
+Uncheck the checkbox if the deal will not require SSRT support."/>   
+                        
+                        </apex:outputLabel>
+                        <apex:outputField value="{!o.SSRT_Requirement__c}">
+                        
+                        </apex:outputField>
+                </apex:pageBlockSectionItem>
+                <!--<apex:outputField value="{!o.SSRT_Requirement__c}">
+                <br></br>
+                <apex:outputText style="font-family::Calibri(Body); font-size:11px;" value="Request SSRT support via email to SSRT@accenture.com"/><br></br>
+                <apex:outputText style="font-family::Calibri(Body); font-size:11px;" value="Uncheck the checkbox if the deal will not require SSRT support"/>
+                </apex:outputField>-->
+                <apex:outputField value="{!o.Fast_Track__c}" />
+                <apex:outputField value="{!o.Benchmark_Solution1__c}"/>
+                <apex:outputField value="{!o.Elements_Fast_Tracked__c}"/>
+           </apex:pageBlockSection>
+
+      </apex:pageBlock>
+      
+      <apex:pageBlock id="block2" rendered="{!flagEditOtherChar}" >
+                <apex:pageMessages id="msg"/>   
+                    <apex:pageBlockButtons location="top">
+                      <apex:actionStatus id="save_Btn">                 
+
+                            <apex:facet name="stop">
+
+                                <apex:commandButton value="Save" action="{!saverecordForOtherCharecteristics}" reRender="form1" status="save_Btn"  />
+
+                            </apex:facet>
+
+                            <apex:facet name="start">
+
+                                <apex:outputPanel >
+
+                                    <apex:commandButton value="Saving..." action="{!saverecordForOtherCharecteristics}" reRender="form1" disabled="true" status="save_Btn"  />
+
+                                </apex:outputPanel>
+
+                             </apex:facet> 
+
+                       </apex:actionStatus> 
+                      <apex:commandButton value="Cancel" action="{!pagerefresh}"   /> 
+                    </apex:pageBlockButtons>
+                <apex:pageBlockSection title="Third Party Involvement" collapsible="false" >
+               
+                    <apex:inputField value="{!o.Third_party_Advisors__c}" rendered="{!checkSapOm}">
+                    </apex:inputField>
+                    <apex:pageBlockSectionItem rendered="{!if(checkSapOm == true,false,true)}">
+                    <apex:outputlabel styleclass="blue">Third Party Advisor</apex:outputlabel> 
+                    <apex:outputField value="{!o.Third_party_Advisors__c}" rendered="{!!checkSapOm}">
+                    </apex:outputField>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:inputField value="{!o.Third_Party_Advisors_Comments__c}">
+                    </apex:inputField>
+                    <apex:outputField value="{!o.X3rd_Party_Vendors_in_scope__c}">
+                    &nbsp;
+                    <img src="/s.gif" Class="imgclass" title="This checkbox will be automatically checked if there are third party vendors in scope for an offering in scope."/>  
+                    </apex:outputField>
+                    
+                </apex:pageBlockSection>
+
+                <!-- added for SOL_123 date: 18/04/2013 >>> Start -->
+                                
+                <!--<apex:pageBlockSection title="Pricing Type" collapsible="false" >
+                    <apex:inputField value="{!o.Fixed__c}">
+                    </apex:inputField>
+                    <apex:inputField value="{!o.FTE__c}">
+                    </apex:inputField>
+                    <apex:inputField value="{!o.Transaction_or_volume_based__c}">
+                    </apex:inputField>
+                    <apex:inputField value="{!o.Others__c}">
+                    </apex:inputField>
+                    </apex:pageBlockSection>-->
+                 <!-- BCP Section Start Here--->
+           <apex:pageBlockSection title="BSS Details" collapsible="false" id="PbSection2">
+                <apex:inputField value="{!o.BSS_SC__c}" id="bssScId">
+                </apex:inputField>
+                <apex:inputField value="{!o.BSS_SC_OWN_VALUE__c}" id="bssScOwnVal"/>
+                <apex:inputField value="{!o.BSS_SM__c}" id="bssSmId"  onchange="doSearchBssSm(this);">
+                </apex:inputField>
+                <apex:inputField value="{!o.BSS_SM_OWN_VALUE__c}" id="bssSmOwnVal">
+                </apex:inputField>
+                <apex:inputField value="{!o.BSS_EDM__c}" id="bssEdmId" onchange="doSearchBssEdm(this);">
+                </apex:inputField>
+                <apex:inputField value="{!o.BSS_EDM_OWN_VALUE__c}" id="bssEdmOwnValId">
+                </apex:inputField>
+                <apex:inputField value="{!o.BSS_Command_Center__c}" id="bssCommCenId" onchange="doSearchBssCommCen(this);">
+                </apex:inputField>
+                <apex:inputField value="{!o.BSS_Command_own_value__c}" id="bssCommCenOwnValId">
+                </apex:inputField>
+             <!--   <apex:inputField value="{!o.BSS_Operation_New__c}">                
+                </apex:inputField>  -->
+                                
+                                
+           </apex:pageBlockSection>
+           <!-- BCP Section End Here--->
+           <apex:pageBlockSection title="Technology details" collapsible="false" >
+                <apex:inputField value="{!o.Tech_Scope__c}" id="techScopeId">
+                </apex:inputField>
+                <apex:inputField value="{!o.Tech_Manager__c}" id="techMangerId">
+                </apex:inputField>
+                <apex:inputField value="{!o.BPO_Tech__c}" id="bpoTechId" onchange="doSearchBPOTech(this);">
+                </apex:inputField>
+                <apex:inputField value="{!o.BPO_TECH_OWN_VALUE__c}" id="bpoTechOwnvalId">
+                </apex:inputField>
+          </apex:pageBlockSection>
+          
+          <apex:actionFunction action="{!noAnalyticsInScope}" name="NoFunc" reRender="analytics" />
+          <apex:actionFunction action="{!YesAnalyticsInScope}" name="YesFunc" reRender="analytics"/>
+           <!-- <apex:actionFunction action="{!getstatusOptionsForSubOffering}" name="subOffering"  />  -->
+          <apex:pageBlockSection title="Analytics" collapsible="false" id="analytics">
+                
+                <apex:inputField value="{!o.Analytics_in_Scope__c}" id="techScopeId" onchange="hideSAPID(this.value);" >
+                </apex:inputField><br/> 
+                
+                
+                <apex:selectList value="{!StatusSelectForOffering}" size="1" label="Analytics Offering" id="Offering" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}" >
+                    <apex:selectOptions value="{!statusOptionsForOffering}"/>
+                     <apex:actionSupport event="onchange" rerender="subOffering" /> 
+                </apex:selectList>
+                
+                  <!-- <apex:inputField id="analyticsOffering" value="{!o.Analytics_Offering__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                      <apex:actionSupport event="onchange" rerender="subOffering" /> 
+                 </apex:inputField>   -->
+                                
+                <!-- <apex:inputField id="analyticsSubOffering" value="{!o.Analytics_Sub_Offering__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}"/> -->
+                <apex:selectList value="{!StatusSelectForSubOffering}" size="1" label="Analytics Sub Offering" id="subOffering" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                    <apex:selectOptions value="{!statusOptionsForSubOffering}"/>
+                </apex:selectList>               
+               
+                <apex:inputField value="{!o.Analytics_Total_Revenue_thousands__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:inputField>
+                <apex:inputField value="{!o.Analytics_YTD_Revenue_thousands__c}" id="techMangerId" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}" label="Analytics Current FY Revenue - Projected (thousand)">
+                </apex:inputField> 
+                 <apex:inputField value="{!o.Analytics_Total_CCI__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:inputField>
+                <apex:inputField value="{!o.Analytics_Deal_Classification__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:inputField> 
+                <apex:inputField value="{!o.Analytics_Pipeline_Source__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:inputField> 
+                <apex:inputField value="{!o.Analytics_Commercial_Arrangement__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:inputField>            
+                <apex:inputField value="{!o.Analytics_RAG_Status__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}" >
+                </apex:inputField>
+                <apex:inputField value="{!o.Analytics_Solution_Lead__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:inputField>                
+                <apex:inputField value="{!o.Analytics_Functional_Architect__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:inputField>   
+                <!-- <apex:inputField value="{!o.Transition_start_Date__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:inputField>  -->
+                <apex:inputField value="{!o.FTE_count__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:inputField> 
+                <apex:inputField value="{!o.Analytics_Delivery_Lead__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:inputField>
+                <apex:inputField value="{!o.Delivery_Location__c}" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}">
+                </apex:inputField>              
+      
+                
+                <!--<apex:inputText value="{!o.Approval_User_Master__c}" label="Analytics Solution Lead" rendered="{!if(AnalyticsScopeValue == 'Yes',true,false)}"/>-->
+          </apex:pageBlockSection>
+          
+          <apex:actionFunction name="NoFuncForCapSer" reRender="capSer" />
+          <apex:actionFunction name="YesFuncForCapSer" reRender="capSer"/>
+        
+         <apex:pageBlockSection title="Capacity Services" collapsible="false" id="capSer">
+                
+                    <apex:inputField value="{!o.Capacity_Services_in_Scope__c}" id="capacityServicessInScopeId" onchange="showCapacitySer(this.value);" >
+                    </apex:inputField><br/> 
+                    
+                    <apex:inputField value="{!o.Talent_Segment_items__c}" rendered="{!if(CapacityServicesInScope == 'Yes',true,false)}" >
+                    </apex:inputField>
+                
+        </apex:pageBlockSection>
+
+
+           <apex:pageBlockSection title="Additional Opportunity Characteristics" collapsible="false" >
+                   <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Business Continuity Plan"></apex:outputLabel>
+                        <apex:selectRadio value="{!bcpValue}">
+                            <apex:selectOptions value="{!BCPStandard}"/>
+                        </apex:selectRadio>
+                    </apex:pageBlockSectionItem>  
+                    <apex:inputField value="{!o.Deal_in_BPOSE__c}" rendered="{!isEdit}" id="dealBpose"/>
+                    <apex:outputField value="{!o.Deal_in_BPOSE__c}" rendered="{!if(isEdit,false,true)}"/>
+                    
+                    <apex:inputField value="{!o.SSRT_Requirement__c}" id="ssrtReqId">
+                    &nbsp;
+                        <img src="/s.gif" Class="imgclass" title="Request SSRT support via email to SSRT@accenture.com
+                        Uncheck the checkbox if the deal will not require SSRT support."/><br></br>
+                <!--    <apex:outputText style="font-family::Calibri(Body); font-size:11px;" value="Request SSRT support via email to SSRT@accenture.com"/><br></br>
+                        <apex:outputText style="font-family::Calibri(Body); font-size:11px;" value="Uncheck the checkbox if the deal will not require SSRT support"/> -->
+                    </apex:inputField>
+                    <apex:inputField value="{!o.Fast_Track__c}" />
+                    <apex:outputField value="{!o.Benchmark_Solution1__c}"/>
+                    <apex:inputField value="{!o.Elements_Fast_Tracked__c}"/>
+          </apex:pageBlockSection>
+
+        </apex:pageBlock>
+  </apex:form>
+</apex:page>

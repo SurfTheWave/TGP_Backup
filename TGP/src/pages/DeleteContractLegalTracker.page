@@ -1,0 +1,4 @@
+<apex:page standardcontroller="Contract_Legal_Tracker__c" extensions="CheckDeleteMWB" action="{!CheckDeleteMWB}">
+<apex:pageMessages />
+
+</apex:page>

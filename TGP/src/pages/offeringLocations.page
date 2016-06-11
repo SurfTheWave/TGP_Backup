@@ -1,0 +1,125 @@
+<!--
+Author :  Shridhar Patankar
+Story  : Story-0168/SOL_071  
+Description : Delivery locations Sections under Offering detail page.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Opportunity_Offering__c" title="addnewRecord" extensions="OfferingLocationController" id="pg">
+ 
+<style>
+.reqSelect {
+}
+
+table.inlineEditTbl td{
+    height: 26px !important; 
+}
+table.inlineEditTbl input[type="text"] {
+    width: 80px;
+}
+body {
+    font-size: 75% important;
+}
+table.inlineEditTbl2 td{
+    height: 50px !important; 
+}
+</style>
+  <!--<apex:outputPanel id="refresh" rendered="true">
+ <apex:outputPanel id="refresh1" rendered="{!refreshPage}">
+  <script>
+   window.top.location='/{!Opportunity_Offering__c.id}';
+  </script>
+ </apex:outputPanel>
+</apex:outputPanel>--> 
+<apex:form id="form3">
+       <apex:pageBlock >
+            <apex:pageBlockButtons rendered="{!saveEditButtonRender}" >
+                
+                <apex:actionStatus id="save_Btn">                 
+                    <apex:facet name="stop">
+                         <apex:commandButton value="Save" action="{!saveLocationDetails}" id="saveButton" reRender="form3" status="save_Btn" />   
+                         
+                    </apex:facet>
+                    <apex:facet name="start">
+                        <apex:outputPanel > 
+                            <apex:commandButton value="Saving..." action="{!saveLocationDetails}" id="saveButton1" reRender="form3" disabled="true" status="save_Btn" />   >
+                        </apex:outputPanel>
+                     </apex:facet> 
+                </apex:actionStatus> 
+                
+                
+                <apex:commandButton action="{!refreshAccProfilePage}" id="cancelButton" value="Cancel"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title="Delivery Locations Details" columns="1" collapsible="False" rendered="{!if(readOnlyMode,false,true)}" >
+                <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+
+                    <apex:pageBlockTable value="{!listLocationDetailsActual}" var="profDetail" styleClass="inlineEditTbl">
+                
+                    <apex:column headerValue="Delivery Location Name">                        
+                        <!-- <apex:outputField value="{!profDetail.Delivery_Location__c}">
+                            <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                        </apex:outputField> -->
+                      <apex:selectList size="1" value="{!profDetail.Delivery_Location_Master__c}">
+                           <apex:selectOptions value="{!LocationNames}"></apex:selectOptions>
+                        </apex:selectList>
+                    </apex:column>
+                    <apex:column rendered="{!deleteButtonRender}" >                
+                            <apex:commandLink action="{!deleteFile}" value="Delete" onclick="return confirm('Are you sure you want to delete this record?');"  >
+                                <apex:param name="fileIdDelete" value="{!profDetail.id}" assignTo="{!fileIdDelete}"  />
+                            </apex:commandLink>
+                   </apex:column>
+                </apex:pageBlockTable>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            <!--Read Only Mode Detail List-->
+        <apex:pageBlockSection title="Delivery Locations Details" columns="1" collapsible="false" rendered="{!readOnlyMode}">
+             <apex:outputPanel id="tableRead">
+                 <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                    <apex:pageBlockTable value="{!listLocationDetailsActual}" var="profDetail" styleClass="inlineEditTbl" id="NewPage">
+                        <apex:column headerValue="Delivery Location Name">
+                            <apex:outputField value="{!profDetail.Delivery_Location_Master__r.name}"/>
+                        </apex:column>
+                        <apex:column rendered="{!deleteButtonRender}" >                
+                            <apex:commandLink action="{!deleteFile}" value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" >
+                                <apex:param name="fileIdDelete" value="{!profDetail.id}" assignTo="{!fileIdDelete}"/>
+                            </apex:commandLink>
+                        </apex:column>
+                   </apex:pageBlockTable>
+               </apex:outputPanel>
+           </apex:outputPanel>
+        </apex:pageBlockSection>
+
+        </apex:pageBlock>
+        </apex:form>   
+
+
+<apex:form rendered="{!addButtonRender}">
+ 
+      <apex:pageBlock >                       
+            <apex:pageBlockSection title="Add New Delivery Location" columns="1" collapsible="False">
+                <apex:pageBlockTable value="{!newLocDetail}" var="newLocDetail" styleClass="inlineEditTbl">
+                   <apex:column headerValue="Delivery Location Name">
+                          <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>    
+                                <apex:selectList size="1" value="{!locationName}" required="true">
+                                    <apex:selectOptions value="{!LocationNames}"></apex:selectOptions>
+                                </apex:selectList>
+                           </apex:outputPanel>
+
+                        <!-- <apex:inputField value="{!newLocDetail.Delivery_Location__c}" /> -->
+                    </apex:column>
+                    <apex:column >
+                        <apex:commandButton action="{!addNewLocDetail}" value="Add"  />
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+       </apex:form>
+       
+       
+</apex:page>

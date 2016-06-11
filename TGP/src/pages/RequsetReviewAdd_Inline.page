@@ -1,0 +1,441 @@
+<!--
+Author :  Varsha Chougule
+Story  :  Story-0304/SOL_0136 
+Description : Request for reviews for an opportunity.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+-->
+
+<apex:page standardController="Review_Process__c" extensions="RequsetReviewAdd_InlineController" showHeader="true" sidebar="true" tabStyle="Review__tab">
+    <script>
+jQuery.noConflict();
+
+    window.onload = function(){
+        jQuery('[id$=block1]').focus();
+    };
+</script>
+    <apex:form id="form0">
+        <apex:pageMessages />    
+    </apex:form>
+    <apex:form id="form1">
+    
+        <apex:variable value="{!newReviewProcess}" var="review"/>
+        <apex:pageBlock rendered="{!showSection}">
+            <apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Opportunity ID"/>
+                    <apex:outputField value="{!review.Opportunity_ID__c}"/>                                    
+                </apex:pageBlockSectionItem>
+            <!-- </apex:pageBlockSection>
+                            
+            <apex:pageBlockSection columns="2" >  -->                          
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Opportunity Name"/>
+                     <apex:outputLink value="/{!opportunityId}">{!review.Opportunity_Name__c}</apex:outputLink>
+                    <!--<apex:outputField value="{!review.Opportunity_Name__c}"/>-->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Client Name"/>
+                    <apex:outputField label="Client Name" value="{!review.Client_Name__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                   <apex:outputlabel value="Offerings"/>
+                   <apex:outputField value="{!review.Offering__c}"/>                                    
+               </apex:pageBlockSectionItem>                        
+                
+           </apex:pageBlockSection>
+                                       
+            <apex:pageBlockSection collapsible="false" columns="2">
+                <apex:outputField value="{!review.Review_Stage_Master__c}" label="Review Name"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Review Version"/>
+                    <apex:outputlabel value="{!version}"/>
+                </apex:pageBlockSectionItem>
+                <apex:outputField value="{!review.Review_Date__c}" label="Review Date" rendered="{!revDateRender}"/>
+            </apex:pageBlockSection>     
+           
+         </apex:pageBlock>
+         
+         <div style="font-weight:100;">
+         <!--<apex:pageBlock >
+             If you are an approver, to update the status of a request select the appropriate option from the drop down list in the Status column and add comments (if applicable) under Comments by Approver.<br/><br/>
+
+                If you are an Lead Solution Architect - BPO or a Solution Specialist, to send a request to approve the Opportunity to required approvers: <br/>
+                1. Add completed Solution Plan documentation in the Add Documents section (the details will be summarized in the Document Details section).<br/>
+                2. Select the Approval Type and Approver Name in the Add Approvers section (the details will be summarized in the Approval Details section).<br/>
+                3. In the Document Details section, place a check in the Select Document column next to the document(s) that need to be sent with the approval request.<br/>
+                4. In the Approval Details section, place a check in the Select Approver column next to the approver(s) that will receive the request.<br/>
+                5. Finally, click the Send for Approval button.  Solution Workbench will send an email to all selected approvers along with the selected documentation.<br/>
+
+         </apex:pageBlock>-->
+         </div>
+    
+        <apex:pageBlock >
+        
+         <div style="font-weight:100;">
+         APPROVERS:  To update the status of a request select the appropriate option from the drop down list in the Status column, add comments (if applicable) under Comments by Approver and click the Save Approval Details button.<br/><br/>
+          </div>
+            <apex:pageBlockSection title="Approval Details" collapsible="false" columns="1" id="section1" rendered="{!if(readOnlyMode,false,true)}">
+                <apex:outputPanel id="table1">
+                
+                <apex:outputPanel layout="block" style="text-align:center">
+                <apex:actionStatus id="save_Btn">                 
+                            <apex:facet name="stop">
+                                <apex:commandButton value="Save Approval Details" action="{!saveRequestReviewList}" id="saveButton" reRender="form0,form1" status="save_Btn"  />
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                  <apex:commandButton value="Saving..." action="{!saveRequestReviewList}" id="saveButton1" reRender="form0,form1" status="save_Btn" disabled="true" />
+
+                                </apex:outputPanel>
+                             </apex:facet> 
+                </apex:actionStatus> 
+                
+                <apex:commandButton value="Cancel" action="{!cancelRequestReviewList}"  id="cancelButton" reRender="form0,approvalTable"/>
+                
+                 <apex:actionStatus id="Send_for_Approval_Btn">                 
+                            <apex:facet name="stop">
+                             <apex:commandButton value="Send for Approval" action="{!sendEmailForApproval}" reRender="form0,form1" rendered="{!addButtonRender && isWorkbenchUser}" status="Send_for_Approval_Btn" />
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                    <apex:commandButton value="Send for Approval..." action="{!sendEmailForApproval}" reRender="form0,form1" rendered="{!addButtonRender}" status="Send_for_Approval_Btn"  disabled="true" />
+                                </apex:outputPanel>
+                             </apex:facet> 
+                 </apex:actionStatus> 
+                
+                 <apex:actionStatus id="Send_Reminder_Btn">                  
+                            <apex:facet name="stop">
+                            <apex:commandButton value="Send Reminder" action="{!sendEmailForReminder}" reRender="form0,form1" rendered="{!addButtonRender && isWorkbenchUser}" status="Send_Reminder_Btn" />
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                <apex:commandButton value="Send Reminder..." action="{!sendEmailForReminder}" reRender="form0,form1" rendered="{!addButtonRender}" disabled="true" status="Send_Reminder_Btn" />
+                                    
+                                </apex:outputPanel>
+                             </apex:facet> 
+                 </apex:actionStatus>
+                 <p><br class="spacer_" /></p>                    
+                </apex:outputPanel>     
+                <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                <apex:pageBlockTable value="{!RequestReviewList}" var="RequestReview"  id="approvalTable" style="Width:100%">
+                    <!--<apex:column headerValue="Version">
+                        <apex:outputField value="{!RequestReview.newRequestReview.Version__c}"/>
+                    </apex:column>-->
+                    <apex:column headerValue="Approval Type">
+                        <apex:outputField value="{!RequestReview.newRequestReview.Review_Type_Master__r.name}"/>
+                    </apex:column>
+                    <apex:column headerValue="Approver Name">
+                        <apex:outputField value="{!RequestReview.newRequestReview.Review_User_Master__c}"  /><!-- rendered="{!if(RequestReview.isDesableStatus,false,true) || readOnlyMode}" -->
+                      <!-- <apex:inputField value="{!RequestReview.newRequestReview.Review_User_Master__c}" /> --> 
+                    </apex:column>
+                    <apex:column headerValue="Documents for Approval">
+                        <apex:repeat value="{!RequestReview.docList}" var="doc">
+                        <apex:outputLabel value="{!doc}"></apex:outputLabel><br/>
+                        </apex:repeat>
+                    </apex:column>
+                    <apex:column headerValue="Comments by SA" width="15%">
+                        <apex:inputField value="{!RequestReview.newRequestReview.Comments_by_SA__c}"  style="height:45px;width:95%" rendered="{!if(RequestReview.isDesableReview,false,true) && if(readOnlyMode,false,true)}">
+                        </apex:inputField> 
+                        <apex:outputField value="{!RequestReview.newRequestReview.Comments_by_SA__c}"  style="height:45px;width:95%" rendered="{!RequestReview.isDesableReview || readOnlyMode }">
+                        </apex:outputField> 
+                    </apex:column>  
+                    <apex:column width="15%">
+                        <apex:facet name="header">
+                        Comments <br/> by Approver
+                        </apex:facet>
+                        <apex:outputField value="{!RequestReview.newRequestReview.Comments_by_approver__c}"  style="height:45px;width:95%" rendered="{!if(RequestReview.isDesableStatus,false,true)}"/>
+                        <apex:inputField value="{!RequestReview.newRequestReview.Comments_by_approver__c}"  style="height:45px;width:95%" rendered="{!RequestReview.isDesableStatus && if(readOnlyMode,false,true)}"/>
+                         
+                    </apex:column>  
+                    <apex:column >
+                        <apex:facet name="header">
+                        Approval Email <br/> Sent On
+                        </apex:facet>
+                       <!--  <c:noDateLink > 
+                               <apex:outputField value="{!RequestReview.newRequestReview.Approval_email_sent_on__c}" rendered="{!if(RequestReview.isDesableStatus,false,true) || readOnlyMode  }"/>
+                       </c:noDateLink>
+                        -->
+                       <c:noDateLink > 
+                          <apex:outputField value="{!RequestReview.newRequestReview.Approval_email_sent_on__c}" />
+                         <!-- <apex:inputField value="{!RequestReview.newRequestReview.Approval_email_sent_on__c}" rendered="{!RequestReview.isDesableStatus && if(readOnlyMode,false,true)}"/>-->
+                    </c:noDateLink>
+
+                    </apex:column> 
+                    <apex:column >
+                       <apex:facet name="header">
+                        Response <br/> Received On
+                        </apex:facet>
+                       <apex:outputField value="{!RequestReview.newRequestReview.Response_received_on__c}" />
+                      <!--  <apex:inputField value="{!RequestReview.newRequestReview.Response_received_on__c}" rendered="{!RequestReview.isDesableStatus}"/>  -->
+                    </apex:column>
+                    <apex:column headerValue="Send Reminder">
+                        <apex:facet name="header">
+                        Send <br/> Reminder
+                        </apex:facet>
+                        <apex:inputField value="{!RequestReview.newRequestReview.Send_reminder__c}" rendered="{!if(RequestReview.isDesableSendReminder,false,true) && if(readOnlyMode,false,true)}">
+                        </apex:inputField> 
+                        <apex:outputField value="{!RequestReview.newRequestReview.Send_reminder__c}" rendered="{!readOnlyMode}"/>
+                    </apex:column>   
+                    <apex:column headerValue="Select Approver">
+                        <apex:inputField value="{!RequestReview.newRequestReview.Select_reviewer__c}"  rendered="{!if(RequestReview.isDesableSelectReviewer,false,true) && if(readOnlyMode,false,true)}">
+                        </apex:inputField>
+                        <apex:outputField value="{!RequestReview.newRequestReview.Send_reminder__c}" rendered="{!readOnlyMode}"/> 
+                    </apex:column>  
+                    <apex:column headerValue="Status">
+                        <apex:outputField value="{!RequestReview.newRequestReview.Status__c}" rendered="{!if(RequestReview.isDesableStatus,false,true)}"></apex:outputField>
+                        <apex:inputField value="{!RequestReview.newRequestReview.Status__c}" rendered="{!RequestReview.isDesableStatus && if(readOnlyMode,false,true)}" /> 
+                    </apex:column>  
+                   
+                     <apex:column headerValue="Delete" rendered="{!deleteButtonRender }">
+                        <apex:commandLink value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" action="{!deleteRequestReview}" rendered="{!if(RequestReview.isDelete,false,true) && if(readOnlyMode,false,true)}"> 
+                            <apex:param name="recordIdToDelete" value="{!RequestReview.newRequestReview.id}" assignTo="{!recordIdToDelete}"/>
+                        </apex:commandLink>
+                    </apex:column>  
+                </apex:pageBlockTable>
+                </apex:outputPanel>
+                </apex:outputpanel>    
+            </apex:pageBlockSection>
+            <!--Read Only Mode Detail List-->
+            <apex:pageBlockSection title="Approval Details" collapsible="false" columns="1" id="sectionRead" rendered="{!readOnlyMode}">
+                <apex:outputPanel id="tableRead">
+                <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                <apex:pageBlockTable value="{!RequestReviewList}" var="RequestReview" width="100%">
+                    <!--<apex:column headerValue="Version">
+                        <apex:outputField value="{!RequestReview.newRequestReview.Version__c}"/>
+                    </apex:column>-->
+                    <apex:column headerValue="Approval Type">
+                        <apex:outputField value="{!RequestReview.newRequestReview.Review_Type_Master__r.name}"/>
+                    </apex:column>
+                    <apex:column headerValue="Approver Name">
+                        <apex:outputField value="{!RequestReview.newRequestReview.Review_User_Master__c}" />                        
+                    </apex:column>
+                    <apex:column headerValue="Documents for Approval">
+                        <apex:outputField value="{!RequestReview.newRequestReview.Document_Name__c}"></apex:outputField> 
+                    </apex:column>
+                    <apex:column headerValue="Comments by SA" width="15%">                        
+                        <apex:outputField value="{!RequestReview.newRequestReview.Comments_by_SA__c}"  style="height:45px;width:95%" >
+                        </apex:outputField> 
+                    </apex:column>  
+                    <apex:column headerValue="Comments by Approver" width="15%">
+                         <apex:outputField value="{!RequestReview.newRequestReview.Comments_by_approver__c}" style="height:45px;width:95%"/>                        
+                    </apex:column>  
+                    <apex:column headerValue="Approval Email Sent On">
+                    <c:noDateLink >                       
+                    <apex:outputField value="{!RequestReview.newRequestReview.Approval_email_sent_on__c}" />
+                    </c:noDateLink>                       
+                    </apex:column> 
+                    <apex:column headerValue="Response Received On">
+                       <apex:outputField value="{!RequestReview.newRequestReview.Response_received_on__c}"/>                       
+                    </apex:column>
+                    <apex:column headerValue="Send Reminder">
+                        <apex:outputField value="{!RequestReview.newRequestReview.Send_reminder__c}">
+                        </apex:outputField> 
+                    </apex:column>   
+                    <apex:column headerValue="Select Approver">
+                        <apex:outputField value="{!RequestReview.newRequestReview.Select_reviewer__c}" >
+                        </apex:outputField> 
+                    </apex:column>  
+                    <apex:column headerValue="Status">
+                        <apex:outputField value="{!RequestReview.newRequestReview.Status__c}"></apex:outputField>                        
+                    </apex:column>
+                   
+                     <apex:column headerValue="Delete" rendered="{!deleteButtonRender }">
+                        <apex:commandLink value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" action="{!deleteRequestReview}" rendered="{!if(RequestReview.isDelete,false,true)}"> 
+                            <apex:param name="recordIdToDelete" value="{!RequestReview.newRequestReview.id}" assignTo="{!recordIdToDelete}"/>
+                        </apex:commandLink>
+                    </apex:column>  
+                </apex:pageBlockTable>
+                </apex:outputPanel>
+                </apex:outputpanel>    
+            </apex:pageBlockSection>
+            
+        </apex:pageBlock>
+    
+        <apex:pageBlock >
+            <apex:pageBlockSection title="Document Details" collapsible="false" columns="1" id="section12" rendered="{!if(readOnlyMode,false,true) && isWorkbenchUser}">
+                <apex:outputPanel id="table1">
+                <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                
+                <apex:outputPanel style="text-align:center" layout="block">
+                <apex:actionStatus id="save_Btn">                 
+                            <apex:facet name="stop">
+                                <apex:commandButton value="Save Document Details" action="{!saveDocumentList}" id="saveButton" reRender="form0,form2"  status="save_Btn"  rendered="{!saveEditButtonRender && if(showSection,false,true) && isWorkbenchUser}"/>
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                    <apex:commandButton value="Saving..." action="{!saveDocumentList}" id="saveButton1" reRender="form0,form2"  status="save_Btn" disabled="true" rendered="{!saveEditButtonRender && if(showSection,false,true) && isWorkbenchUser}"/>
+                                </apex:outputPanel>
+                             </apex:facet> 
+                </apex:actionStatus>
+                <apex:commandButton value="Cancel" action="{!cancelDocumentList}"  id="cancelButton" reRender="form0,section12" rendered="{!saveEditButtonRender && if(showSection,false,true) && isWorkbenchUser}"/>
+                <p><br class="spacer_" /></p> 
+                </apex:outputPanel>
+
+                <apex:pageBlockTable value="{!listOpportunityDocument}" var="DocumentforRequestReview">
+                    <apex:column headerValue="Document Name" width="350px">
+                        <apex:outputLink value="{!DocumentforRequestReview.Document_Link__c}" style="{!if(ISBLANK(DocumentforRequestReview.Document_Link__c),'text-decoration:none;','false')}" target="_blank" disabled="{!if(ISBLANK(DocumentforRequestReview.Document_Link__c),true,false)}">{!DocumentforRequestReview.Name}</apex:outputLink> 
+                    </apex:column>
+                    <apex:column headerValue="Comments">
+                        <apex:inputField value="{!DocumentforRequestReview.Comments__c}"  style="width: 290px; height:45px" rendered="{!if(readOnlyMode,false,true) && isDocumentEdit}"/>
+                    </apex:column>
+                    <apex:column headerValue="Date Modified">
+                        <apex:outputField value="{!DocumentforRequestReview.Modified_Date__c}"/>
+                    </apex:column>
+                     <apex:column headerValue="Select Document">
+                        <apex:inputField value="{!DocumentforRequestReview.Select_document__c }" rendered="{!if(readOnlyMode,false,true) && isDocumentEdit}"/>
+                    </apex:column>
+                 <!--   <apex:column headerValue="Delete" rendered="{!deleteButtonRender }">
+                        <apex:commandLink value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" action="{!deleteDocument}" rendered="{!if(readOnlyMode,false,true) && isDocumentEdit}"> 
+                            <apex:param name="DocumentrecordIdToDelete" value="{!DocumentforRequestReview.id}" assignTo="{!DocumentrecordIdToDelete}"/>
+                        </apex:commandLink>
+                    </apex:column>  -->
+                </apex:pageBlockTable>
+                </apex:outputPanel>
+                </apex:outputpanel>    
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Documents uploaded to Solution Workbench prior to June 30th, 2014" collapsible="false" columns="1" rendered="{!if(DocumentforRequestReviewList.size>0,true,false)}">
+                <apex:outputPanel id="table1">
+                <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                
+                <apex:pageBlockTable value="{!DocumentforRequestReviewList}" var="DocumentforRequestReview">
+                    <apex:column headerValue="Document Name" width="350px">
+                        <apex:commandLink onclick="window.open('/servlet/servlet.FileDownload?file={!DocumentforRequestReview.Document_id__c}','Name','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes')" value="{!DocumentforRequestReview.Document_Name__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Comments">
+                        <apex:inputField value="{!DocumentforRequestReview.Comments__c}"  style="width: 290px; height:45px" rendered="{!if(readOnlyMode,false,true) && isDocumentEdit}"/>
+                    </apex:column>
+                    <apex:column headerValue="Date Uploaded" width="150px">
+                        <apex:outputField value="{!DocumentforRequestReview.Date_uploaded__c}"/>
+                    </apex:column>
+                    <apex:column width="150px"/>
+                   <!--  <apex:column headerValue="Select Document">
+                        <apex:inputField value="{!DocumentforRequestReview.Select_document__c }" rendered="{!if(readOnlyMode,false,true) && isDocumentEdit}"/>
+                    </apex:column>
+                    <apex:column headerValue="Delete" rendered="{!deleteButtonRender }">
+                        <apex:commandLink value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" action="{!deleteDocument}" rendered="{!if(readOnlyMode,false,true) && isDocumentEdit}"> 
+                            <apex:param name="DocumentrecordIdToDelete" value="{!DocumentforRequestReview.id}" assignTo="{!DocumentrecordIdToDelete}"/>
+                        </apex:commandLink>
+                    </apex:column>  -->
+                </apex:pageBlockTable>
+                </apex:outputPanel>
+                </apex:outputpanel>    
+            </apex:pageBlockSection>
+            <!--Read Only Mode Detail List-->
+            <apex:pageBlockSection title="Document Details" collapsible="false" columns="1" id="sectionRead" rendered="{!readOnlyMode  && isWorkbenchUser}"><!--  rendered="{!readOnlyMode  && isWorkbenchUser}" -->
+                <apex:outputPanel id="tableRead">
+                <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                <apex:pageBlockTable value="{!listOpportunityDocument}" var="DocumentforRequestReview">
+                    <apex:column headerValue="Document Name" width="350px">
+                        <apex:outputLink value="{!DocumentforRequestReview.Document_Link__c}" style="{!if(ISBLANK(DocumentforRequestReview.Document_Link__c),'text-decoration:none;','false')}" target="_blank" disabled="{!if(ISBLANK(DocumentforRequestReview.Document_Link__c),true,false)}">{!DocumentforRequestReview.Name}</apex:outputLink> 
+                    </apex:column>
+                    <apex:column headerValue="Comments">
+                        <apex:outputField value="{!DocumentforRequestReview.Comments__c}"  style="width: 290px; height:45px"/>
+                    </apex:column>
+                    <apex:column headerValue="Date Modified">
+                        <apex:outputField value="{!DocumentforRequestReview.Modified_Date__c}"/>
+                    </apex:column>
+                     <apex:column headerValue="Select Document">
+                        <apex:outputField value="{!DocumentforRequestReview.Select_document__c }"/>
+                    </apex:column>
+                 <!--   <apex:column headerValue="Delete" rendered="{!deleteButtonRender }">
+                        <apex:commandLink value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" action="{!deleteDocument}"> 
+                            <apex:param name="DocumentrecordIdToDelete" value="{!DocumentforRequestReview.id}" assignTo="{!DocumentrecordIdToDelete}"/>
+                        </apex:commandLink> 
+                    </apex:column>  -->
+                </apex:pageBlockTable>
+                </apex:outputPanel>
+                </apex:outputpanel>    
+            </apex:pageBlockSection> 
+            
+        </apex:pageBlock>                  
+    </apex:form>
+     
+     <apex:form id="form3" rendered="{!addButtonRender && isWorkbenchUser}">
+        <apex:pageBlock >        
+            <apex:pageBlockSection title="Add Approvers" collapsible="false" columns="1" id="section2">
+                <apex:pageBlockTable value="{!newRequestReview}" var="RequestReview">
+                    <apex:column headerValue="Approval Type" width="350px">
+                         <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                            <apex:selectList size="1" value="{!ReviewType}" rendered="{!addButtonRender}">
+                                <apex:selectOptions value="{!ReviewTypes}"/>
+                            </apex:selectList>
+                        </apex:outputPanel>
+                    </apex:column>
+                    <apex:column headerValue="Approver Name">
+                        <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                            <apex:inputField value="{!RequestReview.Review_User_Master__c}" rendered="{!addButtonRender}"/>
+                        </apex:outputPanel>
+                    </apex:column>
+                    <apex:column headerValue="" width="50px">
+                    <!--<apex:commandButton value="Add" action="{!addDocument}" rendered="{!addButtonRender}"/> 
+                        <apex:actionStatus id="addRequest_Btn">                 
+                            <apex:facet name="stop">
+                                <apex:commandButton value="Add" action="{!addRequestReview}" reRender="form0,form1,form3" rendered="{!addButtonRender}" status="addRequest_Btn"/>
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                    <apex:commandButton value="Adding..." action="{!addRequestReview}" reRender="form0,form1,form3" rendered="{!addButtonRender}" status="addRequest_Btn" disabled="true" />
+                                </apex:outputPanel>
+                             </apex:facet> 
+                      </apex:actionStatus>-->
+                      <apex:commandButton value="Add" action="{!addRequestReview}" reRender="form0,form1,form3" rendered="{!addButtonRender}" />     
+                        
+                    </apex:column>    
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    
+   <!-- <apex:form id="form4" rendered="{!addButtonRender}">
+        <apex:pageBlock >        
+            <apex:pageBlockSection title="Add Documents" collapsible="false" columns="1">
+                <apex:pageBlockTable value="{!newDocumentforRequestReview}" var="DocumentforRequestReview">
+                    <apex:column headerValue="Document Name"  width="350px">
+                        <apex:inputFile value="{!doc.body}" filename="{!doc.name}" id="file" onchange="check(this)" rendered="{!addButtonRender}"/>     
+                    </apex:column>
+                    <apex:column headerValue="Comments">
+                        <apex:inputField value="{!DocumentforRequestReview.Comments__c}"  style="width: 290px; height:45px" rendered="{!addButtonRender}"/>
+                    </apex:column>
+                    <apex:column headerValue="" width="50px">
+                        <apex:commandButton value="Add" action="{!addDocument}" rendered="{!addButtonRender}"/> 
+                       <!-- <apex:actionStatus id="addDocument_Btn">                 
+                            <apex:facet name="stop">
+                                <apex:commandButton value="Add" action="{!addDocument}" rendered="{!addButtonRender}" reRender="form4" status="addDocument_Btn"/> 
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                    <apex:commandButton value="Adding..." action="{!addDocument}" rendered="{!addButtonRender}" reRender="form4" status="addDocument_Btn" disabled="true"/> 
+                                </apex:outputPanel>
+                             </apex:facet> 
+                      </apex:actionStatus>  
+                    </apex:column>    
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:inputHidden value="{!fileName}" id="hiddenValue" /> 
+    </apex:form>-->
+    <script>
+        function check(obj_inpf)
+            {
+                var FileNameArr = obj_inpf.value.split("\\");
+                var exten=FileNameArr[2];
+                document.getElementById('{!$Component.from4.hiddenValue}').value = exten;           
+            }
+    </script>
+    
+    <div style="font-weight:100;">
+    To send a request to approve the Opportunity to required approvers:<br/><br/>
+1. Add completed Solution Plan documentation in the Add Documents section (the details will be summarized in the Document Details section).<br/>
+2. Select the Approval Type and Approver Name in the Add Approvers section (the details will be summarized in the Approval Details section).<br/>
+3. In the Document Details section, place a check in the Select Document column next to the document(s) that need to be sent with the approval request.<br/>
+4. In the Approval Details section, place a check in the Select Approver column next to the approver(s) that will receive the request.<br/>
+5. Finally, click the Send for Approval button.  Solution Workbench will send an email to all selected approvers along with the selected documentation.10 approval requests can be sent at a time.<br/>
+</div>
+</apex:page>

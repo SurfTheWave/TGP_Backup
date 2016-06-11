@@ -1,0 +1,44 @@
+<!--<apex:page Controller="UtilImportTrackers_VFC" contenttype="application/vnd.ms-excel#export.csv">       
+    <apex:repeat value="{!failRecords}" var="frecList"> 
+        <apex:repeat value="{!frecList}" var="frecListInner">
+             <apex:outputText value="{!frecListInner}"/>{!coma}
+             <!--"{!frecListInner}"{!coma}
+        </apex:repeat>{!newLine}   
+    </apex:repeat>
+     
+</apex:page>-->
+
+ <apex:page Controller="UtilImportTrackers_VFC" contenttype="application/vnd.ms-excel#{!objLabel}_Error.csv">       
+    <apex:repeat value="{!failRecords}" var="frecList"> 
+        <apex:repeat value="{!frecList}" var="frecListInner"><apex:outputText >"{!frecListInner}"{!coma}</apex:outputText>
+             <!--"{!frecListInner}"{!coma}-->
+        </apex:repeat>{!newLine}   
+    </apex:repeat>    
+</apex:page>
+
+<!--
+<apex:page controller="UtilImportTrackers_VFC" contenttype="application/vnd.ms-excel# Export.xls">
+
+ <style type="text/css">
+            .tftable {font-size:12px;color:#333333;font-size:12px;width:100%;border-color: black;border-collapse: collapse;}
+            .tftable th {font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;}
+            .tftable tr {background-color:White; border-style: solid;border-color: #E8E8E8 ;;}
+            .tftable td {font-size:12px;padding: 8px;border-style: solid;border-color: #E8E8E8;}
+            .tftable tr:hover {background-color:#ffffff;}     
+            .tdwidth {width:100px;}
+        </style>
+
+        <div style="width:1600px;overflow:auto;" id = "results">
+        <table  class="tftable" border="1">
+             <apex:repeat value="{!failRecords}" var="frecList">
+                <tr>
+                    <apex:repeat value="{!frecList}" var="frecListInner">
+                        <td>            
+                            <apex:outputText value="{!frecListInner}"/>
+                        </td>
+                    </apex:repeat>
+                </tr>
+             </apex:repeat>
+        </table>
+    </div>   
+</apex:page>-->

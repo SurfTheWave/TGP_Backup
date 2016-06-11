@@ -1,0 +1,115 @@
+<!--
+Author : Shashank Shastri.
+Description : 'Business Continuity Planning' screen 
+-->
+<apex:page standardController="Deal_Track__c" extensions="VFC_Deal_Track_Controller" action="{!bcpPlan_Constructor}" sidebar="false" showHeader="false">
+<script>
+
+  function OpenHistoryPopup(RecordID,ObjName,Field1, Field2,Field3, Field4,Field5)
+    {
+        var w = 500;
+        var h = 400;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/3)-(h/2));
+        var url = '/apex/MaintainHistory?ID='+RecordID+'&ObjName='+ObjName+'&Field1='+Field1+'&Field2='+Field2+'&Field3='+Field3+'&Field4='+Field4+'&Field5='+Field5;
+        var myWindow = window.open(url,'Mob_Deal_Track','scrollbars=no,width=650,height=500, resizable=no, chrome=yes, minimizable=no, z-index: 9999,location=no, left=' + left + ',top='+ top );
+        myWindow.focus();
+        return false;        
+    }
+</script>    
+<apex:pageMessages ></apex:pageMessages>
+    <apex:form >
+        <apex:pageBlock >
+        <apex:pageBlockButtons location="top" rendered="{!isEditVisible}">
+            <apex:commandButton value="Save" id="saveButton" action="{!SaveBCPPlan}"/>
+            <apex:commandButton value="Cancel" action="{!Cancel}" />
+        </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="7">
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==true}">
+                      <apex:outputLabel value="Overall Completion Status (%)"/>
+                      <apex:inputField value="{!wpv.BCP_Overall_Completion_Status__c}" style="background-color:#FFFFFF;" />
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==false}">
+                      <apex:outputLabel value="Overall Completion Status (%)"/>
+                      <apex:outputField value="{!wpv.BCP_Overall_Completion_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==true}">
+                      <apex:outputLabel value="Overall RAG Status"/>
+                      <apex:inputField value="{!wpv.BCP_Overall_RAG_Status__c}" style="background-color:#FFFFFF;" />
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==false}">
+                      <apex:outputLabel value="Overall RAG Status"/>
+                      <apex:outputField value="{!wpv.BCP_Overall_RAG_Status__c}" style="background-color:#FFFFFF;" />
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==true}">
+                      <apex:outputLabel value="Comments(Max Limit on character:32768)"/>
+                      <apex:inputField value="{!wpv.BCP_Comments_for_deal_Tracking__c}" style="background-color:#FFFFFF;" />
+                  </apex:pageBlockSectionItem> 
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==false}">
+                      <apex:outputLabel value="Comments(Max Limit on character:32768)"/>
+                      <apex:outputField value="{!wpv.BCP_Comments_for_deal_Tracking__c}" style="background-color:#FFFFFF;" />
+                  </apex:pageBlockSectionItem> 
+                  <apex:pageBlockSectionItem >
+                      <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!wpv.Id}','Wave_Plan_Version__c','BCP_Overall_Completion_Status__c','BCP_Overall_RAG_Status__c','','','');"/>                                                
+                  </apex:pageBlockSectionItem>  
+              </apex:pageBlockSection>
+              
+              <apex:pageBlockSection >
+                  <apex:outputLabel value="Business Continuity Plans" style="font-size:10pt; text-decoration : underline;"/>
+                  <apex:outputLabel ></apex:outputLabel>
+                  <apex:outputField value="{!wpv.BCP__c}"/>
+                  <apex:outputField value="{!wpv.BCP_Comments__c}" rendered="{!if(wpv.BCP__c=='Client Driven BCP',true,false)}"/>
+              </apex:pageBlockSection>
+              
+              <apex:pageBlockSection columns="1" rendered="{!if(wpv.BCP__c!='Client Driven BCP',true,false)}">
+                  
+                            <apex:pageBlockTable value="{!ListOfBCP}" var="PlanInner" >
+                                <apex:column value="{!PlanInner.newBusinessContinuity.Section_Name__c}" style="background-color:#EBEBFA ;"/>
+                                <apex:column headerValue="Task" style="background-color:#EBEBFA ;">
+                                    <apex:outputField value="{!PlanInner.newBusinessContinuity.Task_Name__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Planned Start Date" style="background-color:#EBEBFA ;">
+                                    <apex:outputField value="{!PlanInner.newBusinessContinuity.Planned_Start_Date__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Planned End Date" style="background-color:#EBEBFA ;">
+                                    <apex:outputField value="{!PlanInner.newBusinessContinuity.Planned_End_Date__c}" />
+                                </apex:column>                  
+                                <apex:column headerValue="Resource Name" style="background-color:#EBEBFA ;">
+                                    <apex:outputField value="{!PlanInner.newBusinessContinuity.Resource_Name__c}" />
+                                </apex:column>   
+                                 <apex:column headerValue="% Completed" style="background-color:{!PlanInner.backgroundcolor};">
+                                   <apex:outputField value="{!PlanInner.newBusinessContinuity.Completed__c}">
+                                   <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!PlanInner.isDisabled}"/>
+                                   </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Actual Start Date" style="background-color:{!PlanInner.backgroundcolor};">
+                                   <apex:outputField value="{!PlanInner.newBusinessContinuity.Actual_Start_Date__c}">
+                                   <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!PlanInner.isDisabled}"/>
+                                   </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Actual End Date" style="background-color:{!PlanInner.backgroundcolor};">
+                                   <apex:outputField value="{!PlanInner.newBusinessContinuity.Actual_End_Date__c }">
+                                   <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!PlanInner.isDisabled}"/>
+                                   </apex:outputField> 
+                                </apex:column>  
+                                <apex:column headerValue="Status" style="background-color:{!PlanInner.backgroundcolor};">
+                                   <apex:outputField value="{!PlanInner.newBusinessContinuity.status__c }">
+                                   <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!PlanInner.isDisabled}"/>
+                                   </apex:outputField> 
+                                </apex:column>               
+                                <apex:column headerValue="Tracking Comments" style="background-color:{!PlanInner.backgroundcolor};">
+                                      <apex:outputField value="{!PlanInner.newBusinessContinuity.Tracking_Comments__c}"> 
+                                      <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!PlanInner.isDisabled}"/>
+                                      </apex:outputField> 
+                                </apex:column>
+                                <apex:column headerValue="Milestone" style="background-color:#EBEBFA ;">
+                                    <apex:outputField value="{!PlanInner.newBusinessContinuity.Milestone__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Maintain History"  style="background-color:#EBEBFA ;">
+                                     <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!PlanInner.newBusinessContinuity.Id}','Business_Continuity_Planning__c','Completed__c','Actual_Start_Date__c','Actual_End_Date__c','status__c','');"/>                                                
+                                </apex:column>
+                            </apex:pageBlockTable>
+                      </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>    
+</apex:page>

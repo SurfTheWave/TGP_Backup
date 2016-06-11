@@ -1,0 +1,17 @@
+<!--
+Author : Mayank Tayal
+Story  :   Story_0094/MOB__019 and Story_0100/MOB_022
+Description : As KT Lead, I should able to initiate & complete SRAT as planned in High level mobilization plan 
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+-->
+<apex:page standardController="Wave_Plan_Version__c" extensions="SRATChecklist_PendingStatusController">
+    <apex:form id="formMsg">
+        <apex:pageMessages rendered="{!showMainMsg}"></apex:pageMessages>
+    </apex:form>
+    <apex:form rendered="{!showForm}">
+      <font size="3"><apex:outputLabel value="{!pendingMessage}" style="color:blue;font-weight:bold;"/></font>
+    </apex:form>      
+</apex:page>

@@ -1,0 +1,102 @@
+<apex:page standardController="opportunity_documents__c" extensions="OpportunityDocDetails" tabStyle="Opportunity">
+<script>
+
+var returnURL;
+
+window.onload =  function(){
+returnURL = gup('retURL');
+//alert('Set retURL = ' + returnURL);
+
+};
+
+function gup( name ){  //this function just grabs HTTP params by name
+
+name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]"); 
+var regexS = "[\\?&]"+name+"=([^&#]*)"; 
+var regex = new RegExp( regexS ); 
+var results = regex.exec( window.location.href );
+ if( results == null )    return ""; 
+else    return results[1];}
+
+function redirectBack(){
+//alert('Sending you back to ' + returnURL);
+window.location.href = '/' + returnURL;
+}
+
+</script>
+ <style type="text/css">
+        u { text-decoration: underline; }
+    </style>
+    
+  <apex:form >
+  <apex:actionFunction name="backToOpp" oncomplete="redirectBack()"/>
+     
+     <apex:pageBlock >
+     <apex:pageBlockButtons >
+        <apex:commandButton value="Go to Opportunity" action="{!backToOpportunity}"/>
+        <apex:commandButton value="New" action="{!pageredir}"  immediate="true" rendered="{!($Profile.Name  == 'System Administrator'||$Profile.Name  == 'Solution Operations'||$Profile.Name  == 'IO Solution Operations'||$Profile.Name  == 'IC Solution Operations'||$Profile.Name  == 'IS PMO Operations')}"/>
+    </apex:pageBlockButtons>
+
+      <apex:outputText value="{!OpportunityDetails}" style="font-weight:bold" escape="false"/>
+      <br/><br/>
+
+      <apex:pageBlockSection title="Opportunity Documents">                
+       
+      </apex:pageBlockSection>
+          
+          <h1> Opportunity sepecific documents are stored in <apex:commandLink target="_blank" action="{!getSharePointUrl}" value="Opportunity Documents"></apex:commandLink>.</h1><br/><br/>
+         <h1> All documents are placed in the Required Documents folder(within Opportunity Documents)will be available below.          
+          </h1><br/>
+
+      
+      <apex:pageBlockSection columns="1" id="oppDocId">
+          <apex:pageBlockTable value="{!OpportunityDoumentList}" var="oppDoc">
+              <apex:column rendered="true">
+                  <!--<apex:outputLink title="" value="/{!oppDoc.id}/e?retURL=/apex/{!$CurrentPage.Name}?oid=006E000000U6NZP&ServiceGroup=BPO&retURL=/006E000000U6NZP" style="font-weight:bold">Edit</apex:outputLink>-->
+              
+              <a href="javascript:if (window.confirm('Are you sure?')) DeleteRecord('{!oppDoc.Id}');" rerender = "True" style="font-weight:bold">Del</a>
+        </apex:column>
+              <apex:column value="{!oppDoc.Document_Link__c}" headerValue="Document Link"/>
+              <apex:column value="{!oppDoc.modified_date__c}" headerValue="Modified Date"/>
+              <apex:column value="{!oppDoc.modified_by__c}" headerValue="Modified By"/>
+          </apex:pageBlockTable>  
+      </apex:pageBlockSection>
+      <apex:actionFunction action="{!DeleteRecord}" name="DeleteRecord" reRender="oppDocId" >   
+      <apex:param name="Docid" value="" assignTo="{!SelectedDocId}"/>
+      </apex:actionFunction>
+  
+      <br/>
+       <h1> All documents are placed in the Tech Documents folder(within Opportunity Documents)will be available below.          
+          </h1><br/>
+          
+       <apex:pageBlockSection columns="1">
+          <apex:pageBlockTable value="{!TechOpportunityDoumentList}" var="techOppDoc">
+              <apex:column value="{!techOppDoc.Document_Link__c}" headerValue="Document Link"/>
+              <apex:column value="{!techOppDoc.modified_date__c}" headerValue="Modified Date"/>
+             <!--  <apex:column value="{!oppDoc.Modified_Onn__c}" headerValue="Modified Date"/><!--By diwanshu-->-->
+              <apex:column value="{!techOppDoc.modified_by__c}" headerValue="Modified By"/>  
+          </apex:pageBlockTable>
+      </apex:pageBlockSection>
+  
+      <br/> 
+        
+      <apex:outputText value="{!StaticText}" escape="false" style="font-weight:bold"/>
+      
+      
+        <br/><br/>
+     <h2>Document templates and tool links are available on <a href="https://kxsites.accenture.com/groups/BPOSA/Pages/Home.aspx" target="_blank"><u>Solution Development Resources</u></a>.<br/></h2>
+
+     <!-- <apex:pageBlockSection title="Cost Summary Documents" columns="1">
+          <apex:pageBlockTable value="{!Docs}" var="doc" columnsWidth="30%,55%,15%" >
+            <apex:column headerValue="Document Name">
+                <apex:outputLink value="/servlet/servlet.FileDownload?file={!doc.Id}" target="_blank">{!doc.name}</apex:outputLink>
+            </apex:column>
+            <apex:column headerValue="Comments" value="{!doc.description}"></apex:column>
+            <apex:column headerValue="Date Uploaded" value="{!doc.createdDate}"></apex:column>
+        </apex:pageBlockTable>
+        <p><i>When using Internet Explorer for best results save the file before opening.</i></p>
+      </apex:pageBlockSection>-->
+      
+  </apex:pageBlock>
+  </apex:form>
+</apex:page>

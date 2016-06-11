@@ -1,0 +1,3 @@
+<apex:page standardcontroller="KT_Trac__c"  extensions="CheckDeleteMWB" action="{!CheckDeleteMWB}">
+<apex:pageMessages />
+</apex:page>

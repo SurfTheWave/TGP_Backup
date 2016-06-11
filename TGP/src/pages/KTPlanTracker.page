@@ -1,0 +1,49 @@
+<!--
+Author : Sanjay Kumar Das.
+Story  :  MOB_045 
+Description : Display the list ofLocation and waves that are available for KT Planning.
+
+Updated by        Story no                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Wave_Plan_Version__c" extensions="Mob_KTTrackingcontroller" sidebar="true" showHeader="true" tabStyle="Wave_Plan_Version__c">
+
+ <script>
+var strurl = location.href;
+var newUrl = strurl.replace('&inline=1', '');
+if(newUrl != strurl )
+{
+    window.top.location=newUrl;
+}
+</script>
+
+    <apex:pageMessages ></apex:pageMessages>
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockSection columns="1" title="KT Plan Wave List">
+                <apex:pageBlockTable value="{!wavePlanList}" var="wave">
+                
+                    <apex:column headerValue="Deal Name" value="{!wave.Deal_Location__r.Wave_Plan_Version__r.Deal__c}"/>
+                    
+                    <apex:column headerValue="High Level Mobilization Plan" value="{!wave.Deal_Location__r.Wave_Plan_Version__c}"/>  
+                    
+                    <apex:column headerValue="Location">
+                        <apex:outputLink value="/{!wave.id}">{!wave.Location_Name__c}</apex:outputLink>
+                    </apex:column>
+                   
+                     <apex:column headerValue="Wave Name">
+                        <apex:outputLink value="/{!wave.id}">{!wave.Wave_Label__c}</apex:outputLink>
+                    </apex:column>
+                
+                     <apex:column headerValue="Track KT">
+                        <apex:commandLink action="{!goToKTTrack}" value="Track KT">
+                         <apex:param assignTo="{!waveId}" value="{!wave.id}" name="waveId"/>
+                         </apex:commandLink>                       
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>  
+</apex:page>

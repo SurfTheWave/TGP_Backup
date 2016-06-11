@@ -1,0 +1,12 @@
+<apex:page standardController="approval_request__c" extensions="ApprovalRequestor">
+    <apex:form >
+   <table background="white" align="center">
+   <tr>
+   <td>
+  <apex:commandButton value="Send Reminder" action="{!sendReminder}"  rendered="{!bool}"/>
+  <apex:commandButton value="Recall" action="{!sendReminder}"  rendered="{!bool}"/>
+  </td>
+  </tr>
+ </table>
+ </apex:form>
+</apex:page>

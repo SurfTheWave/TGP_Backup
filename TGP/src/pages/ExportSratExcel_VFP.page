@@ -1,0 +1,99 @@
+<apex:page controller="ExportOpexChecklistController" action="{!exportSratLevel1Level2}" contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet#SratLevel1_2_{!dealName}.xls" cache="true">
+    <apex:outputText value="{!xlsHeader}"/>
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+     xmlns:o="urn:schemas-microsoft-com:office:office"
+     xmlns:x="urn:schemas-microsoft-com:office:excel"
+     xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+     xmlns:html="http://www.w3.org/TR/REC-html40">
+         <Styles>
+            <Style ss:ID="s1">
+                 <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                 <Borders>
+                     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                 </Borders>
+                 <Font ss:Bold="1"/>
+                    <Interior ss:Color="#CAE1FF" ss:Pattern="Solid"/>
+                 <NumberFormat/>
+                 <Protection/>
+            </Style>
+            <Style ss:ID="s2">
+                 <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                 <Borders>
+                     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                 </Borders>
+                 <Interior />
+                 <NumberFormat/>
+                 <Protection/>
+            </Style>
+         </Styles>
+         <Worksheet ss:Name="SratLevel1Export">
+             <Table x:FullColumns="1" x:FullRows="1">
+             <Column ss:AutoFitWidth="1" ss:Width="110"/>
+             <Column ss:AutoFitWidth="1" ss:Width="150"/>
+             <Column ss:AutoFitWidth="1" ss:Width="250"/>
+             <Column ss:AutoFitWidth="1" ss:Width="250"/>
+             <Column ss:AutoFitWidth="1" ss:Width="100"/>
+             <Column ss:AutoFitWidth="1" ss:Width="250"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Record ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Title</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >SRAT Level 1 Tracking Type</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Question </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Overall RAG status</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Comments</Data></Cell> 
+                </Row>
+                <apex:repeat value="{!SratLevel1List}" var="sratlevel1">
+                     <Row>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel1.Id}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel1.Name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel1.SRAT_Level_1_Tracking_Type__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel1.Question__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel1.Overall_RAG_Status__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel1.Comments__c}</Data></Cell>
+                     </Row>
+                </apex:repeat>
+             </Table>
+         </Worksheet>
+         <Worksheet ss:Name="SratLevel2Export">
+             <Table x:FullColumns="1" x:FullRows="1">
+             <Column ss:AutoFitWidth="1" ss:Width="110"/>
+             <Column ss:AutoFitWidth="1" ss:Width="150"/>
+             <Column ss:AutoFitWidth="1" ss:Width="250"/>
+             <Column ss:AutoFitWidth="1" ss:Width="250"/>
+             <Column ss:AutoFitWidth="1" ss:Width="250"/>
+             <Column ss:AutoFitWidth="1" ss:Width="250"/>
+             <Column ss:AutoFitWidth="1" ss:Width="150"/>
+             <Column ss:AutoFitWidth="1" ss:Width="250"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Record ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Title</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >SRAT Level 1 Tracking Type</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Section</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Question </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Category</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >RAG status</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Comments</Data></Cell>
+                </Row>
+                <apex:repeat value="{!sratLevel2List}" var="sratlevel2">
+                     <Row>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel2.Id}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel2.Name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel2.SRAT_Level_1_Tracking_Type__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel2.Section__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel2.Question__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel2.Category__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel2.RAG_Status__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!sratlevel2.Comments__c}</Data></Cell>
+                     </Row>
+                </apex:repeat>
+             </Table>
+         </Worksheet>
+         
+    </Workbook>
+</apex:page>

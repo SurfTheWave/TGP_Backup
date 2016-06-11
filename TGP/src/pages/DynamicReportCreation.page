@@ -1,0 +1,327 @@
+<apex:page controller="DynamicReportCreation"  readonly="true">
+<style type="text/css">
+.bPageBlock .pbBody { background-color:red; }
+</style>
+ <apex:form id="form">
+
+   <apex:pageblock >
+   
+   
+  <table width="100%">
+  <tr>
+    <th  bgcolor="#236FBD" height="20px;"> Report Section</th>
+  </tr>
+  <tr>
+    <td>
+    <apex:pageBlockSection id="mainSection" columns="2"> 
+          <apex:actionRegion >
+             <apex:selectList value="{!selectedValue}" size="1">
+                        <apex:selectOptions value="{!reportList}"/>    
+                        <apex:actionSupport event="onchange" action="{!updateData}" />
+                    </apex:selectList>
+          </apex:actionRegion>
+    </apex:pageBlockSection>      
+    </td>
+  </tr>
+</table>
+
+<table width="100%">
+  <tr>
+   <!-- <th  bgcolor="#236FBD" height="20px;"> Search Criteria</th> -->
+     <th  bgcolor="#236FBD" height="20px;"> Search Criteria</th>
+  </tr>
+  <tr>
+    <td> 
+     <apex:pageBlockSection id="mainSection1" columns="4">
+            
+            <apex:pageBlockSection id="section1" columns="6" rendered="{!section1}">                
+                
+                <apex:outputLabel value="Operating Group:" style="font-weight:bold;"/>
+                <apex:selectList id="opGroupSelect" value="{!listopGroupSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="opGroupSelectValue" value="{!opGroupList}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Operating Unit:" style="font-weight:bold;"/>
+                <apex:selectList id="OuSelect" value="{!listOUSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="OUSelectValue" value="{!sapOMOUList}"/>
+                </apex:selectList>
+                           
+                <apex:outputLabel value="Geo Region:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Geo Unit:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoUnitSelect" value="{!listGeoUnitSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoUnitSelectValue" value="{!clientGeoUnit}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Offering:" style="font-weight:bold;"/>
+                <apex:selectList id="offSelect" value="{!listOffSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="offSelectValue" value="{!offList}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Reporting Status:" style="font-weight:bold;"/>
+                <apex:selectList value="{!listReportStatusSelected}" multiselect="false" size="1" id="rStatus">
+                  <apex:selectOptions value="{!reportingStatus}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Stage:" style="font-weight:bold;"/>
+                <apex:selectList value="{!listStageSelected}" multiselect="false" size="1" id="status">
+                  <apex:selectOptions value="{!status}"/>
+                </apex:selectList>
+                
+                <tr>
+                  <td colspan="4">
+
+                      <apex:actionStatus id="save_Btn">                 
+                            <apex:facet name="stop">
+                                <apex:commandButton action="{!reloadIframe1}" value=" Run Report" reRender="form" status="save_Btn"/>
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                  <apex:commandButton action="{!reloadIframe1}" value=" Run Report" disabled="true" reRender="form" status="save_Btn"/>    
+                                </apex:outputPanel>
+                             </apex:facet> 
+                  </apex:actionStatus> 
+                     
+                  </td>
+               </tr>
+               
+            </apex:pageBlockSection>
+    
+            <apex:pageBlockSection id="section2" columns="6" rendered="{!section2}">
+               
+               <apex:outputLabel value="Operating Group:" style="font-weight:bold;"/>
+                <apex:selectList id="opGroupSelect" value="{!listopGroupSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="opGroupSelectValue" value="{!opGroupList}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Operating Unit:" style="font-weight:bold;"/>
+                <apex:selectList id="OuSelect" value="{!listOUSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="OUSelectValue" value="{!sapOMOUList}"/>
+                </apex:selectList>
+                           
+                <apex:outputLabel value="Geo Region:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Geo Unit:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoUnitSelect" value="{!listGeoUnitSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoUnitSelectValue" value="{!clientGeoUnit}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Offering:" style="font-weight:bold;"/>
+                <apex:selectList id="offSelect" value="{!listOffSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="offSelectValue" value="{!offList}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Reporting Status:" style="font-weight:bold;"/>
+                <apex:selectList value="{!listOppReportStatusSelected }" multiselect="false" size="1" id="rStatus">
+                  <apex:selectOptions value="{!OppReportingStatus}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Stage:" style="font-weight:bold;"/>
+                <apex:selectList value="{!listOppStageSelected}" multiselect="false" size="1" id="status">
+                  <apex:selectOptions value="{!oppStage}"/>
+                </apex:selectList>
+                
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe2}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="section3" columns="6" rendered="{!section3}">
+               
+               <apex:outputLabel value="Operating Group:" style="font-weight:bold;"/>
+                <apex:selectList id="opGroupSelect" value="{!listopGroupSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="opGroupSelectValue" value="{!opGroupList}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Operating Unit:" style="font-weight:bold;"/>
+                <apex:selectList id="OuSelect" value="{!listOUSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="OUSelectValue" value="{!sapOMOUList}"/>
+                </apex:selectList>
+                           
+                <apex:outputLabel value="Geo Region:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Geo Unit:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoUnitSelect" value="{!listGeoUnitSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoUnitSelectValue" value="{!clientGeoUnit}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Offering:" style="font-weight:bold;"/>
+                <apex:selectList id="offSelect" value="{!listOffSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="offSelectValue" value="{!offList}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Reporting Status:" style="font-weight:bold;"/>
+                <apex:selectList value="{!listReportStatusSelected}" multiselect="false" size="1" id="rStatus">
+                  <apex:selectOptions value="{!reportingStatus}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Stage:" style="font-weight:bold;"/>
+                <apex:selectList value="{!listStageSelected}" multiselect="false" size="1" id="status">
+                  <apex:selectOptions value="{!status}"/>
+                </apex:selectList>
+                
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe3}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="section4" columns="6" rendered="{!section4}">
+               
+               <apex:outputLabel value="Operating Group:" style="font-weight:bold;"/>
+                <apex:selectList id="opGroupSelect" value="{!listopGroupSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="opGroupSelectValue" value="{!opGroupList}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Operating Unit:" style="font-weight:bold;"/>
+                <apex:selectList id="OuSelect" value="{!listOUSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="OUSelectValue" value="{!sapOMOUList}"/>
+                </apex:selectList>
+                           
+                <apex:outputLabel value="Geo Region:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Geo Unit:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoUnitSelect" value="{!listGeoUnitSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoUnitSelectValue" value="{!clientGeoUnit}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Offering:" style="font-weight:bold;"/>
+                <apex:selectList id="offSelect" value="{!listOffSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="offSelectValue" value="{!offList}"/>
+                </apex:selectList>
+                
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe4}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+            
+            <apex:pageBlockSection id="section5" columns="6" rendered="{!section5}">
+               
+               <apex:outputLabel value="Operating Group:" style="font-weight:bold;"/>
+                <apex:selectList id="opGroupSelect" value="{!listopGroupSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="opGroupSelectValue" value="{!opGroupList}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Operating Unit:" style="font-weight:bold;"/>
+                <apex:selectList id="OuSelect" value="{!listOUSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="OUSelectValue" value="{!sapOMOUList}"/>
+                </apex:selectList>
+                           
+                <apex:outputLabel value="Geo Region:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Geo Unit:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoUnitSelect" value="{!listGeoUnitSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoUnitSelectValue" value="{!clientGeoUnit}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Offering:" style="font-weight:bold;"/>
+                <apex:selectList id="offSelect" value="{!listOffSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="offSelectValue" value="{!offList}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Reporting Status:" style="font-weight:bold;"/>
+                <apex:selectList value="{!listOppReportStatusSelected }" multiselect="false" size="1" id="rStatus">
+                  <apex:selectOptions value="{!sapOMReportingStatus}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Stage:" style="font-weight:bold;"/>
+                <apex:selectList value="{!listOppStageSelected}" multiselect="false" size="1" id="status">
+                  <apex:selectOptions value="{!oppStage}"/>
+                </apex:selectList>
+                
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe5}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="section6" columns="6" rendered="{!section6}">
+               
+               <apex:outputLabel value="Operating Group:" style="font-weight:bold;"/>
+                <apex:selectList id="opGroupSelect" value="{!listopGroupSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="opGroupSelectValue" value="{!opGroupList}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Operating Unit:" style="font-weight:bold;"/>
+                <apex:selectList id="OuSelect" value="{!listOUSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="OUSelectValue" value="{!sapOMOUList}"/>
+                </apex:selectList>
+                           
+                <apex:outputLabel value="Geo Region:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Geo Unit:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoUnitSelect" value="{!listGeoUnitSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoUnitSelectValue" value="{!clientGeoUnit}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Offering:" style="font-weight:bold;"/>
+                <apex:selectList id="offSelect" value="{!listOffSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="offSelectValue" value="{!offList}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Reporting Status:" style="font-weight:bold;"/>
+                <apex:selectList value="{!listOppReportStatusSelected }" multiselect="false" size="1" id="rStatus">
+                  <apex:selectOptions value="{!sapOMReportingStatus}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Stage:" style="font-weight:bold;"/>
+                <apex:selectList value="{!listOppStageSelected}" multiselect="false" size="1" id="status">
+                  <apex:selectOptions value="{!oppStage}"/>
+                </apex:selectList>
+                
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe6}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+     </apex:pageBlockSection>
+</td>
+  </tr>
+</table>            
+          <!--  <apex:outputPanel id="theFrame1" >
+                   <a href="#" target="_self">
+                        <iframe height="600" marginheight="0" src="{!iframeSource1}" frameborder="0" width="100%" marginwidth="0"></iframe>
+                    </a>                
+            </apex:outputPanel> -->
+ 
+             <apex:outputPanel id="theFrame" >
+              <!--  <apex:iframe src="{!iframeSource}" frameborder="0" width="100%" marginwidth="0"/>
+                   <apex:iframe src="/{!iframeSource.Id}?isdtp=mn" scrolling="true" id="theIframe" />?   -->
+                    <a href="#" target="_self">
+                        <iframe height="600" marginheight="0" src="{!iframeSource}" frameborder="0" width="100%" marginwidth="0"></iframe>
+                    </a>                
+            </apex:outputPanel>
+    </apex:pageblock>
+ </apex:form>
+</apex:page>

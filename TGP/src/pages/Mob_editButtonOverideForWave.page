@@ -1,0 +1,60 @@
+<apex:page standardController="Wave_Planning__c" extensions="Mob_editButtonOverideWaveController">
+<apex:sectionHeader title="Deal Wave Edit" subtitle="{!Wave_Planning__c.name}"/>
+<apex:form id="form1">
+    <apex:pageMessages ></apex:pageMessages>
+    <apex:pageBlock title="Deal Wave Edit"  rendered="{!isFormVisible}">
+    <apex:actionFunction name="doSave" action="{!doSave}"/>
+    <apex:actionFunction name="doCancel" action="{!doCancel}"/>
+        <apex:pageBlockButtons >
+           <!-- <apex:commandButton value="Save" action="{!doSave}" reRender="form1"/> -->
+          <apex:commandButton value="Save" action="{!checkweekend}" oncomplete="weekendcheck('{!isweekend}');" rendered="{!IF(is_WavePlanVersionActive==true && isAddVisible==true && isNA,true,false)}"/> <!-- reRender="form1" -->
+          <apex:commandButton value="Cancel" action="{!doCancel}" immediate="true"/>
+        
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection columns="2" title="Information" collapsible="false" rendered="{!isDealTrackingOn}">
+        <apex:outputField value="{!Wave_Planning__c.Deal_Location__c}"/>
+        <apex:outputLabel value=" "/>
+        <apex:inputField value="{!Wave_Planning__c.Wave_Label__c}"/>
+        <apex:inputField value="{!Wave_Planning__c.GO_Live_Date_del__c}"/>
+        </apex:pageBlockSection>
+        <apex:pageBlockSection columns="3" title="User Assignment">
+        <apex:inputField value="{!Wave_Planning__c.KT_Lead_New__c}"/>
+        <apex:inputField value="{!Wave_Planning__c.Mobilization_KT_Lead_Secondary_New__c}"/>
+        <apex:inputField value="{!Wave_Planning__c.Mobilization_KT_Lead_Secondary_2__c}"/>        
+        <!--<apex:inputField value="{!Wave_Planning__c.Mobilization_Recruitment_Lead_Primary__c}"/>
+        <apex:inputField value="{!Wave_Planning__c.Mobilization_Recruitment_Lead_Secondary__c}"/>-->
+        <apex:inputField value="{!Wave_Planning__c.Mobilization_Technology_Lead_Primary_New__c}"/>
+        <apex:inputField value="{!Wave_Planning__c.Mob_Technology_Lead_Secondary_New__c}"/>
+        <apex:inputField value="{!Wave_Planning__c.Mob_Technology_Lead_Secondary_2__c}"/>        
+        <apex:inputField value="{!Wave_Planning__c.Mobilization_Opex_Lead_Primary_New__c}"/>    
+        <apex:inputField value="{!Wave_Planning__c.Mobilization_Opex_Lead_Secondary_New__c}"/>
+        <apex:inputField value="{!Wave_Planning__c.Mobilization_Opex_Lead_Secondary_2__c}"/>    
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    </apex:form>
+    
+    <script>
+    function weekendcheck(bool)
+    {
+      <!--  alert('IN JSP for Update'); -->
+        if(bool=='false')
+        {
+            doSave();
+        }
+        if(bool=='true')
+        {
+            var option=confirm('The Go-Live Date selected is a weekend. Are you sure you want to continue?');
+            if(option==true)
+            {
+                doSave();
+            }
+             else
+           {
+               doCancel();
+           }
+        }
+        
+        
+    }
+    </script>
+</apex:page>

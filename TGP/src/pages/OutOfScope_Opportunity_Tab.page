@@ -1,0 +1,19 @@
+<apex:page controller="OutOfScopeOpportunity" tabStyle="Opportunity" >
+    <apex:pageBlock Title="Opportunity">
+        <apex:pageBlockSection columns="1" title="Opportunity Details">
+            <apex:pageBlockTable value="{!oppRecordToDisplay}" var="opp" align="Center">
+            <apex:column value="{!opp.SAP_OM_Item_Id__c}" headerValue="Opportunity ID"/>
+            <apex:column headerValue="Opportunity" >
+                <apex:outputLink value="/apex/VFP_TechToolApproval?id={!opp.id}">{!opp.Name}
+                </apex:outputLink>
+            </apex:column>           
+            <apex:column value="{!opp.Account.Name}" headerValue="Client Name"/>
+            <apex:column value="{!opp.StageName}" headerValue="Stage "/>
+            <apex:column value="{!opp.Service_Grp__c }" headerValue="Service Group"/>
+            <apex:column value="{!opp.OperatingGroup__c}" headerValue="Operating Group"/>
+            <apex:column value="{!opp.Geo_Region__c}" headerValue="Geo Region"/>
+            <apex:column value="{!opp.Geo_Unit__c}" headerValue="Geo Unit"/>
+            </apex:pageBlockTable>
+        </apex:pageBlockSection>
+    </apex:pageBlock> 
+</apex:page>

@@ -1,0 +1,299 @@
+<apex:page controller="ExportRAIDToExcelController" contentType="application/vnd.ms-excel#{!dealName.Name}_RAID_{!date1}.xls" cache="true">
+    <apex:outputText value="{!xlsHeader}"/>
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+     xmlns:o="urn:schemas-microsoft-com:office:office"
+     xmlns:x="urn:schemas-microsoft-com:office:excel"
+     xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+     xmlns:html="http://www.w3.org/TR/REC-html40">
+         <Styles>
+            <Style ss:ID="s1">
+                 <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                 <Borders>
+                     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                 </Borders>
+                 <Font ss:Bold="1"/>
+                    <Interior ss:Color="#CAE1FF" ss:Pattern="Solid"/>
+                 <NumberFormat/>
+                 <Protection/>
+            </Style>
+            <Style ss:ID="s2">
+                 <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                 <Borders>
+                     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                 </Borders>
+                 <Interior />
+                 <NumberFormat/>
+                 <Protection/>
+            </Style>
+         </Styles>
+         <Worksheet ss:Name="Risks">
+             <Table x:FullColumns="1" x:FullRows="1">
+             <Column ss:AutoFitWidth="1" ss:Width="50"/>
+             <Column ss:AutoFitWidth="1" ss:Width="50"/>
+             <Column ss:AutoFitWidth="1" ss:Width="50"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="100"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="150"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="180"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="70"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk Ref ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Action Ref ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Decision Ref ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Date Raised</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk Age (days)</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised by Client / Accenture</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised by(person)</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Forum Raised</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Workstream / Area</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >"Raised at" level (Level risk to be raised/discussed at)</Data></Cell>    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk Title</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Description</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk Probability</Data></Cell>    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk Impact</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk Rating</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Mitigating Actions</Data></Cell>  
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Status</Data></Cell>  
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Target Close Date</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk Review Date</Data></Cell>    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Days to Risk Review</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Actual Close Date</Data></Cell>   
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Primary Owner</Data></Cell>   
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Secondary Owner</Data></Cell>
+                </Row>
+                <apex:repeat value="{!listRiskRaidRecords}" var="riskList">
+                     <Row>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Serial_Number__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Action_Reference_ID__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Decision_Reference_ID__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!riskList.Date_Raised__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Risk_Age_days__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Raised_by_Client_Accenture__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Raised_By_person_New__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Forum_Raised__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Workstream_Area__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Raised_at_level__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Title__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Description__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Risk_Probability__c}</Data></Cell>  
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Risk_Impact__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Risk_Rating__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Mitigating_Actions__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Status_Update__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!riskList.Target_Close_Date__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!riskList.Risk_Review_Date__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Days_to_Risk_Review__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!riskList.Actual_Close_Date__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Primary_Owner_New__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Secondary_Owner_New__r.name}</Data></Cell>
+                     </Row>
+                </apex:repeat>
+             </Table>
+         </Worksheet>
+         <Worksheet ss:Name="Issue">
+             <Table x:FullColumns="1" x:FullRows="1">
+             <Column ss:AutoFitWidth="1" ss:Width="50"/>
+             <Column ss:AutoFitWidth="1" ss:Width="50"/>
+             <Column ss:AutoFitWidth="1" ss:Width="50"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="100"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="180"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="180"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="180"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="70"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Issue Ref ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Action Ref ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Decision Ref ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Date Raised</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Issue Age (days)</Data></Cell>    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised by Client / Accenture</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised by(person)</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Forum Raised</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Workstream / Area</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >"Raised at" level (Level issue to be raised/discussed at)</Data></Cell>    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Issue Title</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Description</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Issue Severity</Data></Cell>  
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Updates</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Status</Data></Cell>  
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Target Close Date</Data></Cell>   
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Issue Due In (days)</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Actual Close Date</Data></Cell>   
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Issue Closure Notes/Comments</Data></Cell>        
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Primary Owner</Data></Cell>   
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Secondary Owner</Data></Cell>
+                </Row>
+                <apex:repeat value="{!listIssueRaidRecords}" var="issueList">
+                     <Row>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Serial_Number__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Action_Reference_ID__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Decision_Reference_ID__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!issueList.Date_Raised__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Issue_Age_days__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Raised_by_Client_Accenture__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Raised_By_person_New__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Forum_Raised__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Workstream_Area__c}</Data></Cell>                       
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Raised_at_level__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Title__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Description__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Issue_Severity__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Updates__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Status_Update__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!issueList.Target_Close_Date__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Issue_Due_In_days__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!issueList.Actual_Close_Date__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Issue_Closure_Notes_Comments__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Primary_Owner_New__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Secondary_Owner_New__r.name}</Data></Cell> 
+                     </Row>
+                </apex:repeat>
+             </Table>
+         </Worksheet>
+         <Worksheet ss:Name="Actions">
+             <Table x:FullColumns="1" x:FullRows="1">
+             <Column ss:AutoFitWidth="1" ss:Width="50"/>
+             <Column ss:AutoFitWidth="1" ss:Width="50"/>
+             <Column ss:AutoFitWidth="1" ss:Width="50"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="100"/>
+             <Column ss:Width="180"/>
+             <Column ss:Width="180"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="180"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Action Ref ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Issue Ref ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk Ref ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Date Raised</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Action Age (days)</Data></Cell>   
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised by Client / Accenture</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised by(person)</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Forum Raised</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Workstream / Area</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >"Raised at" level (Level action to be raised/discussed at)</Data></Cell>    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Description</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Updates</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Status</Data></Cell>  
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Target Close Date</Data></Cell>   
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Action Due In (days)</Data></Cell>    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Actual Closed Date</Data></Cell>   
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Action Closure Notes/Comments</Data></Cell>        
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Primary Owner</Data></Cell>   
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Secondary Owner</Data></Cell>
+                </Row>
+                <apex:repeat value="{!listActionRaidRecords}" var="actionList">
+                     <Row>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Serial_Number__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Issue_Ref_ID__r.Serial_Number__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Risk_Ref_ID__r.Serial_Number__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!actionList.Date_Raised__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Action_Age_days__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Raised_by_Client_Accenture__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Raised_By_person_New__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Forum_Raised__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Workstream_Area__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Raised_at_level__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Description__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Updates__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Status_Update__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!actionList.Target_Close_Date__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Action_Due_In_days__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!actionList.Actual_Closed_Date__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Action_Closure_Notes_Comments__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Primary_Owner_New__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Secondary_Owner_New__r.name}</Data></Cell>
+                     </Row>
+                </apex:repeat>
+             </Table>
+         </Worksheet>
+         <Worksheet ss:Name="Decisions">
+             <Table x:FullColumns="1" x:FullRows="1">
+             <Column ss:Width="50"/>
+             <Column ss:Width="50"/>
+             <Column ss:Width="50"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="100"/>
+             <Column ss:Width="180"/>
+             <Column ss:Width="180"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Decision Ref ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Issue Ref ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk Ref ID</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Date Raised</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Forum Raised</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Target Close Date</Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Actual Close Date</Data></Cell>     
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Workstream/Area</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >"Raised at" level (Level decision to be raised/discussed at)</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Decision Description</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Additional Notes/Comments</Data></Cell>
+                </Row>
+                <apex:repeat value="{!listDecisionRaidRecords}" var="decisionList">
+                     <Row>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Serial_Number__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Issue_Ref_ID__r.Serial_Number__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Risk_Ref_ID__r.Serial_Number__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!decisionList.Date_Raised__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Forum_Raised__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!decisionList.Target_Close_Date__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!decisionList.Actual_Close_Date__c }"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Workstream_Area__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Raised_at_level__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Description__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Additional_Notes_Comments__c}</Data></Cell>
+ 
+                     </Row>
+                </apex:repeat>
+             </Table>
+         </Worksheet>
+    </Workbook>
+</apex:page>

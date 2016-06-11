@@ -1,0 +1,58 @@
+<!--
+Author : Sushmanth Hasti
+Story  : Story-0111/COM_051  
+Description : Create / maintain Service component master.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Service_Component__c" extensions="ServiceComponentMasterController">
+<apex:sectionHeader title="Service Components Master"/>
+  <apex:form >
+  <apex:pageMessages />
+  <apex:pageBlock >
+  <apex:pageBlockButtons location="top" >
+  <apex:commandButton value="Save" action="{!saveAccProfileDetails}" />               
+                <apex:commandButton action="{!Cancel}" value="Cancel"/>           
+  </apex:pageBlockButtons>
+  <apex:pageBlockTable value="{!newServiceComponent}" var="ServiceComponent" > 
+
+  <apex:column headerValue="Offering Name" id="offering">
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                            <apex:selectList size="1" value="{!Offering}">
+                                <apex:actionSupport event="onchange" rerender="serviceList"/>
+                                <apex:selectOptions value="{!Offerings}"></apex:selectOptions>
+                            </apex:selectList>
+                          </apex:outputPanel>
+                        </apex:column>
+                        <apex:column headerValue="Service Name"  id="service">
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                                <apex:outputPanel styleClass="requiredBlock"/>
+                                <apex:selectList size="1" value="{!Service}" id="serviceList">                            
+                                    <apex:selectOptions value="{!Services}"></apex:selectOptions>
+                                </apex:selectList>
+                            </apex:outputPanel>             
+                        </apex:column>
+                         <apex:column headerValue="Service Component Name">
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                            <apex:inputField value="{!ServiceComponent.Name}" />
+                            </apex:outputPanel>
+                        </apex:column>
+                        <apex:column headerValue="Service Component Description">
+                            <apex:inputField value="{!ServiceComponent.Service_Component_Description__c}"/>
+                            
+                        </apex:column>
+                        
+                        <apex:column headerValue="Active">
+                            <apex:inputField value="{!ServiceComponent.Active__c}"/>
+                            </apex:column>
+                        </apex:pageBlockTable>
+                        </apex:pageBlock>
+      
+  </apex:form>
+</apex:page>

@@ -1,0 +1,630 @@
+<apex:page controller="VFC_Benchmark" sideBar="false" tabStyle="BenchmarkPage__tab">
+    <apex:pageMessages rendered="{!IF(showError,true,false)}"></apex:pageMessages>
+    <style type="text/css">
+        .myHeader{
+        background-color : #0099CC !important;
+        height: 13px !important;
+        border-top-left-radius: 5px !important; 
+        border-top-right-radius: 5px !important;
+        font-weight:bold !important;
+        color: white !important;
+        font-size: 11px !important;
+        }
+    </style>   
+     
+    <style type="text/css">
+    .pbTitle {
+        white-space: nowrap;
+    }
+    </style>
+    <script type="text/javascript">
+         function searchOpportunities() { 
+             
+             var clientLookupId= document.getElementById("{!$Component.inputForm.block1.pageblockSection.blockSection1.clientId}").value;
+             document.getElementById("{!$Component.inputForm.clientIdHidden}").value = clientLookupId;
+             
+             var opprSel= document.getElementById("{!$Component.inputForm.block1.pageblockSection.blockSection2.OpportunityList}");
+             for (i = opprSel.length - 1; i>=1; i--) {
+                 opprSel.remove(i);
+             }
+             searchOpportunity();
+         }
+         
+         function searchOffer()
+         {
+           searchOffering();
+           
+         }
+         /*function selectMultiSingleChange(domobj) { 
+             if(domobj.options[domobj.selectedIndex].value=='Multiple'){
+                 document.getElementById("{!$Component.inputForm.advancedSearchBlock.pageblockSection2.OfferingsSection.GeoRegionList}").value='None';
+                 document.getElementById("{!$Component.inputForm.advancedSearchBlock.pageblockSection2.OfferingsSection.GeoRegionList}").disabled=true;    
+             }else{
+                 document.getElementById("{!$Component.inputForm.advancedSearchBlock.pageblockSection2.OfferingsSection.GeoRegionList}").disabled=false;
+             }
+         }*/
+         function RemoveElem(){
+             document.getElementById("results").style.display="none";
+             document.getElementById("resultsRequested").style.display="block";
+         }
+     </script> 
+         
+
+    <apex:form id="inputForm">
+        <apex:inputHidden value="{!clientIdHiddenValue}" id="clientIdHidden"/>
+        <apex:actionFunction name="searchOpportunity" action="{!searchOpportunities}" rerender="pageblockSection">
+        </apex:actionFunction>
+        <apex:actionFunction name="searchOffering" action="{!searchOffering}" rerender="pageblockSection2"></apex:actionFunction>
+        
+        <apex:pageBlock id="block1">                     
+            <apex:pageBlockSection title="Identify Deal to Benchmark" collapsible="false" id="pageblockSection">                
+                <apex:pageBlockSectionItem id="blockSection1">
+                    <apex:outputLabel value="Client Name:"></apex:outputLabel>
+                        <apex:selectList Id="clientId" value="{!selectedClientName}" onchange="searchOpportunities();" multiselect="false" size="1" style="width:170px;height:20px">
+                            <apex:selectOptions value="{!FirstBunchOfClientNames}"/>
+                        </apex:selectList>                 
+                </apex:pageBlockSectionItem>                
+                <apex:pageBlockSectionItem id="blockSection2">
+                    <apex:outputLabel value="Opportunity Name:"> </apex:outputLabel>
+                    <apex:selectList Id="OpportunityList" value="{!selectedOpportunity}" multiselect="false" size="1" style="width:170px;height:20px">
+                        <apex:selectOptions value="{!ListOfOpportunities}"/>
+                    </apex:selectList>                
+                </apex:pageBlockSectionItem>                
+                <apex:panelGrid columns="2" style="float: right;">
+                        <apex:commandButton value="Load" action="{!searchResults}" />
+                        <apex:commandButton value="Reset" action="{!resetPage}" />
+                </apex:panelGrid>                
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Opportunity Data" collapsible="false" id="pageblockSection1" rendered="{!isSearchVisible}" columns="">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Client Geo Area Name</apex:outputLabel><apex:outputText value="{!opportunityDataWrapperDisplay.clientGeoAreaName}"></apex:outputText> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Offerings</apex:outputLabel><apex:outputText value="{!opportunityDataWrapperDisplay.Offerings}"></apex:outputText> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Operating Group Name</apex:outputLabel><apex:outputText value="{!opportunityDataWrapperDisplay.OperatingGroupName}"></apex:outputText> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >FTE (Range)</apex:outputLabel><apex:outputText value="{!opportunityDataWrapperDisplay.FTE}"></apex:outputText> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Reporting Status</apex:outputLabel><apex:outputText value="{!opportunityDataWrapperDisplay.reportingStatus}"></apex:outputText> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Location Definition</apex:outputLabel><apex:outputText value="{!opportunityDataWrapperDisplay.DeliveryLocation}"></apex:outputText> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >BPO Net Revenue (Range)</apex:outputLabel><apex:outputText value="{!opportunityDataWrapperDisplay.BPONetRevenue}"></apex:outputText> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Count of language</apex:outputLabel><apex:outputText value="{!opportunityDataWrapperDisplay.Languages}"></apex:outputText> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Multiple or Single Offering</apex:outputLabel><apex:outputText value="{!opportunityDataWrapperDisplay.MultipleSingleOffering}"></apex:outputText> 
+                </apex:pageBlockSectionItem>
+                
+                <!--<apex:pageBlockSectionItem >
+                     <apex:outputLabel >Service</apex:outputLabel><apex:outputText value="{!opportunityDataWrapperDisplay.service}"></apex:outputText>
+                  </apex:pageBlockSectionItem>-->
+                
+                <!--<apex:outputField value="{!benchmarkRecord.Opportunity__r.Client_Geo_Area__r.Name}"/>
+                
+                <apex:outputPanel style="padding-left : 185px;">
+              
+                <apex:outputLabel style="color:#4a4a56; font-weight: bold; font-size:90%;"  value="Offerings"> </apex:outputLabel>             
+                <apex:outputText value="{!IF(benchmarkRecord.Multi_Single_Offering__c == 'Multiple','  All',benchmarkRecord.Offering_Master__r.Name)}"/>                
+                
+                </apex:outputPanel>
+                
+                <apex:outputField value="{!benchmarkRecord.Opportunity__r.Operating_Group__r.name}"/>
+                <apex:outputField value="{!benchmarkRecord.FTE_Range__c}"/>
+                <apex:outputField value="{!benchmarkRecord.Opportunity__r.Activity__c}"/>
+                <apex:outputField value="{!benchmarkRecord.Delivery_Location__c}"/>
+                <apex:outputField value="{!benchmarkRecord.BPO_Net_Revenue_Range_new__c}"/>
+                <apex:outputField value="{!benchmarkRecord.no_of_languages__c}"/>  
+                <apex:outputField value="{!benchmarkRecord.Multi_Single_Offering__c}"/> -->   
+                              
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+        <apex:pageBlock id="advancedSearchBlock" rendered="{!isAdvanceSearchVisible}">                     
+            <apex:pageBlockSection title="Advanced Search Criteria" collapsible="false" id="pageblockSection2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Geo Region:" ></apex:outputLabel>
+                    <apex:selectList Id="GeoRegionList" value="{!selectedGeoRegion}" multiselect="false" size="1" style="width:170px;height:20px;background-Color:White">
+                        <apex:selectOptions value="{!ListOfGeoRegion}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem id="OfferingsSection">
+                    <apex:outputLabel value="Offerings:" ></apex:outputLabel>
+                    <apex:selectList Id="GeoRegionList" value="{!selectedOffering}" multiselect="false" size="1" onchange="searchOffer();" style="width:170px;height:20px;background-Color:White">
+                        <apex:selectOptions value="{!ListOfOffering}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Operating Group:" ></apex:outputLabel>
+                    <apex:selectList Id="operatingGroupList" value="{!selectedOperatingGroup}" multiselect="false" size="1" style="width:170px;height:20px;background-Color:White">
+                        <apex:selectOptions value="{!ListOfOperatingGroup}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="Service:"></apex:outputLabel>
+                  <c:MultiselectPicklist leftLabel=" " leftOption="{!OffServiceArr}" rightLabel=" " rightOption="{!OffServiceArrSel}" Size="4" width="150px" disabledComp="{!disabSerSearchFlds}"  />    
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Reporting Status:" ></apex:outputLabel>
+                    <apex:selectList Id="reportingStatusList" value="{!selectedReportingStatus}" multiselect="false" size="1" style="width:170px;height:20px;background-Color:White">
+                        <apex:selectOptions value="{!ListOfReportingStatus}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                 <apex:outputLabel value="Technology Tool:"></apex:outputLabel>
+                 <c:MultiselectPicklist leftLabel=" " leftOption="{!OffTechToolArr}" rightLabel=" " rightOption="{!OffTechToolArrSel}" Size="4" width="150px" disabledComp="{!disabSerSearchFlds}"  />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="BPO Net Revenue(Range):" ></apex:outputLabel>
+                     <apex:selectList Id="netRevenueRange" value="{!selectedBPONetRevenueRange}" multiselect="false" size="1" style="width:170px;height:20px;background-Color:White">
+                        <apex:selectOptions value="{!ListOfBPONetRevenueRange}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                  <apex:outputLabel value="BSS:"></apex:outputLabel>
+                  <c:MultiselectPicklist leftLabel=" " leftOption="{!OffBSSArr}" rightLabel=" " rightOption="{!OffBSSArrSel}" Size="4" width="150px" disabledComp="{!disabSerSearchFlds}" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Multiple or Single Offering:" ></apex:outputLabel>
+                     <apex:selectList Id="multiSingleOffering" value="{!selectedMultiSingleOffering}" multiselect="false" size="1" style="width:170px;height:20px;background-Color:White">
+                        <apex:selectOptions value="{!ListOfMultiSingleOffering}"/>
+                    </apex:selectList> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="FTE Range:" ></apex:outputLabel>
+                    <apex:selectList Id="FTERangeList" value="{!selectedFteRange}" multiselect="false" size="1" style="width:170px;height:20px;background-Color:White">
+                        <apex:selectOptions value="{!ListOfFTERange}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                
+                <apex:pageBlockSectionItem >
+                   <apex:outputLabel value="Location Definition:" ></apex:outputLabel>
+                   <apex:selectList Id="reportingStatusList" value="{!selectedDeliveryLocation}" multiselect="false" size="1" style="width:170px;height:20px;background-Color:White">
+                        <apex:selectOptions value="{!ListOfDeliveryLocation}"/>
+                    </apex:selectList>               
+                </apex:pageBlockSectionItem> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                
+                
+                
+                
+                <apex:pageBlockSectionItem >  
+                    <apex:outputLabel value="Count of language:" ></apex:outputLabel>
+                     <apex:selectList Id="noOfLanguage" value="{!selectedNoOfLanguage}" multiselect="false" size="1" style="width:170px;height:20px;background-Color:White">
+                        <apex:selectOptions value="{!ListOfNoOfLanguages}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem> 
+                
+                <apex:panelGrid style="float: right;" columns="3">
+                    <apex:commandButton value="Search" action="{!searchAdvanceResult}" reRender="advancedBlock" onClick="RemoveElem();" />
+                    <apex:commandButton action="{!exportAll}" value="Export"/>
+                    <apex:commandButton action="{!exportLocation}" value="Export Service Report"/>
+                </apex:panelGrid>                
+            </apex:pageBlockSection>
+       </apex:pageBlock>   
+       
+       <apex:pageBlock id="advancedBlock">  
+        <style type="text/css">
+            .tftable {font-size:12px;color:#333333;font-size:12px;width:100%;border-color: White;border-collapse: collapse;}
+            .tftable th {font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;}
+            .tftable tr {background-color:White; border-style: solid;border-color: #E8E8E8 ;;}
+            .tftable td {font-size:12px;padding: 8px;border-style: solid;border-color: #E8E8E8;}
+            .tftable tr:hover {background-color:#ffffff;}     
+            .tdwidth {white-space: nowrap;}
+        </style>
+        
+        <div style="width:1400px;overflow:scroll;" id = "results">
+        <apex:pageMessages rendered="{!IF(showError,false,true)}"  />
+        <table  class="tftable" border="1">
+        <tr>        
+            <th> </th>
+            <th>Client<br/>Name</th>
+            <th>Opportunity<br/>Name </th>
+            <th>Opportunity<br/>Solution Lead</th>
+            <th> Geo Region </th>
+            <th>Operating <br/> Group</th>
+            <th>Reporting <br/> Status</th>
+            <th> BPO Net<br/>Revenue</th>
+            <th> Pricing<br/>Structure</th>
+           <!-- <th> CI%</th>-->
+           <!-- <th> Mobilization <br/> Contingency% </th>-->
+           <!-- <th> Average<br/> Run <br/> Contingency% </th>-->
+           <!-- <th> Transformation<br/> Costs<br/> (Consulting) </th>-->
+            <th> Contract<br/>Duration<br/>(Mob Duration in months)</th>
+            <th> Contract<br/>Duration<br/>(MOB + RUN in months)</th>
+            <th> Number of <br/>locations <br/>where scope is <br/>delivered from</th>
+            <th> Total Baseline<br/>SDO FTEs</th> 
+            <th>Onshore Baseline<br/>SDO FTEs + Nearshore<br/>Baseline SDO FTEs </th>
+            <th> Offshore <br/>Baseline <br/>SDO FTEs</th>
+            <th> Total cost<br/>without<br/>contingency</th> 
+            <th> SDO<br/>Total Cost</th>
+            <th> Technology<br/>Tools Total <br/>Costs</th>  
+            <th> Voice and<br/>Data Total <br/>Costs  </th> 
+            <th> Mobilization<br/>Total <br/>Cost </th>  
+            <th> Service Management<br/>Total <br/>Costs  </th>   
+            <th> Support<br/>Center Total <br/>Cost  </th> 
+            <th> Electronic Data <br/> Management <br/> Total Cost</th>  
+            <th> Command<br/>center Total <br/>Costs </th>      
+            <th> OADM Total <br/>Costs  </th>    
+            <th> CFM Total <br/>Costs </th>    
+            <th> CM Total <br/>Costs </th>   
+            <th> QAD Total <br/>Costs  </th>               
+            <th> In Scope <br/>Offerings  </th>
+            <th> Offering <br/>Level Data  </th>
+            <th> In Scope <br/> Service </th>
+            <th> Average total<br/>payroll costs / FTE</th>
+            <th> Average total<br/>payroll costs /off-shore FTEs</th>
+            <th> Average<br/> total payroll<br/> costs / onshore<br/>+nearshore FTEs</th>
+            <th> Pyramid<br/>Richness Year1  </th>
+            <th> Overall<br/>Productivity<br/>Improvement %</th>
+            <!--<th> Languages<br/>(in scope)</th> -->
+            <th> Baseline FTE</th>
+            <th>Baseline FTE <br/> Onshore + Nearshore</th> 
+            <th>Baseline FTE <br/> Offshore</th>
+            <th>Number of <br/>rebadged <br/>resources from <br/>client</th>                    
+         </tr>
+         <tr>
+             <td></td>
+             <td colspan="28" align="center" style="background-color:#B87333; color:#fff;">
+             <b>Opportunity Level Data</b>
+             </td>
+             <td colspan="11" align="center" style="background-color:#8BB381; color:#fff;">
+             <b>Offering Level Data</b>
+             </td>
+         </tr>
+         <apex:repeat value="{!benchmarkRecordWrapperListToDisplay}" var="averageRecords" >
+             
+             <tr>
+                <td> 
+                    {!averageRecords.Name}
+                </td>
+                  
+                <td>
+                    <apex:outputLink value="/{!averageRecords.clientNameId}" id="theClientLink" style="width:90%" target="_blank">{!averageRecords.clientName}</apex:outputLink>
+                </td>
+                             
+                <td>
+                    <apex:outputLink value="/{!averageRecords.opportunityId}" id="theOpportunityLink" style="width:90%" target="_blank">{!averageRecords.opportunityName}</apex:outputLink>
+                </td>
+                 
+                <td>
+                    <apex:outputLink value="/{!averageRecords.OSLId}" id="theOSLLink" style="width:90%" target="_blank">{!averageRecords.OSLName}</apex:outputLink>
+                </td>
+                 
+                <td>
+                    <apex:outputText value="{!averageRecords.clientGeoArea}" style="width:90%" />
+                </td>
+                 
+                <td>
+                    <apex:outputText value="{!averageRecords.operatingGroup}" style="width:90%" />
+                </td>
+                 
+                <td>
+                    <apex:outputText value="{!averageRecords.Activity}" style="width:90%" />
+                </td>
+                 
+                <td>
+                    <div class="tdwidth">
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TCV),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TCV== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TCV== null), true, false)}"><apex:param value="{!averageRecords.TCV}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TCV}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TCV!= null),true,false)}"/>
+                    </div>
+                </td>
+                 
+                <td>
+                    <apex:outputText value="{!averageRecords.pricingType}" style="width:90%" />
+                </td>
+                 
+                <!--<td>
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.ciPercentage),'',Text(ROUND(averageRecords.ciPercentage,2))+ '%')}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.ciPercentage == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.ciPercentage}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.ciPercentage != null),true,false)}"/>
+                </td>-->
+                 
+               <!-- <td>
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.MobContigency),'',Text(ROUND(averageRecords.MobContigency,2))+ '%')}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.MobContigency == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.MobContigency }%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.MobContigency != null),true,false)}"/>
+                </td>-->
+                 
+                <!--<td>
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.avgRunContigency),'',Text(ROUND(averageRecords.avgRunContigency,2))+ '%')}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.avgRunContigency == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.avgRunContigency}%" style="width:" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.avgRunContigency != null),true,false)}"/>
+                </td>-->
+                 
+               <!-- <td> 
+                    <div class="tdwidth">
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.transCostContigency),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.transCostContigency== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.transCostContigency== null), true, false)}"><apex:param value="{!averageRecords.transCostContigency}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.transCostContigency}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.transCostContigency!= null),true,false)}"/>
+                    </div>
+                </td>-->
+                 
+                <td>
+                    <apex:outputText value="{0, number, ###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.contractDurationMob== null), true, false)}"><apex:param value="{!averageRecords.contractDurationMob}"/></apex:outputText>
+                    <apex:outputText value="{0, number, ###}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.contractDurationMob!= null),true,false)}"><apex:param value="{!averageRecords.contractDurationMob}"/></apex:outputText>
+                </td>
+                 
+                <td>
+                    <apex:outputText value="{0, number, ###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.contractDuration== null), true, false)}"><apex:param value="{!averageRecords.contractDuration}"/></apex:outputText>
+                    <apex:outputText value="{0, number, ###}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.contractDuration!= null),true,false)}"><apex:param value="{!averageRecords.contractDuration}"/></apex:outputText>
+                </td>
+                 
+                <td>
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.NoOfLocation ),'',ROUND(averageRecords.NoOfLocation ,2))}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.NoOfLocation == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.NoOfLocation }%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.NoOfLocation != null),true,false)}"/>
+                </td>
+                
+                <td>      
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.totalBaselineSDOFTEs),'',ROUND(averageRecords.totalBaselineSDOFTEs,2))}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.totalBaselineSDOFTEs == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.totalBaselineSDOFTEs}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.totalBaselineSDOFTEs != null),true,false)}"/>
+                </td> 
+                 
+                 <td>      
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.onshoreNearshoreBaselineSDOFTE ),'',ROUND(averageRecords.onshoreNearshoreBaselineSDOFTE ,2))}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.onshoreNearshoreBaselineSDOFTE == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.onshoreNearshoreBaselineSDOFTE }%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.onshoreNearshoreBaselineSDOFTE != null),true,false)}"/>
+                </td>
+                 
+               <td>      
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.offshoreBaselineSDOFTE ),'',ROUND(averageRecords.offshoreBaselineSDOFTE ,2))}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.offshoreBaselineSDOFTE == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.offshoreBaselineSDOFTE }%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.offshoreBaselineSDOFTE != null),true,false)}"/>
+                </td>
+                 
+                <td>     
+                    <div class="tdwidth">
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TotalCostWithoutContingency),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalCostWithoutContingency== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalCostWithoutContingency== null), true, false)}"><apex:param value="{!averageRecords.TotalCostWithoutContingency}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TotalCostWithoutContingency}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TotalCostWithoutContingency != null),true,false)}"/>
+                    </div>
+                </td> 
+                 
+               <td>  <div class="tdwidth">   
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.sdoTotalCost),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.sdoTotalCost== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.sdoTotalCost== null), true, false)}"><apex:param value="{!averageRecords.sdoTotalCost}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.sdoTotalCost }%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.sdoTotalCost != null),true,false)}"/>
+                    </div>
+                </td>
+                  
+                 
+                <td>           
+                    <div class="tdwidth">
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TotalTechToolCost),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalTechToolCost== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalTechToolCost== null), true, false)}"><apex:param value="{!averageRecords.TotalTechToolCost}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TotalTechToolCost}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TotalTechToolCost!= null),true,false)}"/>
+                    </div>
+                </td> 
+                 
+                <td>        
+                    <div class="tdwidth">   
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TotalVDCost),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalVDCost== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalVDCost== null), true, false)}"><apex:param value="{!averageRecords.TotalVDCost}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TotalVDCost}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TotalVDCost != null),true,false)}"/>
+                    </div>
+                </td> 
+                 
+                <td>  
+                    <div class="tdwidth">       
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TotalMOBCost),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalMOBCost== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalMOBCost== null), true, false)}"><apex:param value="{!averageRecords.TotalMOBCost}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TotalMOBCost}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TotalMOBCost != null),true,false)}"/>
+                    </div>
+                </td> 
+                 
+                <td>
+                    <div class="tdwidth">          
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TotalSerManagCost),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalSerManagCost== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalSerManagCost== null), true, false)}"><apex:param value="{!averageRecords.TotalSerManagCost}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TotalSerManagCost}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TotalSerManagCost != null),true,false)}"/>
+                    </div>
+                </td> 
+                 
+                <td>    
+                    <div class="tdwidth">        
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TotalSupCentreCost),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalSupCentreCost== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalSupCentreCost== null), true, false)}"><apex:param value="{!averageRecords.TotalSupCentreCost}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TotalSupCentreCost}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TotalSupCentreCost != null),true,false)}"/>
+                    </div>
+                </td> 
+                 
+                <td>    
+                    <div class="tdwidth">      
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TotalEDMCost),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalEDMCost== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalEDMCost== null), true, false)}"><apex:param value="{!averageRecords.TotalEDMCost}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TotalEDMCost}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TotalEDMCost != null),true,false)}"/>
+                    </div>
+                </td> 
+                 
+                <td>       
+                    <div class="tdwidth">     
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TotalComCentreCost),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalComCentreCost== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalComCentreCost== null), true, false)}"><apex:param value="{!averageRecords.TotalComCentreCost}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TotalComCentreCost}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TotalComCentreCost != null),true,false)}"/>
+                    </div>
+                </td> 
+                 
+                <td>
+                    <div class="tdwidth">            
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TotalQADMCost),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalQADMCost== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalQADMCost== null), true, false)}"><apex:param value="{!averageRecords.TotalQADMCost}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TotalQADMCost}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TotalQADMCost != null),true,false)}"/>
+                    </div>
+                </td> 
+                 
+                <td>    
+                    <div class="tdwidth">       
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TotalCFMCost),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalCFMCost== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalCFMCost== null), true, false)}"><apex:param value="{!averageRecords.TotalCFMCost}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TotalCFMCost}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TotalCFMCost != null),true,false)}"/>
+                    </div>
+                </td> 
+                 
+                <td>           
+                    <div class="tdwidth">
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TotalCMCost),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalCMCost== null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalCMCost== null), true, false)}"><apex:param value="{!averageRecords.TotalCMCost}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TotalCMCost}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TotalCMCost != null),true,false)}"/>
+                    </div>
+                </td>
+                 
+                <td> 
+                    <div class="tdwidth">          
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.TotalQADCost),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalQADCost == null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.TotalQADCost == null), true, false)}"><apex:param value="{!averageRecords.TotalQADCost}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.TotalQADCost}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.TotalQADCost != null),true,false)}"/>
+                    </div>
+                </td>
+                 <td>           
+                    <apex:outputText value="{!averageRecords.InScopeOfferings}"/>
+                </td>
+                <td>           
+                    <apex:outputText value="{!averageRecords.offLevelData}"/>
+                </td>
+                <td>
+                   <apex:outputText value="{!averageRecords.inScopeService}"/>
+                </td>
+                <td>         
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.averageTotalPayrollCostsFTE),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.averageTotalPayrollCostsFTE == null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.averageTotalPayrollCostsFTE == null), true, false)}"><apex:param value="{!averageRecords.averageTotalPayrollCostsFTE}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.averageTotalPayrollCostsFTE}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.averageTotalPayrollCostsFTE != null),true,false)}"/>
+                </td>
+                 
+                <td>         
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.averageTotalPayrollCostsOffshoreFTE),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.averageTotalPayrollCostsOffshoreFTE == null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.averageTotalPayrollCostsOffshoreFTE == null), true, false)}"><apex:param value="{!averageRecords.averageTotalPayrollCostsOffshoreFTE}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.averageTotalPayrollCostsOffshoreFTE }%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.averageTotalPayrollCostsOffshoreFTE != null),true,false)}"/>
+                </td>
+                
+                <td>         
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.averageTotalPayrollCostsOnshoreNearshoreFTE),'','$')}" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.averageTotalPayrollCostsOnshoreNearshoreFTE == null), true, false)}"/>
+                    <apex:outputText value="{0, number, #,###,###}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.averageTotalPayrollCostsOnshoreNearshoreFTE == null), true, false)}"><apex:param value="{!averageRecords.averageTotalPayrollCostsOnshoreNearshoreFTE}"/></apex:outputText>
+                    <apex:outputText value="{!averageRecords.averageTotalPayrollCostsOnshoreNearshoreFTE}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.averageTotalPayrollCostsOnshoreNearshoreFTE != null),true,false)}"/>
+                </td>
+                 
+                <td>          
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.pyramidRichnessYear1),'',ROUND(averageRecords.pyramidRichnessYear1,2))}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.pyramidRichnessYear1 == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.pyramidRichnessYear1}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.pyramidRichnessYear1 != null),true,false)}"/>
+                </td> 
+                 
+                <td>            
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.overallProductivityImprovementPercentage),'',Text(ROUND(averageRecords.overallProductivityImprovementPercentage,2))+ '%')}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.overallProductivityImprovementPercentage == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.overallProductivityImprovementPercentage}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.overallProductivityImprovementPercentage != null),true,false)}"/>
+                </td> 
+                 
+                <!--<td>             
+                    <apex:outputText value="{!averageRecords.LanguagesInScope}" style="width:90%"/>
+                </td> -->
+                 
+                <td>      
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.baselineFTEPrimaryOffering),'',ROUND(averageRecords.baselineFTEPrimaryOffering,2))}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.baselineFTEPrimaryOffering == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.baselineFTEPrimaryOffering}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.baselineFTEPrimaryOffering != null),true,false)}"/>
+                </td> 
+                 
+                 <td>      
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.baselineFTEPrimaryOfferingOnNearshore),'',ROUND(averageRecords.baselineFTEPrimaryOfferingOnNearshore,2))}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.baselineFTEPrimaryOfferingOnNearshore == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.baselineFTEPrimaryOfferingOnNearshore}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.baselineFTEPrimaryOfferingOnNearshore != null),true,false)}"/>
+                </td>
+                 
+               <td>      
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.baselineFTEPrimaryOfferingOffshore),'',ROUND(averageRecords.baselineFTEPrimaryOfferingOffshore,2))}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.baselineFTEPrimaryOfferingOffshore == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.baselineFTEPrimaryOfferingOffshore}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.baselineFTEPrimaryOfferingOffshore != null),true,false)}"/>
+                </td>
+                <td>            
+                    <apex:outputText value="{!IF(ISNULL(averageRecords.noOfRebadgedResources),'',ROUND(averageRecords.noOfRebadgedResources,2))}" style="width:90%" rendered="{!IF ((averageRecords.Name != 'Your Deal Compare to Average' || averageRecords.noOfRebadgedResources == null), true, false)}"/>
+                    <apex:outputText value="{!averageRecords.noOfRebadgedResources}%" style="width:90%" rendered="{!IF ((averageRecords.Name = 'Your Deal Compare to Average' && averageRecords.noOfRebadgedResources != null),true,false)}"/>
+                </td>
+            </tr>
+            
+        </apex:repeat>
+    </table>
+    </div>
+    <!----********************************************************************************----->
+    <div style="width:1400px;overflow:scroll;display:none" id = "resultsRequested">
+        <table  class="tftable" border="1">
+        <tr>        
+            <th> </th>
+            <th>Client<br/>Name</th>
+            <th>Opportunity<br/>Name </th>
+            <th>Opportunity<br/>Solution Lead</th>
+            <th> Geo Region </th>
+            <th>Operating <br/> Group</th>
+            <th>Reporting <br/> Status</th>
+            <th> BPO Net<br/>Revenue</th>
+            <th> Pricing<br/>Structure</th>
+            <!--<th> CI%</th>-->
+            <!--<th> Mobilization <br/> Contingency% </th>-->
+            <!--<th> Average<br/> Run <br/> Contingency% </th>-->
+            <!--<th> Transformation<br/> Costs<br/> (Consulting) </th>-->
+            <th> Contract<br/>Duration<br/>(Mob Duration in months)</th>
+            <th> Contract<br/>Duration<br/>(MOB + RUN in months)</th>
+            <th> Number of <br/>locations <br/>where scope is <br/>delivered from</th>
+            <th> Total Baseline<br/>SDO FTEs</th> 
+            <th>Onshore Baseline<br/>SDO FTEs + Nearshore<br/>Baseline SDO FTEs </th>
+            <th> Offshore <br/>Baseline <br/>SDO FTEs</th>
+            <th> Total cost<br/>without<br/>contingency</th> 
+            <th> SDO<br/>Total Cost</th>
+            <th> Technology<br/>Tools Total <br/>Costs</th>  
+            <th> Voice and<br/>Data Total <br/>Costs  </th> 
+            <th> Mobilization<br/>Total <br/>Cost </th>  
+            <th> Service Management<br/>Total <br/>Costs  </th>   
+            <th> Support<br/>Center Total <br/>Cost  </th> 
+            <th> Electronic Data <br/> Management <br/> Total Cost</th>  
+            <th> Command<br/>center Total <br/>Costs </th>      
+            <th> OADM Total <br/>Costs  </th>    
+            <th> CFM Total <br/>Costs </th>    
+            <th> CM Total <br/>Costs </th>   
+            <th> QAD Total <br/>Costs  </th>               
+            <th> In Scope <br/>Offerings  </th>
+            <th> Offering <br/>Level Data  </th>
+            <th> In Scope <br/> Service </th>
+            <th> Average total<br/>payroll costs / FTE</th>
+            <th> Average total<br/>payroll costs /off-shore FTEs</th>
+            <th> Average<br/> total payroll<br/> costs / onshore<br/>+nearshore FTEs</th>
+            <th> Pyramid<br/>Richness Year1  </th>
+            <th> Overall<br/>Productivity<br/>Improvement %</th>
+           <!-- <th> Languages<br/>(in scope)</th> -->
+            <th> Baseline FTE</th>
+            <th>Baseline FTE <br/> Onshore + Nearshore</th> 
+            <th>Baseline FTE <br/> Offshore</th>
+            <th>Number of <br/>rebadged <br/>resources from <br/>client</th>                    
+         </tr>
+         <tr>
+             <td></td>
+             <td colspan="28" align="center" style="background-color:#B87333; color:#fff;">
+             <b>Opportunity Level Data</b>
+             </td>
+             <td colspan="11" align="center" style="background-color:#8BB381; color:#fff;">
+             <b>Offering Level Data</b>
+             </td>
+         </tr>
+         
+    </table>
+    </div>
+    <!----********************************************************************************----->
+    <br/>
+        <apex:outputPanel style="width:670px;float:right;" id="buttons">
+            <apex:commandButton action="{!Beginning}" title="Beginning" value="<<" disabled="{!disablePrevious}" reRender="advancedBlock, buttons, exportButtons"/>
+            <apex:commandButton action="{!Previous}" title="Previous" value="<" disabled="{!disablePrevious}" reRender="advancedBlock, buttons, exportButtons"/>        
+            <apex:commandButton action="{!Next}" title="Next" value=">" disabled="{!disableNext}" reRender="advancedBlock,buttons, exportButtons"/>
+            <apex:commandButton action="{!End}" title="End" value=">>" disabled="{!disableNext}" reRender="advancedBlock, buttons, exportButtons"/> 
+        </apex:outputpanel>
+    </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

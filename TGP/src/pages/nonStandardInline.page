@@ -1,0 +1,70 @@
+<apex:page standardController="Opportunity_Offering__c"  extensions="Solution_tabController" >
+
+     <apex:form id="frm">
+                 <apex:pageBlock id="block1" rendered="{!detailSection}">
+                     <apex:pageBlockButtons >
+                         <apex:commandButton value="Edit" action="{!addSolCharEdit}" rendered="{!saveEditButtonRender}"/>
+                     </apex:pageBlockButtons>
+                     <apex:pageBlockSection columns="1" >
+                         <apex:pageBlockSectionItem >
+                             <apex:outputText value="Accenture Non BPO Scope"></apex:outputText>
+                              <apex:outputField value="{!offRec.Accenture_non_BPO_scope__c}" style="width: 80%; height: 90px"/>   
+                         </apex:pageBlockSectionItem>
+                         
+                         <apex:pageBlockSectionItem >
+                             <apex:outputText value="Non Standard BPO Scope"></apex:outputText>
+                              <apex:outputField value="{!offRec.Non_standard_BPO_scope__c}" style="width: 80%; height: 90px"/>   
+                         </apex:pageBlockSectionItem>
+                         
+                         <apex:pageBlockSectionItem >
+                             <apex:outputText value="Third Party Scope"></apex:outputText>
+                              <apex:outputField value="{!offRec.Third_Party_scope__c}" style="width: 80%; height: 90px"/>   
+                         </apex:pageBlockSectionItem>
+                            
+                     </apex:pageBlockSection>
+                                         
+                 </apex:pageBlock>
+                 
+                 <apex:pageBlock id="block2" rendered="{!editSection}">
+                 <apex:pagemessages id="pageMessage1"/> 
+                     <apex:pageBlockButtons Location="Top" >
+
+                          <apex:actionStatus id="save_Btn">                 
+                                <apex:facet name="stop">
+                                      <apex:commandButton value="Save" action="{!saverecordForNonStandaredScopeTab}" reRender="frm" status="save_Btn"/>
+                                </apex:facet>
+                                <apex:facet name="start">
+                                    <apex:outputPanel >
+                                      <apex:commandButton value="Saving..." action="{!saverecordForNonStandaredScopeTab}" reRender="frm" status="save_Btn" disabled="true"/>
+                                    </apex:outputPanel>
+                                 </apex:facet> 
+                      </apex:actionStatus> 
+                         
+                         
+                         <apex:commandButton value="Cancel" action="{!cancelrecordNonStandaredScopeTab}"/>
+                     </apex:pageBlockButtons>
+                     <apex:pageBlockSection columns="1">
+                     
+                         <apex:pageBlockSectionItem >
+                             <apex:outputText value="Accenture Non BPO Scope"></apex:outputText>
+                              <apex:inputField value="{!offRec.Accenture_non_BPO_scope__c}" style="width: 80%; height: 90px"/>   
+                         </apex:pageBlockSectionItem>
+                         
+                         <apex:pageBlockSectionItem >
+                             <apex:outputText value="Non Standard BPO Scope"></apex:outputText>
+                              <apex:inputField value="{!offRec.Non_standard_BPO_scope__c}" style="width: 80%; height: 90px"/>   
+                         </apex:pageBlockSectionItem>
+
+                         <apex:pageBlockSectionItem >
+                             <apex:outputText value="Third Party Scope"></apex:outputText>
+                              <apex:inputField value="{!offRec.Third_Party_scope__c}" style="width: 80%; height: 90px"/>   
+                         </apex:pageBlockSectionItem>                         
+                         
+                         
+                     </apex:pageBlockSection>
+                                         
+                 </apex:pageBlock>
+     </apex:form>
+    
+  
+</apex:page>

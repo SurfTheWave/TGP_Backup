@@ -1,0 +1,19 @@
+<apex:page standardController="Approval_Stage__c" extensions="ApprovalMasterListController" showHeader="false"  sidebar="false" >
+    <apex:form >
+                                <div style='text-align:left;padding-bottom:3px;'>
+                          <!-- <apex:commandLink value="Solution Approval Matrix FY’16" action="{!URLFOR($Action.Approver_Master__c.List,$ObjectType.Approver_Master__c)}"></apex:commandLink> -->
+                                 <apex:outputLink value="https://kxsites.accenture.com/groups/BPOSA/_layouts/download.aspx?SourceUrl=Pages/TopicPages/Solution%20Approval%20Matrix%20-%20FY16.xlsx" id="theLink" target="_blank"><b><big>Solution Approval Matrix FY’16 </big></b> </apex:outputLink> 
+                                </div><br/>              
+                                <apex:pageBlock title="Updates to Approval Matrix" >
+                                                <apex:pageBlockTable title="Updates to Approval Matrix" value="{!AM}" var="ams" styleClass="dataRow even last first"> 
+                                              
+                                                                <!--<apex:column value="{!ams.name}"/>-->
+                                                                <apex:column value="{!ams.LastModifiedDate}"/>
+                                                                <apex:column value="{!ams.LastModifiedBy.Name}" headerValue="Last Modified By"/>
+                                                                <apex:column value="{!ams.Comments__c}"/>
+                                                                
+                                                                
+           </apex:pageBlockTable> 
+        </apex:pageBlock>
+      </apex:form>
+</apex:page>

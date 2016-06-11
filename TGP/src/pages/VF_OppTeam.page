@@ -1,0 +1,329 @@
+<apex:page standardcontroller="Opportunity_Teams__c" id="OppTeamPage" tabstyle="Opportunity_Teams__c" extensions="VF_OppTeamController" cache="false">
+<style>
+    #drop
+    {
+        border:2px dashed #000000;
+        -moz-border-radius:5px;
+        -webkit-border-radius:5px;
+        border-radius:5px;
+        padding:25px;
+        text-align:center;
+        font:20pt bold,"Vollkorn";color:#000000;
+        background-color:#66BDFF;
+    }
+    #b64data
+    {
+        width:100%;
+    }
+  
+     /* This is for the full screen DIV */
+    .popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+    
+        /* Dimensions */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        
+        /* Mouse */
+        cursor:wait;
+    }
+ 
+    /* This is for the message DIV */
+    .PopupPanel {
+        /* Background color */
+        border: solid 2px blue;
+        background-color: white;
+ 
+        /* Dimensions */
+        left: 50%;
+        width: 200px;
+        margin-left: -100px;
+        top: 50%;
+        height: 50px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+    }
+
+    </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <apex:sectionHeader title="Opportunity Team Edit"  subtitle="New Opportunity Team" />
+        <apex:form id="OppTeamForm"> 
+        
+        <apex:actionFunction name="enablefields" action="{!validateRecord}" reRender="showblock,showdetails" status="myStatus" >
+            <apex:param value="" name="rolevalue"/>
+        </apex:Actionfunction> 
+        
+        <apex:outputPanel id="validateRecordErrorPane">
+            
+            
+            <apex:outputPanel rendered="{!isError && IOGroup}" >
+               <script>
+               alert('A Lead Solution Architect should be assigned to this opportunity before other opportunity team members are assigned.');               
+               </script>
+               
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!isError && ICGroup}" >
+               <script>
+               alert('A Lead Solution Architect should be assigned to this opportunity before other opportunity team members are assigned.');               
+               </script>
+               
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!isError && (BundledGroup || ISgroup)}" >
+               <script>
+               alert('A Lead Solution Architect should be assigned to this opportunity before other opportunity team members are assigned.');               
+               </script>
+               
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!isError && BPOGroup}" >
+                <script>
+               alert('A Lead Solution Architect should be assigned to this opportunity before other opportunity team members are assigned.');
+               </script>
+               
+            </apex:outputPanel>
+        </apex:outputPanel>
+            <apex:outputPanel id="errPan">
+                <apex:messages styleClass="errorMsg" ></apex:messages>
+            </apex:outputPanel>
+            
+         <apex:actionFunction name="validate" action="{!validateRecord}" reRender="validateRecordErrorPane, showblock,showdetails"/>
+         
+            <!-- <apex:pageMessages ></apex:pageMessages> -->
+            <apex:PageBlock id="PageBlock" title="Opportunity Team Edit" mode="edit">        
+                <apex:pageBlockButtons >
+                       <input type="Button" class="btn" onclick="Javascript:callSave();" value="Save"/>
+                       <apex:actionFunction name="SaveRec" action="{!saveRecord}" reRender="errPan,validateRecordErrorPane" status="myStatus"/>
+                       <!--<apex:commandButton action="{!SaveAndNew}" value="Save & New"/>-->
+                       <apex:commandButton action="{!Cancel}" value="Cancel"/>
+                    </apex:pageBlockButtons>
+                    
+                    <apex:pageBlockSection title="Opportunity Information" columns="1">
+                        <!--apex:inputField value="{!oppteam.Opportunity__c}" id="opTmOpp" required="true" rendered="{!NOT(isOppRO)}" onchange="Javascript:ShowError();" /-->
+                        <apex:outputField value="{!oppteam.Opportunity__c}"/>
+                        
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection title="Opportunity Team Member Assignment"  id="abc">
+                       
+                         
+                   <!-- New Staff-->      
+                   <tbody>
+                   <p><i> Opportunity Team Members can either be assigned directly or a request can be sent to PMO requesting a resource be assigned.</i></p>
+                     <p><i> To request a Complex Cost Architect,BSS Architect,Solution Specialist, Mobilization or Technical Architects complete the Request Team Member section below.</i></p>
+                        <tr>
+                            <td class="labelCol requiredInput">
+                                <label >Role</label>&nbsp;&nbsp;<img src="/s.gif" class="helpIcon" title="Click on the magnifying glass to see complete list of roles"/>
+                            </td>
+                            <td class="dataCol col02">
+                                <div class="requiredInput">
+                                    <div class="requiredBlock"></div>
+                                    <span class="lookupInput">
+                                        <input id="nameIdOne" name='RoleLookUpStr' value= "{!oppteam.Role__r.name}" onchange="javascript:checkValues('Role');" maxlength="255" size="20" type="text"/>
+                                        <a href="javascript:openPopUp('Opportunity_Roles_Master__c');" onclick="setLastMousePosition(event)" title="Role Lookup (New Window)">
+                                            <img src="/s.gif" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" 
+                                            onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';
+                                            this.className = 'lookupIconOn';" title="Click to see complete list of roles"/>
+                                         </a>
+                                    </span>
+                                    <div class="errorMsg" style="{!diplayErrorRole}"><strong>Error:</strong> You must enter a value</div>
+                                </div>
+                            </td>
+                            
+                            <td class="labelCol">
+                                <label>Offering</label>&nbsp;&nbsp;<img src="/s.gif" class="helpIcon" title="Click on the magnifying glass to see complete list of solution scope / offerings"/>
+                            </td>
+                            <td class="dataCol" >
+                                <span class="lookupInput">
+                                    <input id="nameIdTwo" value= "{!oppteam.Offering__r.name}" onchange="javascript:checkValues('Sol');" maxlength="255" size="20" type="text" />
+                                    <a href="javascript:openPopUp('Solution_Scope__c');" onclick="setLastMousePosition(event)" title="Role Lookup (New Window)">
+                                        <img src="/s.gif" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" 
+                                        onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn'; 
+                                        this.className = 'lookupIconOn';" title="Click to see complete list of solution scope / offerings"/>
+                                    </a>
+                                </span>
+                            </td>
+                            <td style="Display:{!IF(isIoProfile,'yes','none')};">
+                                &nbsp;
+                            </td>
+                            <td style="Display:{!IF(isIoProfile,'yes','none')};">
+                                &nbsp;
+                            </td>
+                        </tr>
+                        <tr>
+                        
+                        
+                            <td class="last labelCol">
+                                <label>Opportunity Team Member</label>
+                            </td>
+                            <td class="dataCol col02 last">
+                                <span class="lookupInput">
+                                    <input id="nameIdThree" value= "{!oppteam.Opportunity_Team_Member__r.name}" onchange="javascript:checkValues('Usr');" maxlength="255" size="20" type="text" />
+                                    <a href="javascript:openPopUp('User_Master__c');" onclick="setLastMousePosition(event)" title="Role Lookup (New Window)">
+                                        <img src="/s.gif" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" 
+                                        onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn'; this.className = 'lookupIconOn';" 
+                                        title="Click to see list of Users"/>
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                       
+                    </tbody>
+                    <apex:inputHidden value="{!oppteam.Role__c}" id="hiddenRoleId" >
+                    <!-- <apex:actionSupport event="onchange" reRender="showdetails" /> -->
+                    </apex:inputHidden>
+                    <apex:inputHidden value="{!oppteam.Offering__c}" id="hiddenSolScId" />
+                    <apex:inputHidden value="{!oppteam.Opportunity_Team_Member__c}" id="hiddenTeamMemId"/>
+                    
+                     
+                    
+                    <!-- New Staff-->      
+                    
+                    
+                    </apex:pageBlockSection>
+                    
+                   <apex:pageBlockSection title="Request Team Member" rendered="{!NOT(isIoProfile)}"  id="showblock" >
+
+                         <apex:inputcheckbox value="{!oppteam.Request_Team_Member__c}" id="OReqTeamMem" disabled="{!CanBeAssignedByPMO}">
+                    <apex:actionSupport event="onchange" rerender="showdetails" id="AcSupport2" status="myStatus"/>
+                </apex:inputcheckbox>
+            </apex:pageBlockSection>
+            <apex:outputPanel id="showdetails">
+                <apex:pageblockSection rendered="{!oppteam.Request_Team_Member__c}" id="pgbsec2">
+                    <apex:inputField value="{!oppteam.Needed_By_Date__c}" style="width: 170px; " id="ONeededDate"/>
+                    <apex:inputField value="{!oppteam.Approximate_of_FTEs__c}" style="width: 170px; " />
+                    
+                    <apex:inputField value="{!oppteam.Requestor_Comments__c}" style="width: 170px; " />
+                    <apex:inputField label="Is there any technology scope required beyond voice and data connectivity (and Common Tools)" value="{!oppteam.Is_there_any_technology_scope_required_b__c}"  rendered="{!isOpprole}"/>
+                    <apex:inputField label="Stage 1 Submit Date (RFI Response Due Date)" value="{!oppteam.Opportunity__r.Stage_1_Submit_Date__c}" style="width: 170px; "/>
+                    <apex:inputField label="Additional Technologies" value="{!oppteam.Comments2__c}"  rendered="{!isOpprole}"/>
+                    <apex:inputField label="Stage 2 Submit Date (RFP or Proposal Due Date)" value="{!oppteam.Opportunity__r.Stage_2_Submit_Date__c}" style="width: 170px; "/>
+                     <apex:inputField label="Internal Solution Approval Date" value="{!oppteam.Internal_Solution_Approval_Date__c}" rendered="{!isOppMobROLE }" />  
+                    <apex:inputField label="Internal Solution Approval Date" value="{!oppteam.Internal_Solution_Approval_Date__c}" rendered="{!isOppDmatROLE}" />                                        
+                    <apex:inputField label="WBSE(for DMAT Resource)" value="{!oppteam.WBS_for_resource_to_charge__c}" rendered="{!isOppDmatROLE}" />
+                    <apex:inputHidden value="{!isOppRole}" id="hiddenRoId" />
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            <apex:actionStatus startText="In progress..." id="myStatus" >
+                        <apex:facet name="start">
+                        <div>
+                        <div class="popupBackground" />
+                        <div class="PopupPanel">
+                            <table border="0" width="100%" height="100%">
+                                <tr>
+                                    <td align="center"><b>In progress...</b></td>
+                                </tr>
+                                <tr>
+                                    <td align="center"><img src="{!$Resource.Loading}"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    </apex:facet>
+                   </apex:actionStatus>
+        </apex:pageblock>
+            <apex:outputPanel id="hidoutPan">
+                <apex:inputHidden value="{!oppteam.Opportunity__c}" id="hiddenOppId"/>
+                
+                
+            </apex:outputPanel>
+            
+        </apex:form>
+        <script>
+             var opWindow; 
+             var oppId;  
+             function openPopUp(objname){
+                jQuery.noConflict();
+                if(objname =='Opportunity_Roles_Master__c'){
+                    var a=jQuery('[id$=hiddenRoleId]').val();
+                    var txt=jQuery("#nameIdOne").val();
+                    opWindow=window.open('/apex/CustomLookupPopup?objName=Opportunity_Roles_Master__c&searchText='+txt+'&id='+a, "_blank",'toolbar=no, scrollbars=yes, resizable=no, top=100, left=500, width=800,height=600' );
+                }
+                else if(objname =='Solution_Scope__c'){
+                    var a=jQuery('[id$=hiddenSolScId]').val();
+                    var txt=jQuery("#nameIdTwo").val();
+                    var opId = "{!oppteam.Opportunity__c}";
+                    var role=jQuery("#nameIdOne").val();
+                    opWindow=window.open('/apex/CustomLookupPopup?objName=Solution_Scope__c&searchText='+txt+'&id='+a+'&role='+role+'&oppId='+opId, "_blank",'toolbar=no, scrollbars=yes, resizable=no, top=100, left=500, width=800,height=600' );
+                }
+                else if(objname =='User_Master__c'){
+                    var a=jQuery('[id$=hiddenTeamMemId]').val();
+                    var txt=jQuery("#nameIdThree").val();
+                    var role=jQuery("#nameIdOne").val();
+                    opWindow=window.open('/apex/CustomLookupPopup?objName=User_Master__c&searchText='+txt+'&role='+role+'&id='+a, "_blank",'toolbar=no, scrollbars=yes, resizable=no, top=100, left=500, width=800,height=600' );
+                }
+             }
+             
+             var myObject = {
+                 
+                populateFromChild: function(id,Name,Obj) {
+                    jQuery.noConflict();
+                    if(Obj=='Opportunity_Roles_Master__c'){
+                        jQuery("[id$=hiddenRoleId]").val(id);
+                        jQuery("#nameIdOne").val(Name); 
+                        var x = document.getElementById("nameIdOne").value;
+                        
+                        console.log('value--> '+x);
+                        if(x != null){
+                            enablefields(x);
+                            
+                            validate();
+                             
+                        }   
+                    }
+                    else if(Obj=='Solution_Scope__c'){
+                        jQuery("[id$=hiddenSolScId]").val(id);
+                        jQuery("#nameIdTwo").val(Name);    
+                    }
+                    else if(Obj=='User_Master__c'){
+                        jQuery("[id$=hiddenTeamMemId]").val(id);
+                        jQuery("#nameIdThree").val(Name);    
+                    }
+                    opWindow.close();
+                }
+            };
+            function checkValues(fld){
+                
+                if(fld =='Role'){
+                    jQuery("[id$=hiddenRoleId]").val(null);
+                    openPopUp('Opportunity_Roles_Master__c');
+                    updateOpprole();
+
+                    
+                    
+                }
+                else if(fld =='Sol'){
+                    jQuery("[id$=hiddenSolScId]").val(null);
+                    openPopUp('Solution_Scope__c');
+                }
+                else if(fld =='Usr'){
+                    jQuery("[id$=hiddenTeamMemId]").val(null);
+                    openPopUp('User_Master__c');
+                }
+                
+                
+            }
+            function callSave(){
+                if(jQuery("[id$=hiddenRoleId]").val() != null && jQuery("[id$=hiddenRoleId]").val() !=''){
+                    var cl = setTimeout(SaveRec,10);
+                }else{
+                    jQuery(".errorMsg").show();
+                }
+            }
+            function ShowError(){
+                jQuery(".opperr").show();
+            } 
+            jQuery("[id$=opTmOpp]").change(function(){
+                var v = setTimeout(refreshpan,10);
+            }); 
+        </script>
+</apex:page>

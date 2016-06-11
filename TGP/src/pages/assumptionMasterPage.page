@@ -1,0 +1,129 @@
+<!--
+Author : Shridhar Patankar
+Story :  Story-0040/SOL_003      
+Description :  Maintaining Master Assumption.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Assumption_Master__c" extensions="AssumptionMasterPageController" >
+<style>
+.reqSelect {
+}
+
+table.inlineEditTbl td{
+    height: 35px !important; 
+}
+table.inlineEditTbl input[type="text"] {
+    width: 80px;
+}
+body {
+    font-size: 75% important;
+}
+table.inlineEditTbl2 td{
+    height: 50px !important; 
+}
+
+</style>
+<apex:sectionHeader title="Assumptions Master"/>
+    <apex:form >
+     <apex:pagemessages ></apex:pagemessages>
+    <apex:actionRegion >
+   
+       
+           <apex:pageBlock >
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Insert" action="{!insertNewRecord}" />               
+                <apex:commandButton action="{!Cancel}" value="Cancel" />                
+            </apex:pageBlockButtons>
+
+                <apex:pageblockSection columns="1">
+                
+                    <apex:pageBlockTable value="{!newAssumption}" var="Assumption"  ><!-- styleClass="inlineEditTbl"> -->
+                        <apex:column headerValue="Category">
+                            <apex:outputPanel styleClass="requiredInput" layout="block" id="panel">
+                            <apex:outputPanel styleClass="requiredBlock"/>    
+                              <apex:selectList size="1" value="{!categoryMaster}" required="true">
+                                <apex:selectOptions value="{!category}"></apex:selectOptions>
+                              </apex:selectList>
+                            </apex:outputPanel>
+                        </apex:column>
+                            
+                        <apex:column headerValue="Assumption">
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                            <apex:inputField value="{!Assumption.Assumption__c}" style="width: 200px; height: 20px"/>
+                            </apex:outputPanel>
+                        </apex:column>
+                  
+                        <apex:column headerValue="Offering" id="offering">
+                            
+                            <apex:selectList size="1" value="{!Offering}">
+                                <apex:actionSupport event="onchange" rerender="serviceList"/>
+                                <apex:selectOptions value="{!Offerings}"></apex:selectOptions>
+                            </apex:selectList>
+                          
+                        </apex:column>
+                        <apex:column headerValue="Services per Offering"  id="service">
+                            <apex:selectList size="1" value="{!Service}" id="serviceList">
+                            
+                          <apex:selectOptions value="{!Services}"></apex:selectOptions>
+                            </apex:selectList>             
+                        </apex:column>
+                        <apex:column headerValue="Classification" >
+                            <apex:outputPanel styleClass="requiredInput" layout="block" id="panelClass">
+                            <apex:outputPanel styleClass="requiredBlock"/>    
+                               <apex:inputField value="{!Assumption.Classification__c}"/>
+                            </apex:outputPanel>
+                        </apex:column>
+                  </apex:pageblocktable>
+               </apex:pageblockSection>
+             </apex:pageBlock>
+       </apex:actionRegion>
+    </apex:form>
+             
+    <apex:form >
+       <apex:pageBlock >
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Update" action="{!updateRecord}" />               
+                <apex:commandButton action="{!cancelUpdate}" value="Cancel"/>                
+            </apex:pageBlockButtons>
+                <apex:pageBlockSection columns="1" >
+                    <apex:pageBlockTable value="{!listnewAssumption}" var="Assumption" 
+                        cellpadding="50%" frame="lhs" rules="cols">
+                        <apex:column headerValue="Category" >
+                          <apex:selectList size="1" value="{!Assumption.Category_Master__c}">
+                            <apex:selectOptions value="{!category}"></apex:selectOptions>
+                          </apex:selectList> 
+                        </apex:column>
+                        <apex:column headerValue="Assumption" colspan="5">
+                            <apex:outputField value="{!Assumption.Assumption__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="Offering" colspan="5">
+                            <apex:outputField value="{!Assumption.Offering_Form__c}"/>
+                            <!--<apex:selectList size="1" value="{!Assumption.Offering_text__c}" readonly="true">
+                                <apex:selectOptions value="{!Offerings}"></apex:selectOptions>
+                            </apex:selectList>-->
+                        </apex:column>
+                        <apex:column headerValue="Services per Offering" colspan="5">
+                            <apex:outputField value="{!Assumption.Services_per_Offering_form__c}"/>
+                            <!--<apex:selectList size="1" value="{!Assumption.Services_per_Offering_text__c}" readonly="true">
+                                <apex:selectOptions value="{!Services}"></apex:selectOptions>
+                            </apex:selectList>-->             
+                        </apex:column>
+                        <apex:column headerValue="Classification" > 
+                        <apex:outputField value="{!Assumption.Classification__c}"/>
+                        </apex:column> 
+                        <apex:column headerValue="Active" colspan="5">
+                            <apex:outputField value="{!Assumption.Active_Inactive__c}">
+                            <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                            </apex:outputField>
+                        </apex:column>   
+                    </apex:pageBlockTable>    
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            </apex:form> 
+</apex:page>

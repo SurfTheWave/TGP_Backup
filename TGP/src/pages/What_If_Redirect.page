@@ -1,0 +1,20 @@
+<apex:page standardController="Scratchpad_Opportunity__c">
+<script src="/soap/ajax/25.0/connection.js" type="text/javascript"></script>
+<script>
+//window.location= "https://accentureopsworkbench--r3at.cs14.my.salesforce.com/a6b/e?retURL=/a6b/o&00Nc00000011gcX=Credit%20Services&nooverride=1"; 
+window.onLoad=assignDefaultValue();
+    
+    function assignDefaultValue(){
+    //alert('hi');
+        var mplVals = ['Argentina', 'China', 'Czech Republic', 'France', 'Germany', 'India', 'Mauritius', 'Philippines', 'Poland', 'Romania', 'Slovakia', 'United Kingdom','USA'] ;
+        var mplSFID ="00NE00000064ADH";//put country of costing request object
+        var params = "";
+        for (var i=0;i<mplVals.length;i++){
+            params = params + mplSFID+ "=" + mplVals[i] + "&";
+        }
+      
+        window.location= '{!$Setup.Salesforce_Base_URL__c.Domain_URL__c}'+'/a6V/e?'+params+'&nooverride=1&returl=%2fa6V%2f';  
+       
+    }
+   </Script>
+   </apex:page>

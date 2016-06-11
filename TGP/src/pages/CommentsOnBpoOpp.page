@@ -1,0 +1,116 @@
+<!--
+Author      : Shridhar Patankar
+Story       : D-1834  
+Description : Create/maintain Comments on BPO Opportunity data.. 
+Date        : 21/10/2013
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Opportunity_TGP__c" extensions="BPO_Opportunity_tabController" >
+<script>
+    function confirmMessage() 
+    {
+       var r=confirm('Are you sure you want to delete this record?');
+       return r;
+    }
+</script>
+        <apex:form id="frm" rendered="{!addButtonRenderForCommentsOnBPOOPP}">            
+            
+ </apex:form>
+    <apex:form id="form3">
+    <apex:pageMessages id="pageMsg1" rendered="{!booleanPageMessageRender}"/> 
+         <apex:pageBlock >
+           <apex:pageBlockSection title="Comments" collapsible="false"></apex:pageBlockSection>
+           <apex:outputpanel id="counter">
+                                  
+                    <apex:pageBlockSection title="Add Comments" columns="1" id="section1" collapsible="false" rendered="{!saveEditButtonRenderForCommentsOnBPOOpp}" >                
+                        <apex:pageBlockTable value="{!commOnBpo}" var="commDetail" >                    
+                            
+                            <apex:column headerValue="Comments" width="70%">  
+                                <apex:outputPanel styleClass="requiredInput" layout="block">
+                                <apex:outputPanel styleClass="requiredBlock"/>    
+                                    <apex:inputField value="{!commDetail.Comments__c}" styleClass="requiredInput" style="width: 70%; height: 45px;font-size:13px "/>
+                                </apex:outputPanel>
+                            </apex:column>
+                        
+                            <apex:column width="30%">
+
+                                   <apex:actionStatus id="addCommentsStatus">                 
+                                    <apex:facet name="stop">
+                                      <apex:commandButton action="{!addComments}" value="Add" reRender="frm,form3" status="addCommentsStatus" />                           
+                                    </apex:facet>
+                                    <apex:facet name="start">
+                                        <apex:outputPanel >
+                                          <apex:commandButton value="Adding..." status="addCommentsStatus" disabled="true" />
+                                          </apex:outputPanel>
+                                     </apex:facet> 
+                                </apex:actionStatus> 
+                
+                            </apex:column>
+                                                           
+                        </apex:pageBlockTable>                 
+                    </apex:pageBlockSection>
+    
+            </apex:outputpanel>
+       
+            <apex:pageBlockSection title="Comments Details" columns="1" id="section2" collapsible="false" rendered="{!if(readOnlyMode,false,true)}" >
+                <apex:outputPanel id="table1">
+                    <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                        <apex:pageBlockTable value="{!listCommentsBpo}" var="commDetail" styleClass="inlineEditTbl">
+                    
+                            <apex:column headerValue="Comments" width="100px">
+                                <apex:outputField value="{!commDetail.Comments__c}" style="width: 90%; height: 45px;font-size:13px"/>
+                            </apex:column>
+                            
+                            <apex:column headerValue="Created Date" width="100px">
+                                <apex:outputField value="{!commDetail.Created_Date__c}" style="width: 90%; height: 45px;font-size:13px"/>
+                            </apex:column>
+                            
+                            
+                            <apex:column headerValue="Created by" width="100px">
+                                <apex:outputField value="{!commDetail.Created_by__c}" style="width: 90%; height: 45px;font-size:13px"/>
+                            </apex:column>
+                            
+                            <apex:column rendered="{!deleteButtonRender}" >                
+                                <apex:commandLink action="{!deleteFile}" value="Delete" onclick="return confirmMessage()">
+                                    <apex:param name="fileIdDelete" value="{!commDetail.id}" assignTo="{!fileIdDelete}"/>
+                                </apex:commandLink>
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:outputpanel>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            <!--Read Only Mode Detail List-->
+            <apex:pageBlockSection title="Comments Details" columns="1" id="sectionRead" collapsible="false" rendered="{!readOnlyMode}" >
+                <apex:outputPanel id="tableRead1">
+                    <apex:outputPanel layout="block" style="overflow:auto;height:210px">
+                        <apex:pageBlockTable value="{!listCommentsBpo}" var="commDetail" styleClass="inlineEditTbl">                
+                                               
+                              <apex:column headerValue="Comments" width="100px">
+                                 <apex:outputField value="{!commDetail.Comments__c}" style="width: 90%; height: 45px;font-size:13px"/>
+                              </apex:column>
+                              
+                              <apex:column headerValue="Created Date" width="100px">
+                                <apex:outputField value="{!commDetail.Created_Date__c}" style="width: 90%; height: 45px;font-size:13px"/>
+                            </apex:column>
+                            
+                            <apex:column headerValue="Created by" width="100px">
+                                <apex:outputField value="{!commDetail.Created_by__c}" style="width: 90%; height: 45px;font-size:13px"/>
+                            </apex:column>
+                              
+                              <apex:column rendered="{!deleteButtonRender}" >                
+                                    <apex:commandLink action="{!deleteFile}" value="Delete" onclick="return confirmMessage()" >
+                                        <apex:param name="fileIdDelete" value="{!commDetail.id}" assignTo="{!fileIdDelete}"/>
+                                    </apex:commandLink>
+                              </apex:column>                   
+                        </apex:pageBlockTable>
+                    </apex:outputpanel>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            
+        </apex:pageBlock>
+        </apex:form>
+</apex:page>

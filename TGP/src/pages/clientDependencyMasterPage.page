@@ -1,0 +1,120 @@
+<!--
+Author : Mayank Tayal
+
+Story  : Story-0039/SOL_002  
+Description :Maintaining Client Dependency Master.
+
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Client_Dependency_Master__c" extensions="ClientDependencyMasterPage">
+<style>
+.reqSelect {
+}
+
+table.inlineEditTbl td{
+    height: 35px !important; 
+}
+table.inlineEditTbl input[type="text"] {
+    width: 80px;
+}
+body {
+    font-size: 75% important;
+}
+table.inlineEditTbl2 td{
+    height: 50px !important; 
+}
+
+</style>
+<apex:sectionHeader title="Client Dependency Master"/>
+<apex:form >
+     <apex:pagemessages ></apex:pagemessages>
+    <apex:actionRegion >
+       
+            <apex:pageBlock >
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Insert" action="{!insertNewRecord}"/>               
+                <apex:commandButton action="{!Cancel}" value="Cancel"/>                
+            </apex:pageBlockButtons>
+
+                <apex:pageblockSection columns="1">
+                    <apex:pageBlockTable value="{!newDependency}" var="Dependency" ><!-- styleClass="inlineEditTbl"> -->
+                        <apex:column headerValue="Category">
+                            <apex:outputPanel styleClass="requiredInput" layout="block" id="panel">
+                            <apex:outputPanel styleClass="requiredBlock"/>    
+                              <apex:selectList size="1" value="{!categoryMaster}" required="true">
+                                <apex:selectOptions value="{!category}"></apex:selectOptions>
+                              </apex:selectList>
+                            </apex:outputPanel>
+                        </apex:column>
+                        <apex:column headerValue="Client Dependency">
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                            <apex:inputField value="{!Dependency.Client_Dependency__c}" style="width: 200px; height: 20px" />
+                            </apex:outputPanel>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Offering">
+                            
+                            <apex:selectList size="1" value="{!Offering}" >
+                                <apex:actionSupport event="onchange" rerender="service"/>
+                                <apex:selectOptions value="{!Offerings}"></apex:selectOptions>
+                            </apex:selectList>
+                            
+                        </apex:column>
+                        <apex:column headerValue="Services per Offering" >
+                            <apex:selectList size="1" value="{!Service}" id="service">
+                                <apex:selectOptions value="{!Services}"></apex:selectOptions>
+                            </apex:selectList>             
+                        </apex:column>  
+                        
+                    </apex:pageBlockTable>
+                </apex:pageblockSection>
+            </apex:pageBlock>
+        </apex:actionRegion>
+    </apex:form>
+    
+    <apex:form >
+       <apex:pageBlock >
+             <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Update" action="{!updateRecord}" />               
+                <apex:commandButton action="{!cancelUpdate}" value="Cancel"/>                
+            </apex:pageBlockButtons>      
+            <apex:pageBlockSection columns="1">                
+                <apex:pageBlockTable value="{!listDependenciesActual}" var="depDetail"><!-- styleClass="inlineEditTbl"> -->
+                     <apex:column headerValue="Category" >
+                          <apex:selectList size="1" value="{!depDetail.Category_Master__c}">
+                            <apex:selectOptions value="{!category}"></apex:selectOptions>
+                          </apex:selectList> 
+                        </apex:column>
+                    
+                    <apex:column headerValue="Client Dependency" colspan="5">
+                        <apex:outputField value="{!depDetail.Client_Dependency__c}" />
+                    </apex:column>
+                    
+                    <apex:column headerValue="Offering" colspan="5">
+                        <apex:outputField value="{!depDetail.Offering_Form__c}" />
+                         
+                    </apex:column>
+                    
+                    <apex:column headerValue="Services per Offering" colspan="5">
+                        <apex:outputField value="{!depDetail.Services_per_Offering_form__c}" />
+                          
+                    </apex:column>
+                    
+                    <apex:column headerValue="Active/Inactive" >
+                        <apex:outputField value="{!depDetail.Active_Inactive__c}" > 
+                        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                        </apex:outputField>                          
+                    </apex:column>
+                    
+                    <!-- <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/> -->
+                </apex:pageBlockTable>                
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+   </apex:form>
+</apex:page>

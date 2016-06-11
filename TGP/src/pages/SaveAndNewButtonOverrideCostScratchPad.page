@@ -1,0 +1,2 @@
+<apex:page standardController="Scratchpad_Opportunity__c" extensions="SObjectNewActionOverrideController" action="{!onLoadPage}">
+</apex:page>

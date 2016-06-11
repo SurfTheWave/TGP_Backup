@@ -1,0 +1,325 @@
+<apex:page standardcontroller="Wave_Proc__c" id="clientProcessPage" tabstyle="Wave_Proc__c" extensions="waveProcessController">
+
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'/>
+    <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js'/>
+    <apex:stylesheet value="{!URLFOR($Resource.jQuery_BlogForce9_162, 'css/ui-lightness/jquery-ui-1.8.16.custom.css')}"/>
+    
+    <style>
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+            /* add padding to account for vertical scrollbar */
+            padding-right: 20px;
+        }
+    </style>
+    
+    <apex:sectionHeader title="Wave Process Edit"  subtitle="New wave Process" />
+        <apex:form id="WaveProcesForm">  
+            <apex:outputPanel id="errPan">
+                <apeX:pageMessages ></apeX:pageMessages>
+                <!--
+                <apex:messages styleClass="errorMsg" ></apex:messages>
+                <apex:message styleClass="errorMsg" ></apex:message>
+                -->
+                 
+            </apex:outputPanel>
+            <apex:PageBlock id="PageBlock" title="Wave Process Edit" mode="edit">        
+                    <apex:pageBlockButtons >
+                       <input type="Button" class="btn" onclick="Javascript:callSave();" value="Save"/>
+                       <apex:actionFunction name="SaveRec" action="{!saveRecord}" reRender="CLProcessError,ClFTEError,InfSerError,InfFTEError,SendLocError,RecvLocError,errPan"/>
+                       <apex:commandButton action="{!Cancel}" value="Cancel"/>
+                    </apex:pageBlockButtons>
+                   
+                    <apex:pageBlockSection title="Information" columns="1">
+                        <apex:outputField value="{!waveProcess.Mobilization_Plan__c}"/>
+                        <apex:outputField value="{!waveProcess.Wave__c}"/>
+                         
+                        <!-- New Staff--> 
+                        <apex:outputPanel rendered="{!!diplayInfServ}">
+                            <tbody>
+                                <tr>
+                                    <td class="labelCol requiredInput">
+                                        <label >
+                                            Wave Client Process
+                                        </label>&nbsp;&nbsp;<img src="/s.gif" class="helpIcon" title="Use * as a wildcard at the beginning to improve your search results."/>
+                                    </td>
+                                    <td class="dataCol col02">
+                                        <div class="requiredInput">
+                                            <div class="requiredBlock"></div>
+                                            <span class="lookupInput">
+                                                <input id="nameIdOne" name='ClientProcessLookUpStr' value= "{!ClientProcessLookUpStr}" onchange="javascript:checkValues('clientSpecificProcess');" maxlength="255" size="20" type="text" />
+                                                    <a href="javascript:openPopUp('Client_Specific_Process__c');" onclick="setLastMousePosition(event)" title="Wave Client Process Lookup  Lookup (New Window)">
+                                                        <img src="/s.gif" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" 
+                                                            onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';
+                                                                this.className = 'lookupIconOn';" title="Wave Client Process Lookup (New Window)"/>
+                                                    </a>
+                                            </span>
+                                            <apex:outputPanel styleClass="errorMsg" style="{!diplayErrorClientProcess}" id="CLProcessError">
+                                                <font color="red"><strong>Error:</strong> You must enter a value</font>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="labelCol requiredInput">
+                                        <label >Number of Projected FTEs</label>
+                                    </td>
+                                    <td class="dataCol ">
+                                        <div class="requiredInput">
+                                            <div class="requiredBlock"></div>
+                                            <apex:inputField value="{!waveProcess.Number_of_Projected_FTEs__c}" />
+                                            <apex:outputPanel styleClass="errorMsg" style="{!diplayErrorNoofProjFTE}"  id="ClFTEError">
+                                                <font color="red"><strong>Error:</strong> You must enter a value</font>
+                                            </apex:outputPanel> 
+                                        </div>    
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!diplayInfServ}">
+                            <tbody>
+                                <tr>
+                                    <td class="labelCol requiredInput">
+                                        <label >Wave Infrastructure Service</label>&nbsp;&nbsp;<img src="/s.gif" class="helpIcon" title="Use * as a wildcard at the beginning to improve your search results."/>
+                                    </td>
+                                    <td class="dataCol col02">
+                                        <div class="requiredInput">
+                                            <div class="requiredBlock"></div>
+                                            <span class="lookupInput">
+                                                <input id="nameIdInfra" name='InfrastructLookUpStr' value= "{!InfrastructLookUpStr}" onchange="javascript:checkValues('InfraStructure');" maxlength="255" size="20" type="text" />
+                                                    <a href="javascript:openPopUp('Infrastructure_Service__c');" onclick="setLastMousePosition(event)" title="Wave Infra Structure Lookup (New Window)">
+                                                        <img src="/s.gif" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" 
+                                                            onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';
+                                                                this.className = 'lookupIconOn';" title="Wave Infra Structure Lookup (New Window)"/>
+                                                    </a>
+                                            </span>
+                                            <apex:outputPanel styleClass="errorMsg" style="{!diplayErrorInfServ}"  id="InfSerError">
+                                               <font color="red"><strong>Error:</strong> You must enter a value</font>
+                                           </apex:outputPanel> 
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="labelCol requiredInput">
+                                        <label >Number of Projected FTEs</label>
+                                    </td>
+                                    <td class="dataCol ">
+                                        <div class="requiredInput">
+                                            <div class="requiredBlock"></div>
+                                            <apex:inputField value="{!waveProcess.Number_of_Projected_FTEs__c}" id="theTextInput"/>
+                                            <apex:outputPanel styleClass="errorMsg" style="{!diplayErrorInfServ}"  id="InfFTEError">
+                                                <font color="red"><strong>Error:</strong> You must enter a value</font>
+                                            </apex:outputPanel>
+                                        </div>    
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </apex:outputPanel>
+                        <apex:outputPanel >
+                        <tbody>
+                            <tr>
+                                <td class="labelCol requiredInput">
+                                    <label >Sending Location</label>
+                                </td>
+                                <td class="dataCol ">
+                                    <div class="requiredInput">
+                                        <div class="requiredBlock"></div>
+                                        <apex:inputText value="{!SendLocLookUpStr}" styleClass="autoCompClassSending" id="SendLocTxtId" />
+                                        <apex:outputPanel styleClass="errorMsg" style="{!diplayErrorSendingDelLoc}" id="SendLocError" >
+                                                <font color="red"><strong>Error:</strong> You must enter a value</font>
+                                            </apex:outputPanel>
+                                        </div>    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="labelCol requiredInput">
+                                    <label>Receiving Location</label>
+                                </td>
+                                <td class="dataCol ">
+                                    <div class="requiredInput">
+                                        <div class="requiredBlock"></div>
+                                        <apex:inputText value="{!RecvLocLookUpStr}" styleClass="autoCompClassReceiving" id="RecvLocTxtId"/>
+                                        <apex:outputPanel styleClass="errorMsg" style="{!diplayErrorDelLoc}" id="RecvLocError"  >
+                                                <font color="red"><strong>Error:</strong> You must enter a value</font>
+                                            </apex:outputPanel>
+                                        </div>    
+                                </td>
+                            </tr>
+                        </tbody>
+                        </apex:outputPanel>
+                        <apex:inputHidden value="{!waveProcess.Wave_Client_Specific_Process__c}" id="hiddenClientProcessId"/>
+                        <apex:inputHidden value="{!waveProcess.Wave_Infrastructure_Service__c}" id="hiddenInfraServId"/>
+                        <apex:inputHidden value="{!waveProcess.Sending_Location__c}" id="hiddenSendLocId"/>
+                        <apex:inputHidden value="{!waveProcess.Wave_Process_Location__c}" id="hiddenRecvLocId"/>
+                        <apex:inputHidden value="{!mobPlan.Deal__c}" id="hiddenDealId"/>
+                    </apex:pageBlockSection>   
+                    
+                    <apex:pageBlockSection title="Wave Tracking" rendered="{!IF(waveProcess.Mobilization_Plan__r.IsTrackingOn__c, true, false)}">
+                        <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                        <apex:inputField value="{!waveProcess.Wave_Process_RAG_Status__c}"/>
+                        <apex:inputField value="{!waveProcess.Wave_Process_RAG_Comments__c}" />
+                        <apex:inputField value="{!waveProcess.Wave_Process_Completion_Status__c}"/>
+                    </apex:pageBlockSection>
+                </apex:PageBlock>
+            </apex:form>
+            <script>
+             var opWindow; 
+             var oppId;  
+             function openPopUp(objname){
+                jQuery.noConflict();
+                if(objname =='Client_Specific_Process__c'){
+                    var a=jQuery('[id$=hiddenClientProcessId]').val();
+                     var dealId=jQuery('[id$=hiddenDealId]').val();
+                    var txt=jQuery("#nameIdOne").val();
+                    opWindow=window.open('/apex/ClientProcessLookupPopup?objName=Client_Specific_Process__c&searchText='+txt+'&id='+dealId, "_blank",'toolbar=no, scrollbars=yes, resizable=no, top=100, left=500, width=800,height=600' );
+                }else if(objname =='Infrastructure_Service__c'){
+                    var a=jQuery('[id$=hiddenInfraServId]').val();
+                     var dealId=jQuery('[id$=hiddenDealId]').val();
+                    var txt=jQuery("#nameIdInfra").val();
+                    opWindow=window.open('/apex/ClientProcessLookupPopup?objName=Infrastructure_Service__c&searchText='+txt+'&id='+dealId, "_blank",'toolbar=no, scrollbars=yes, resizable=no, top=100, left=500, width=800,height=600' );
+                }
+             }
+             
+             var myObject = {
+                 
+                populateFromChild: function(id,Name,Obj) {
+                    jQuery.noConflict();
+                    if(Obj=='Client_Specific_Process__c'){
+                        jQuery("[id$=hiddenClientProcessId]").val(id);
+                        jQuery("#nameIdOne").val(Name);    
+                    } else if(Obj=='Infrastructure_Service__c'){
+                        jQuery("[id$=hiddenInfraServId]").val(id);
+                        jQuery("#nameIdInfra").val(Name);
+                    }
+                    opWindow.close();
+                }
+            };
+            function checkValues(fld){
+                
+                if(fld =='clientSpecificProcess'){
+                    jQuery("[id$=hiddenClientProcessId]").val(null);
+                    openPopUp('Client_Specific_Process__c');
+                }else if(fld =='InfraStructure'){
+                    jQuery("[id$=hiddenInfraServId]").val(null);
+                    openPopUp('Infrastructure_Service__c');
+                }
+            }
+            function callSave(){
+                if(jQuery('[id$=SendLocTxtId]').val().trim()==''){
+                   jQuery('[id$=hiddenSendLocId]').val(''); 
+                }
+                if(jQuery('[id$=RecvLocTxtId]').val().trim()==''){
+                   jQuery('[id$=hiddenRecvLocId]').val(''); 
+                }
+                var cl = setTimeout(SaveRec,10);
+            }
+            function ShowError(){
+                jQuery(".opperr").show();
+            } 
+            jQuery("[id$=opTmOpp]").change(function(){
+               var v = setTimeout(refreshpan,10);
+            });
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            /*
+        *check if jquery is loaded if not load jquery again
+       **/
+       if(typeof jQuery != 'undefined'){
+           $j =jQuery.noConflict();
+       }
+        
+       $j(function(){
+            $j( ".autoCompClassSending" ).autocomplete({
+                source: function(request, response) {
+                   queryDataAutoComp1(response ,request.term);
+                },
+                minLength: 0,
+                select: function(event, ui) {
+                                    //pass the selected value to hidden input field
+                                    $j(this).val(ui.item.label);
+                                    jQuery('[id$=hiddenSendLocId]').val(ui.item.value);
+                                    return false;
+                                },
+                focus: function( event, ui ) {
+                        $j(this).val( ui.item.label );
+                        return false;  
+                }
+            });
+            
+            $j( ".autoCompClassSending" ).change(function() {
+               if($j(this).val().trim()==''){
+                   jQuery('[id$=hiddenSendLocId]').val('');    
+               }
+            });
+            
+            $j( ".autoCompClassReceiving" ).autocomplete({
+                source: function(request, response) {
+                   queryDataAutoComp1(response ,request.term);
+                },
+                minLength: 0,
+                select: function(event, ui) {
+                                    //pass the selected value to hidden input field
+                                    $j(this).val(ui.item.label);
+                                    jQuery('[id$=hiddenRecvLocId]').val(ui.item.value);
+                                    return false;
+                                },
+                focus: function( event, ui ) {
+                        $j(this).val( ui.item.label );
+                        return false;  
+                }
+            });
+            
+            $j( ".autoCompClassReceiving" ).change(function() {
+               if($j(this).val().trim()==''){
+                   jQuery('[id$=hiddenRecvLocId]').val('');    
+               }
+            });
+                   
+        });
+        
+        function queryDataAutoComp1(response,param){
+           Visualforce.remoting.Manager.invokeAction(
+                     '{!$RemoteAction.waveProcessController.getData1}',param,
+                     function(result, event){
+                         //if success
+                         if(event.status){ 
+                            var data = [];  
+                            $j.each(result,function(){
+                                 var obj = new Object();
+                                 for (var field in this) { 
+                                     //match the passed label and returned value to populate the label and value                                  
+                                     if((field.toUpperCase()=='Name'.toUpperCase())){
+                                         obj.label = this[field];                                                                               
+                                     }
+                                     else if((field.toUpperCase()=='Id'.toUpperCase())){
+                                         obj.value= this[field];                                                                               
+                                     }                                    
+                                }                                
+                                 data.push(obj);
+                             });
+                             //return the dataa
+                             response( data);
+                         }
+                         else{
+                              alert('Invalid Field/Object API Name : '+event.message);
+                         }
+                         
+                     }, 
+                      {escape: true}
+                );
+            }
+             
+        </script>
+       
+</apex:page>

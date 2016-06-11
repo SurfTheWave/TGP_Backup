@@ -1,0 +1,56 @@
+<apex:page showHeader="true" controller="UserWelcomeConroller" action="{!userLogin}" wizard="true" renderAs="html">
+
+<br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+    <apex:dataTable value="{!currentuser}" var="cu" cellPadding="4" border="2" bgcolor="white" align="center">
+    
+    <apex:column style="width:500px" >
+    <apex:sectionHeader title="Welcome to Mobilization Workbench"> 
+  </apex:sectionHeader>
+    
+   
+   
+    <h1>    
+    <apex:outputText value="Getting Started">
+    </apex:outputText>
+    <br></br>
+    <br></br>
+    <apex:outputText value="Here is how to get rolling:"> </apex:outputText>
+    </h1>
+    <br></br>
+    <br></br>
+    <apex:outputLink target="_blank" style="text-decoration: none;color:blue" value="https://kxsites.accenture.com/groups/OperationsMobilization/Pages/TopicPages/Home.aspx">1. Flow of the tool in a simple steps </apex:outputLink> 
+    <br></br>
+    <apex:outputLink target="_blank" style="text-decoration: none;color:blue" value="https://kxsites.accenture.com/groups/OperationsMobilization/Pages/TopicPages/Home.aspx">2. How to access the dashboard </apex:outputLink> 
+   
+    <!--    <apex:pageBlockTable value="{!lstString}" var="str" border="2">   -->
+       <br></br><br></br><br></br><br></br><br></br><br></br> 
+      
+    
+    </apex:column>
+       
+    <apex:column >
+   <apex:outputLink target="_blank" style="text-decoration: none;color:blue" value="https://kxsites.accenture.com/groups/OperationsMobilization/Pages/TopicPages/Home.aspx">Browser the Documentation </apex:outputLink> 
+   
+        
+  <br></br><br></br>
+   <apex:outputLink target="_blank" style="text-decoration: none;color:blue" value="https://kxsites.accenture.com/groups/OperationsMobilization/Pages/TopicPages/Home.aspx">Training Deck </apex:outputLink> 
+       
+            
+   <br></br><br></br>
+   <apex:outputLink target="_blank" style="text-decoration: none;color:blue" value="https://kxsites.accenture.com/groups/OperationsMobilization/Pages/TopicPages/Home.aspx">User Guide</apex:outputLink> 
+   
+   <br></br><br></br>
+   <apex:outputLink target="_blank" style="text-decoration: none;color:blue" value="https://kxsites.accenture.com/groups/OperationsMobilization/Pages/TopicPages/Home.aspx">FAQ</apex:outputLink> 
+   
+   <br></br><br></br>
+   <apex:outputLink target="_blank" style="text-decoration: none;color:blue" value="https://kxsites.accenture.com/groups/OperationsMobilization/Pages/TopicPages/Home.aspx">Deal Creation Simulation </apex:outputLink> 
+   
+   <br></br><br></br>
+   <apex:outputLink target="_blank" style="text-decoration: none;color:blue" value="https://kxsites.accenture.com/groups/OperationsMobilization/Pages/TopicPages/Home.aspx">Report and Dashboard simulation</apex:outputLink>    
+  </apex:column>  
+ 
+   
+    </apex:dataTable>
+     
+   
+</apex:page>

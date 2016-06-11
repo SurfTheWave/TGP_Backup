@@ -1,0 +1,2 @@
+<apex:page standardController="Client_Visit_Feedback__c" extensions="SObjectNewActionOverrideController" action="{!onLoadPage}">
+</apex:page>

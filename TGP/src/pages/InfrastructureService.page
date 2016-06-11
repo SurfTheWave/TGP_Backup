@@ -1,0 +1,162 @@
+<apex:page standardcontroller="Infrastructure_Service__c" id="infrastructureServicePage" tabstyle="Client_Specific_Process__c" extensions="InfrastructureServiceController">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <apex:sectionHeader title="Infrastructure Service Edit"  subtitle="New Infrastructure Service" id="secHeadertag"/>
+    <apex:form id="InfrastructureServiceForm">
+        <apex:outputPanel id="errPan">
+            <apex:pageMessages ></apex:pageMessages>
+            <!--
+            <apex:messages styleClass="errorMsg" ></apex:messages> -->
+        </apex:outputPanel>
+        <apex:PageBlock id="PageBlock" title="Infrastructure Service Edit" mode="edit">
+            <apex:pageBlockButtons id="pgbbuttons">
+                <input type="Button" class="btn" onclick="Javascript:callSave();" value="Save"/>
+                <apex:actionFunction name="SaveRec" action="{!saveRecord}" reRender="errPan" id="savebutton"/>
+                <apex:commandButton action="{!Cancel}" value="Cancel" id="cancelButton"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Information" columns="1" id="pgbsec1">
+            
+            <apex:outputField value="{!infrastructureService.Deal__c}" id="IDeal"/>
+            <apex:inputField value="{!infrastructureService.Name}" required="true" id="IName"/>
+            
+            <tbody>
+                <tr>
+                    <td class="labelCol requiredInput">
+                        <label >Service Offering</label>&nbsp;&nbsp;<img src="/s.gif" class="helpIcon" title="Use * as a wildcard at the beginning to improve your search results."/>
+                    </td>
+                    <td class="dataCol col02">
+                        <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                            <span class="lookupInput">
+                                <input id="nameIdOne" name='ProcessOfferingLookUpStr' value= "{!infrastructureService.ServiceOffering__r.Name}" onchange="javascript:checkValues('Offering');" maxlength="255" size="40" type="text" />
+                                <a href="javascript:openPopUp('Offering_Master__c');" onclick="setLastMousePosition(event)" title="Process Offering Lookup (New Window)">
+                                    <img src="/s.gif" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" 
+                                                onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';
+                                                this.className = 'lookupIconOn';" title="Process Offering Lookup (New Window)"/>
+                                </a>
+                            </span>
+                            <div class="errorMsg" style="{!diplayErrorOffering}"><strong>Error:</strong> You must enter a value</div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="labelCol requiredInput">
+                        <label >Service Function</label>&nbsp;&nbsp;<img src="/s.gif" class="helpIcon" title="Use * as a wildcard at the beginning to improve your search results."/>
+                    </td>
+                    <td class="dataCol col02">
+                        <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                            <span class="lookupInput">
+                                <input id="nameIdTwo" name='ProcessOfferingLookUpStr' value= "{!infrastructureService.SubService__r.Name}" onchange="javascript:checkValues('Services');" maxlength="255" size="40" type="text" />
+                                    <a href="javascript:openPopUp('Services_Master__c');" onclick="setLastMousePosition(event)" title="Process Offering Lookup (New Window)">
+                                                <img src="/s.gif" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" 
+                                                onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn';
+                                                this.className = 'lookupIconOn';" title="Process Services Lookup (New Window)"/>
+                                    </a>
+                            </span>
+                            <div class="errorMsg1" style="{!diplayErrorService}"><font color="red"><strong>Error:</strong>You must enter a value</font></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="last labelCol">
+                        <label>Service Component</label>&nbsp;&nbsp;<img src="/s.gif" class="helpIcon" title="Use * as a wildcard at the beginning to improve your search results."/>
+                    </td>
+                    <td class="dataCol col02 last">
+                        <span class="lookupInput">
+                            <input id="nameIdThree" value= "{!infrastructureService.ServiceComponent__r.name}" onchange="javascript:checkValues('ServicesComp');" maxlength="255" size="40" type="text" />
+                            <a href="javascript:openPopUp('Services_Component_Master__c');" onclick="setLastMousePosition(event)" title="Role Lookup (New Window)">
+                                            <img src="/s.gif" class="lookupIcon" onblur="this.className = 'lookupIcon';" onfocus="this.className = 'lookupIconOn';" 
+                                            onmouseout="this.className = 'lookupIcon';this.className = 'lookupIcon';" onmouseover="this.className = 'lookupIconOn'; this.className = 'lookupIconOn';" 
+                                            title="Process service Components Lookup (New Window)"/>
+                            </a>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+            
+            <apex:inputField value="{!infrastructureService.ServiceComments__c}" id="IServComments"/>
+            <apex:inputHidden value="{!infrastructureService.ServiceOffering__c}" id="hiddenOfferingId"/>
+            <apex:inputHidden value="{!infrastructureService.SubService__c}" id="hiddenServiceId"/>
+            <apex:inputHidden value="{!infrastructureService.ServiceComponent__c}" id="hiddenServiceCompId"/>
+        </apex:PageBlockSection>
+        </apex:PageBlock>
+    </apex:form>
+    <script>
+                 var opWindow; 
+                 var oppId;  
+                 function openPopUp(objname){
+                    jQuery.noConflict();
+                    if(objname =='Offering_Master__c'){
+                        var a=jQuery('[id$=hiddenOfferingId]').val();
+                        var txt=jQuery("#nameIdOne").val();
+                        opWindow=window.open('/apex/ClientProcessLookupPopup?objName=Offering_Master__c_IO&searchText='+txt+'&id='+a, "_blank",'toolbar=no, scrollbars=yes, resizable=no, top=100, left=500, width=800,height=600' );
+                    }else if(objname =='Services_Master__c'){
+                        var a=jQuery('[id$=hiddenOfferingId]').val();
+                        var txt=jQuery("#nameIdTwo").val();
+                        opWindow=window.open('/apex/ClientProcessLookupPopup?objName=Services_Master__c&searchText='+txt+'&id='+a, "_blank",'toolbar=no, scrollbars=yes, resizable=no, top=100, left=500, width=800,height=600' );
+                    }
+                    else if(objname =='Services_Component_Master__c'){
+                        var a=jQuery('[id$=hiddenServiceId]').val();
+                        var txt=jQuery("#nameIdThree").val();
+                        opWindow=window.open('/apex/ClientProcessLookupPopup?objName=Services_Component_Master__c&searchText='+txt+'&id='+a, "_blank",'toolbar=no, scrollbars=yes, resizable=no, top=100, left=500, width=800,height=600' );
+                    }
+                   
+                 }
+                 
+                 var myObject = {
+                     
+                    populateFromChild: function(id,Name,Obj) {
+                        jQuery.noConflict();
+                        if(Obj=='Offering_Master__c_IO'){
+                            jQuery("[id$=hiddenOfferingId]").val(id);
+                            jQuery("#nameIdOne").val(Name);    
+                        }
+                        else if(Obj=='Services_Master__c'){
+                            jQuery("[id$=hiddenServiceId]").val(id);
+                            jQuery("#nameIdTwo").val(Name);    
+                        }
+                        else if(Obj=='Services_Component_Master__c'){
+                            jQuery("[id$=hiddenServiceCompId]").val(id);
+                            jQuery("#nameIdThree").val(Name);    
+                        }
+                        opWindow.close();
+                    }
+                };
+                function checkValues(fld){
+                    
+                    if(fld =='Offering'){
+                        jQuery("[id$=hiddenOfferingId]").val(null);
+                        openPopUp('Offering_Master__c');
+                    }
+                    else if(fld =='Services'){
+                        jQuery("[id$=hiddenServiceId]").val(null);
+                        openPopUp('Services_Master__c');
+                    }
+                    else if(fld =='ServicesComp'){
+                        jQuery("[id$=hiddenServiceCompId]").val(null);
+                        openPopUp('Services_Component_Master__c');
+                    }
+                    
+                }
+                function callSave(){
+                    if(jQuery("[id$=hiddenOfferingId]").val() != null && jQuery("[id$=hiddenOfferingId]").val() !='' &&jQuery("[id$=hiddenServiceId]").val() != null && jQuery("[id$=hiddenServiceId]").val() !=''){
+                        var cl = setTimeout(SaveRec,10);
+                    }else{
+                        if(jQuery("[id$=hiddenOfferingId]").val() != null && jQuery("[id$=hiddenOfferingId]").val() !='' ){
+                            jQuery(".errorMsg1").show();
+                        }
+                        else{
+                            jQuery(".errorMsg").show();
+                            jQuery(".errorMsg1").show();
+                        }
+                    }
+                }
+                function ShowError(){
+                    jQuery(".opperr").show();
+                } 
+                jQuery("[id$=opTmOpp]").change(function(){
+                    var v = setTimeout(refreshpan,10);
+                }); 
+            </script>    
+           
+</apex:page>

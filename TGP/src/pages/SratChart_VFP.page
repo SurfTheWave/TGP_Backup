@@ -1,0 +1,192 @@
+<apex:page standardController="SRAT_Tracker__c"  extensions="SratChart_VFC" id="sratchart">
+
+
+<table>
+<tr>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <font size="5">PEOPLE </font> <br/><br/>
+<apex:chart data="{!Data}" height="500" width="600"> &nbsp;&nbsp;
+
+
+<apex:legend position="right" />
+
+
+<apex:axis type="Numeric" position="left" title="RAG Status" grid="true"
+
+
+fields="offTrack,onTrack,complete,NA" dashSize="2">
+
+
+<apex:chartLabel />
+
+
+</apex:axis> 
+
+
+<apex:axis type="Category" position="bottom" fields="name">
+
+
+<apex:chartLabel rotate="60"/>
+
+
+</apex:axis>
+
+
+<apex:barSeries orientation="vertical" axis="left"  stacked="true"
+
+
+xField="name" yField="offTrack,onTrack,complete,NA" title="InComplete OffTrack,InComplete OnTrack,Complete,NA" colorSet="#ff0000, #FFA500,#008000, #808080">
+
+
+<!-- <apex:chartTips height="20" width="120" rendererFn="renderTooltipStacked"/> -->
+
+
+</apex:barSeries>
+
+
+</apex:chart>
+</td>
+
+<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+ 
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <font size="5">PROCESS </font> <br/><br/>
+<apex:chart data="{!Process}" height="500" width="600">
+
+
+<apex:legend position="right" />
+
+
+<apex:axis type="Numeric" position="left" title="RAG Status" grid="true"
+
+
+fields="offTrack,onTrack,complete,NA" dashSize="2">
+
+
+<apex:chartLabel />
+
+
+</apex:axis> 
+
+
+<apex:axis type="Category" position="bottom" fields="name">
+
+
+<apex:chartLabel rotate="60"/>
+
+
+</apex:axis>
+
+
+<apex:barSeries orientation="vertical" axis="left"  stacked="true"
+
+
+xField="name" yField="offTrack,onTrack,complete,NA" title="InComplete OffTrack,InComplete OnTrack,Complete,NA" colorSet="#ff0000, #FFA500,#008000, #808080">
+
+
+<!-- <apex:chartTips height="20" width="120" rendererFn="renderTooltipStacked"/> -->
+
+
+</apex:barSeries>
+
+
+</apex:chart>
+</td>
+</tr>
+
+<tr>
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <font size="5">TECHNOLOGY </font> <br/><br/>
+<apex:chart data="{!Technology}" height="500" width="600"> &nbsp;&nbsp;
+
+
+<apex:legend position="right" />
+
+
+<apex:axis type="Numeric" position="left" title="RAG Status" grid="true"
+
+
+fields="offTrack,onTrack,complete,NA" dashSize="2">
+
+
+<apex:chartLabel />
+
+
+</apex:axis> 
+
+
+<apex:axis type="Category" position="bottom" fields="name">
+
+
+<apex:chartLabel rotate="60"/>
+
+
+</apex:axis>
+
+
+<apex:barSeries orientation="vertical" axis="left"  stacked="true"
+
+
+xField="name" yField="offTrack,onTrack,complete,NA" title="InComplete OffTrack,InComplete OnTrack,Complete,NA" colorSet="#ff0000, #FFA500,#008000, #808080">
+
+
+<!-- <apex:chartTips height="20" width="120" rendererFn="renderTooltipStacked"/> -->
+
+
+</apex:barSeries>
+
+
+</apex:chart>
+</td>
+
+<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+ 
+<td>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <font size="5">COMMERCIAL </font> <br/><br/>
+<apex:chart data="{!Commercial}" height="500" width="600">
+
+
+<apex:legend position="right" />
+
+
+<apex:axis type="Numeric" position="left" title="RAG Status" grid="true"
+
+
+fields="offTrack,onTrack,complete,NA" dashSize="2">
+
+
+<apex:chartLabel />
+
+
+</apex:axis> 
+
+
+<apex:axis type="Category" position="bottom" fields="name">
+
+
+<apex:chartLabel rotate="60"/>
+
+
+</apex:axis>
+
+
+<apex:barSeries orientation="vertical" axis="left"  stacked="true"
+
+
+xField="name" yField="offTrack,onTrack,complete,NA" title="InComplete OffTrack,InComplete OnTrack,Complete,NA" colorSet="#ff0000, #FFA500,#008000, #808080">
+
+
+<!-- <apex:chartTips height="20" width="120" rendererFn="renderTooltipStacked"/> -->
+
+
+</apex:barSeries>
+
+
+</apex:chart>
+</td>
+</tr>
+
+</table>
+
+
+</apex:page>

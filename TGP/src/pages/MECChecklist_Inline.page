@@ -1,0 +1,234 @@
+<!--
+Author :Mayank Tayal
+Story:MOB_035,MOB_034, MOB_036, MOB_136
+Description: This Page  is used initiate, update, submit MEC Checklist
+
+Updated by        Story no.                Update Date        Update details
+------------     -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Deal_TGP__c" extensions="MECChecklist_InlineController" sidebar="true" showHeader="true" >
+<style>
+.activeTab {background-color: #236FBD; color:white; 
+         background-image:none}
+      .inactiveTab { background-color: lightgrey; color:black; 
+         background-image:none}
+</style>
+<script>
+ var newWin=null;
+ function openPopup()
+ {
+    var url="/resource/MECCheckListNewHelpImage";
+    newWin=window.open(url, "Popup","height=500,width=800,left=200,top=200,resizable=no,scrollbars=yes,toolbar=no,status=no");
+    newWin.focus();
+     
+    return false;
+ }
+                  
+                  
+  function closePopup()
+  {
+    if (null!=newWin)
+    {
+      newWin.close();
+    }  
+  }
+</script>
+<script>
+var strurl = location.href;
+var newUrl = strurl.replace('&inline=1', '');
+if(newUrl != strurl )
+{
+    window.top.location=newUrl;
+}
+//Used to prevent the default focus on the calendar field.
+window.onload=setFocus
+function setFocus()
+{
+    document.getElementById("hideElement").focus();
+}
+    function confirmSubmit()
+    {
+        var r=confirm("Are you sure you want to submit?");                       
+        return r;
+    }
+    function checkDate()
+    {
+        isDateChanged();
+    }      
+</script>
+
+<!-- Style Panel Satrts--->   
+    <style type="text/css">   
+        .imgclass:hover{   
+            background-image: url(/img/help/helpOrbs.gif);   
+            background-repeat: no-repeat;   
+            width: 16px;   
+            height: 15px;      
+            background-position: right;   
+          
+        }   
+        .imgclass{   
+            background-image: url(/img/help/helpOrbs.gif);   
+            background-repeat: no-repeat;   
+            width: 16px;   
+            height: 15px;   
+        } 
+        .blue{
+            color :blue;
+        }  
+    </style>   
+<!-- Style Panel Ends--->   
+
+<input type="hidden" id="hideElement" />
+  <apex:form id="formMsg">
+        <apex:pageMessages rendered="{!showMainMsg}"></apex:pageMessages>
+  </apex:form>
+  <apex:form id="form1" rendered="{!showForm}">
+      <apex:actionFunction action="{!checkDateChange}" name="isDateChanged" reRender="formMsg"/>
+      <apex:variable value="{!MECUserValues}" var="main" />
+      <apex:pageBlock title="BPO Mobilization Minimum Entry Criteria" id="pblk1">
+          <apex:pageBlockButtons location="top">
+              <apex:commandButton onclick="openPopup();" value="Help" />
+          </apex:pageBlockButtons>
+          <apex:pageBlockSection columns="2" collapsible="false" id="pbsec1">
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Deal Name"/>
+                <apex:outputLink value="/{!dealRecord.id}">
+                    <apex:outputField value="{!dealRecord.name}" label="Deal"/>
+                </apex:outputLink>
+              </apex:pageBlockSectionItem> 
+              <apex:outputText value="{!clientName}" label="Project/ Client Name" />             
+              <apex:outputField value="{!mecVersionRecord.Version_Name__c}" label="MEC Post Contract Version Name" />              
+              <apex:inputField value="{!main.mecContractUser.Stage__c}" label="Stage" id="stageFoc"/>
+              <apex:outputLabel ></apex:outputLabel>
+              <apex:inputField value="{!main.mecContractUser.Tier_Rating__c}" label="Tier Rating"/>              
+                            
+              <apex:pageBlockSection columns="1">
+                  <table border="1" style="border:1px solid black;width:80%;border-collapse:collapse;">
+                      <tr style="border:1px solid black;">
+                      <th width="500" style="border:1px solid black;"></th>
+                      <th width="500" style="border:1px solid black;">Primary</th>
+                      <th width="500" style="border:1px solid black;">Secondary1</th>
+                      <th width="500" style="border:1px solid black;">Secondary2</th>
+                      </tr>
+                      <tr style="border:1px solid black;">
+                          <td style="border:1px solid black;"><b>Lead Solution Architect - BPO</b>
+                          <img src="/s.gif" Class="imgclass" title="If multiple offerings, this is the Enterprise Architect"/> </td>
+                          <td style="border:1px solid black;">{!Deal_TGP__c.Solution_Architect_New__r.name}</td>
+                          <td style="border:1px solid black;"></td>
+                          <td style="border:1px solid black;"></td>
+                      </tr>
+                      <tr style="border:1px solid black;">
+                          <td style="border:1px solid black;"><b>Mobilization Architect</b></td>
+                          <td style="border:1px solid black;">{!mobArchPrimary}</td>
+                          <td style="border:1px solid black;">{!mobArchSecondary}</td>
+                          
+                          <td style="border:1px solid black;">{!mobArchSecondary1}</td>
+                          
+                          
+                      </tr>
+                      <tr style="border:1px solid black;">
+                          <td style="border:1px solid black;"><b>Governance Lead</b></td>
+                          <td style="border:1px solid black;">{!govLeadPrimary}</td>
+                          <td style="border:1px solid black;">{!govLeadSecondary}</td>
+                          
+                          <td style="border:1px solid black;">{!govLeadSecondary1}</td>
+                          
+                          
+                      </tr>
+                  </table>                  
+              </apex:pageBlockSection>              
+          </apex:pageBlockSection>
+                             
+          <apex:tabPanel switchType="client" value="{!tabValue}" id="theTabPanel" inactiveTabClass="inactiveTab" >
+              <!--<apex:tab label="Entry Criteria for Due Diligence" name="tab1" id="tabOne" >
+                  <apex:pageMessages rendered="{!dueDiliTab}" ></apex:pageMessages>
+                  <h1>This Page is Under Construction and would be implemented in R3!</h1>
+              </apex:tab>-->
+              <apex:tab label="Entry Criteria for Project Execution" name="tab2" id="tabTwo" >                   
+                  <apex:pageMessages rendered="{!prjExecTab}" ></apex:pageMessages>
+                  <apex:pageBlock id="tbpgbl1" >                      
+                      <apex:pageBlockButtons >
+                          <apex:commandButton value="Save" action="{!saveMECChecklist}" reRender="form1,formMsg"/>
+                          <apex:commandButton value="Submit" action="{!submitMECChecklist}" rendered="{!submitButton}" onclick="return confirmSubmit();" />
+                          <apex:commandButton value="Cancel" action="{!doCancelChecklist}"/>
+                      </apex:pageBlockButtons>
+                      <apex:pageBlockSection columns="1" >                         
+                              <apex:pageBlockSection collapsible="false" columns="1" title="To be filled by Governance Leads only" rendered="{!govLeadWrite}">
+                                  <apex:outputText value="{!main.mecContractUser.Entry_Criteria_for_Project_Execution__c}" style="font-family:arial;background-color:{!main.projectExecColor};font-size:15px;" />
+                                  <apex:inputField value="{!main.mecContractUser.Capability_Assessment__c}" label="Capability / Governance Lead's Assessment post Review" style="background-color:{!main.assessmentColor};" id="capDrop"/>
+                                  <apex:inputField value="{!main.mecContractUser.Commercial_Commitment_obtained__c}" label="Contract Signed  / LOI Signed / OG Partner Commercial Commitment obtained" style="background-color:{!main.contractColor};"/>                                  
+                                  <br/>
+                                  <apex:inputField value="{!main.mecContractUser.Governance_Lead_Comments__c}" label="Conclusion Post Capability / Governance Lead Review" style="width:40%;height:100px;"/>
+                              </apex:pageBlockSection>
+                              <apex:pageBlockSection collapsible="false" columns="1" title="To be filled by Governance Leads only" rendered="{!govLeadRead}">
+                                  <apex:outputText value="{!main.mecContractUser.Entry_Criteria_for_Project_Execution__c}" style="font-family:arial;background-color:{!main.projectExecColor};font-size:15px;" />
+                                  <apex:outputText value="{!main.mecContractUser.Capability_Assessment__c}" label="Capability / Governance Lead's Assessment post Review" style="background-color:{!main.assessmentColor};" id="capDrop"/>
+                                  <apex:outputText value="{!main.mecContractUser.Commercial_Commitment_obtained__c}" label="Contract Signed  / LOI Signed / OG Partner Commercial Commitment obtained" style="background-color:{!main.contractColor};"/>                                  
+                                  <br/>
+                                  <apex:outputField value="{!main.mecContractUser.Governance_Lead_Comments__c}" label="Conclusion Post Capability / Governance Lead Review" style="width:40%;height:100px;"/>
+                              </apex:pageBlockSection>
+                              
+                              <apex:pageBlockSection collapsible="false" columns="1" title="To be filled by Mobilization Architects only" rendered="{!mobArchWrite}" >
+                                  <apex:pageBlockSectionItem >                                      
+                                      <apex:outputLabel value="MEC submission date (for submitting to Governance Lead)" />
+                                      <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                        <apex:outputPanel styleClass="requiredBlock"/>
+                                            <apex:inputField value="{!main.mecContractUser.MEC_Submission_End_Date__c}" label="MEC submission date (for submitting to Governance Lead)" onchange="return checkDate();"/>
+                                        </apex:outputPanel>                                  
+                                  </apex:pageBlockSectionItem>
+                                  <apex:pageBlockSectionItem >
+                                      <apex:outputLabel value="Governance Lead Review Date(for submission)" />
+                                      <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                        <apex:outputPanel styleClass="requiredBlock"/>
+                                            <apex:inputField value="{!main.mecContractUser.Governance_Lead_Review_End_Date__c}" label="Governance Lead Review Date(for submission)"/>
+                                        </apex:outputPanel>                                  
+                                  </apex:pageBlockSectionItem>                              
+                              </apex:pageBlockSection>
+                              <apex:pageBlockSection collapsible="false" columns="1" title="To be filled by Mobilization Architects only" rendered="{!mobArchRead}" >
+                                  <apex:pageBlockSectionItem >
+                                      <apex:outputLabel value="MEC submission date (for submitting to Governance Lead)" />                                      
+                                      <apex:outputField value="{!main.mecContractUser.MEC_Submission_End_Date__c}" label="MEC submission date (for submitting to Governance Lead)"/>                                  
+                                  </apex:pageBlockSectionItem>
+                                  <apex:pageBlockSectionItem >
+                                      <apex:outputLabel value="Governance Lead Review Date(for submission)" />                                      
+                                      <apex:outputField value="{!main.mecContractUser.Governance_Lead_Review_End_Date__c}" label="Governance Lead Review Date(for submission)"/>                                  
+                                  </apex:pageBlockSectionItem>                              
+                              </apex:pageBlockSection>
+                          
+                      </apex:pageBlockSection>
+                      <apex:pageBlockSection columns="1" >                          
+                              <apex:pageBlockTable value="{!MECQuestionnaire}" var="secQues">
+                                  <apex:column width="200">
+                                        <apex:outputText value="{!secQues.mandatoryMessage}" style="font-weight:bold;font-size:30;"/>
+                                  </apex:column>
+                                  <apex:column headerValue="Category" width="180">
+                                        <apex:outputField value="{!secQues.mecContractQuesUser.Category_Name__c}"/>
+                                  </apex:column>
+                                  <apex:column headerValue="Satisfaction Rating" width="100">
+                                        <apex:inputField value="{!secQues.mecContractQuesUser.Satisfaction_Rating__c}" style="background-color:{!secQues.ratingColor};"/>
+                                  </apex:column>
+                                  <apex:column headerValue="Criteria" width="820">
+                                        <apex:outputField value="{!secQues.mecContractQuesUser.Criteria__c}"/>
+                                  </apex:column>
+                                  <apex:column headerValue="Comments(Max Limit on character:32768)" width="200">
+                                        <apex:inputField value="{!secQues.mecContractQuesUser.Comments__c}" style="width:90%"/>
+                                  </apex:column>
+                              </apex:pageBlockTable>
+                          <!-- </apex:repeat> -->
+                      </apex:pageBlockSection>
+                  </apex:pageBlock>
+              </apex:tab>
+          </apex:tabPanel>
+      </apex:pageBlock>
+      <apex:actionFunction action="{!getActionFunction}" name="getInitialize" reRender="form1"/>
+        <script>            
+            if({!intCount}==1)
+            {
+                window.onload=getInitialize();
+            }        
+        </script>
+     </apex:form>
+</apex:page>

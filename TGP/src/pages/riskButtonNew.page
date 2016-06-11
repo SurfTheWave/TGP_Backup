@@ -1,0 +1,28 @@
+<!--
+Author :  Shridhar Patankar
+Story  : Story-0044/SOL_011  
+Description : .Added for Button Go to Risk.Display logic for Risk. 
+
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Opportunity_Offering__c" showHeader="true" sidebar="true" extensions="RiskButtonController">
+
+ <apex:form >
+ <apex:pageMessages />
+ <apex:outputpanel id="fullsearchbuttonpanel">
+
+  <apex:actionRegion id="FullSearchActionRegion">
+  <br/>
+  <apex:commandButton id="btnFullSearch1"  action="{!getRisk}" value="Go to Risk" >
+ <!-- <apex:actionSupport event="onClick" action="{!getClientDependency}" status="workstatustwo" /> -->
+  </apex:commandButton>
+  </apex:actionRegion>
+  </apex:outputpanel>
+ 
+ </apex:form>
+</apex:page>

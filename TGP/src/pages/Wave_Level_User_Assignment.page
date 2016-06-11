@@ -1,0 +1,80 @@
+<apex:page standardController="Deal_TGP__c" title="addnewRecord" extensions="Wave_DealUserAssignedController" id="pg">
+
+
+<apex:form id="msg" >
+    <apex:pageMessages />
+</apex:form>
+<apex:form id="frm" rendered="{!isNA}">    
+    <apex:pageBlock >
+        <apex:pageBlockButtons rendered="{!isAddVisible}">
+            <apex:commandButton value="Edit" action="{!edit}" id="editButton" reRender="frm,msg"  rendered="{!IF(isNA && isEdit,false,true)}" />
+            <apex:commandButton value="Save" action="{!save}" id="saveButton" reRender="frm,msg" rendered="{!IF(isNA && isEdit,true,false)}" oncomplete="refreshPage();"/>
+            <apex:commandButton action="{!cancel}" id="cancelButton" value="Cancel" reRender="frm,msg" rendered="{!IF(isNA && isEdit,true,false)}" />
+        </apex:pageBlockButtons>
+        <apex:pageBlockTable value="{!waveUserAssignList}" var="userAssign" styleClass="inlineEditTbl" id="userTable" rendered="{!IF(isNA && isEdit,true,false)}">   
+        
+             <apex:column headerValue="Location">
+                <apex:outputText value="{!userAssign.location}" />
+             </apex:column>
+             <apex:column headerValue="Wave">
+                <apex:outputText value="{!userAssign.wave}" />
+                
+             </apex:column>
+             <apex:column headerValue="Role Name">
+                <apex:outputText value="{!userAssign.roleName}" />
+             </apex:column>                  
+             <apex:column headerValue="Primary Lead">
+                <apex:inputField value="{!userAssign.userRoleAssignment.User_Assigned_New__c}"/>
+                
+            </apex:column>
+            <apex:column headerValue="Secondary Lead 1">
+                <apex:inputField value="{!userAssign.userRoleAssignment.User_Assigned_Secondary_New__c}"/>
+            </apex:column>
+            <apex:column headerValue="Secondary Lead 2">
+                <apex:inputField value="{!userAssign.userRoleAssignment.User_Assigned_Secondary_Lead__c}"/>
+            </apex:column>    
+                 
+        </apex:pageBlockTable>
+
+        <apex:pageBlockTable value="{!waveUserAssignList}" var="userAssign" styleClass="inlineEditTbl" id="userTableReadOnly" rendered="{!IF(isNA && isEdit,false,true)}">    
+            <apex:column headerValue="Location Name">
+                <apex:outputText value="{!userAssign.location}" />
+            </apex:column>
+            <apex:column headerValue="Wave Name">
+                <apex:outputText value="{!userAssign.wave}" />
+            </apex:column>
+            <apex:column headerValue="Role Name">
+                <apex:outputText value="{!userAssign.roleName}" />
+            </apex:column>                  
+             <apex:column headerValue="Primary Lead">
+                <apex:outputText value="{!userAssign.primaryLead}">
+                     
+                </apex:outputText>    
+            </apex:column>
+             <apex:column headerValue="Secondary Lead 1">
+                <apex:outputText value="{!userAssign.secLead1 }">
+                     
+                </apex:outputText>    
+            </apex:column>
+            <apex:column headerValue="Secondary Lead 2">
+                <apex:outputText value="{!userAssign.secLead2 }">
+                     
+                </apex:outputText>    
+            </apex:column>            
+        </apex:pageBlockTable>
+
+    </apex:pageBlock>      
+    <apex:inputHidden value="{!isError}" id="isErrorHidden" />    
+</apex:form>  
+<script>
+function refreshPage()
+{
+    var objError = document.getElementById("{!$Component.frm.isErrorHidden}");
+    var strError = objError.value;
+    if ( objError != null && strError != '' && strError =='false' ) 
+       // window.top.location='/{!Deal_TGP__c.id}';
+}
+</script>     
+
+
+</apex:page>

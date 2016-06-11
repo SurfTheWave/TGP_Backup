@@ -1,0 +1,37 @@
+<apex:page standardController="Opportunity_Offering__c" extensions="ExportRiskController" contentType="application/vnd.ms-excel"  showHeader="false" sidebar="false"  cache="true" readOnly="true">
+   
+   <!-- <apex:form id="form3"> -->
+     <apex:pageBlock title="Risk Details">
+        
+                <apex:pageBlockTable value="{!lstRisk}" var="profDetail" >
+                        <apex:column headerValue="Category" value="{!profDetail.Category_Master__r.name}"/>
+                          
+                                                    
+                        <apex:column headerValue="Risk" value="{!profDetail.Risk__c}"/ >
+                            
+                        <apex:column headerValue="Services" value="{!profDetail.Services_per_Offering__c}"/ >
+                           
+                        <apex:column value="{!profDetail.Classification__c}" />
+                            
+                        <apex:column value="{!profDetail.Risk_Impact__c}"/ >
+                        
+                         <apex:column value="{!profDetail.Potential_Impact__c}"/ >
+                            
+                        <apex:column value="{!profDetail.Mitigation__c}"/ >
+                           
+                        <apex:column headerValue="Risk Probability %" value="{!profDetail.Risk_probability__c}" />
+                            
+                        <apex:column value="{!profDetail.Raised_by__c}"/ >
+                        
+                        <apex:column value="{!profDetail.Raised_On__c}"/ >
+                           
+                        <apex:column value="{!profDetail.Editable_form__c}" />
+                            
+                        <apex:column value="{!profDetail.Applicable_form__c}"/ >
+                        
+                </apex:pageBlockTable>
+            
+      </apex:pageBlock>
+<!--    </apex:form>  -->
+
+</apex:page>

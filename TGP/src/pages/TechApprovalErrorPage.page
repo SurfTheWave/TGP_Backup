@@ -1,0 +1,41 @@
+<apex:page showHeader="true" sidebar="true" standardController="Tech_Approval_Request__c" extensions="TechApproverSection" id="TechApprovalPage">
+<script>
+   
+     var url = location.href;
+     var match = url.match('&inline=1');
+    if (match != null) { 
+        var newUrl = url.replace('&inline=1', '');
+        window.top.location=newUrl;
+    }
+</script>
+<apex:form id="formTag1" rendered="{!match}">
+     <table>
+          <tr>
+			<td><span style="font-weight: bold; font-size: 12pt;">Approval action cannot be completed!</span></td>
+           </tr>
+           <tr>
+			<td>
+				Final Approval can be recorded after outstanding supporting approvals are approved.You will receive an email from Solution Workbench when the supporting approvals are in an approved status.
+    		<br/> <br/>
+			Click <apex:commandLink value="here" action="{!GoTOOpportunity}"/>  to return to the previous page.
+			</td>
+ 		</tr>
+	</table>
+</apex:form>
+
+<apex:form id="formTag2" rendered="{!if((match==false),true,false)}">
+     <table>
+          <tr>
+			<td><span style="font-weight: bold; font-size: 12pt;">Approval action cannot be completed.Mandatory field missing!</span></td>
+           </tr>
+           <tr>
+			<td>
+				Required Field Missing.You need to enter a value for Tech Solution Deck Score.
+    		<br/> <br/>
+			Click <apex:commandLink value="here" action="{!GoTOOpportunity}"/>  to return to the previous page.
+			</td>
+ 		</tr>
+	</table>
+</apex:form>
+<!-- End Default Content REMOVE THIS -->
+</apex:page>

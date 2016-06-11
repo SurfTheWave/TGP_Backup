@@ -1,0 +1,20 @@
+<apex:page standardController="Sync_Status__c" extensions="SyncErrorController" showHeader="false">
+  <apex:form >
+      <apex:pageBlock >
+       <apex:pageBlockSection rendered="{!showBPOblock}" title="Sync Status BPO"> 
+           <apex:outputField value="{!syncstatus.Last_Synced_By__c}"/>
+           <apex:outputField value="{!syncstatus.Sync_Initiated_Time__c}"/>
+           <apex:outputField value="{!syncstatus.Final_Sync_Result__c}"/>
+           <apex:outputField value="{!syncstatus.Error__c}"/>
+           <apex:outputField value="{!syncstatus.Synced_Scenario__c}"/>
+       </apex:pageBlockSection>
+       <apex:pageBlockSection rendered="{!showIOblock}" title="Sync Status IO"> 
+           <apex:outputField value="{!syncstatus.Last_Synced_By_IO__c}"/>
+           <apex:outputField value="{!syncstatus.Sync_Initiated_Time__c}"/>
+           <apex:outputField value="{!syncstatus.Final_Sync_Result__c}"/>
+           <apex:outputField value="{!syncstatus.Error_IO__c}"/>
+           <apex:outputField value="{!syncstatus.Synced_Scenario_IO__c}"/>
+       </apex:pageBlockSection>
+      </apex:pageBlock>  
+  </apex:form>
+</apex:page>

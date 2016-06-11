@@ -1,0 +1,2 @@
+<apex:page standardController="Opportunity_Delivery_Location__c" extensions="SObjectNewActionOverrideController" action="{!onLoadPage}">
+</apex:page>

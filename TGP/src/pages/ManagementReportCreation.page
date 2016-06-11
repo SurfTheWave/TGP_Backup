@@ -1,0 +1,406 @@
+<apex:page controller="ManagementReportCreation" >
+<style type="text/css">
+.bPageBlock .pbBody { background-color:red; }
+</style>
+ <apex:form >
+
+   <apex:pageblock >
+   
+   
+  <table width="100%">
+  <tr>
+    <th  bgcolor="#236FBD" height="20px;"> Report Section</th>
+  </tr>
+  <tr>
+    <td>
+    <apex:pageBlockSection id="mainSection" columns="2"> 
+          <apex:actionRegion >
+             <apex:selectList value="{!selectedValue}" size="1">
+                        <apex:selectOptions value="{!reportList}"/>    
+                        <apex:actionSupport event="onchange" action="{!updateData}" />
+                    </apex:selectList>
+          </apex:actionRegion>
+    </apex:pageBlockSection>      
+    </td>
+  </tr>
+</table>
+
+<table width="100%">
+  <tr>
+   <!-- <th  bgcolor="#6495ED" height="20px;"> Search Criteria</th> -->
+     <th  bgcolor="#236FBD" height="20px;"> Search Criteria</th>
+  </tr>
+  <tr>
+    <td> 
+     <apex:pageBlockSection id="mainSection1" columns="4">
+            
+            <apex:pageBlockSection id="section1" columns="4" rendered="{!section1}">                
+                
+                <!--    <apex:outputLabel value="Deal Name:" style="font-weight:bold;"/>
+                <apex:selectList id="dealSelect" value="{!listDealSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="dealSelectValue" value="{!dealList}"/>
+                </apex:selectList> -->
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Receiving GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="DeliveryLocSelect" value="{!listDeliveryLocSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="DeliveryLocSelectValue" value="{!DeliveryLocations}"/>
+                </apex:selectList>
+                
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe1}" value=" Run Report" />
+                  </td>
+               </tr>
+               
+            </apex:pageBlockSection>
+    
+            <apex:pageBlockSection id="section2" columns="4" rendered="{!section2}">
+               
+           <!--    <apex:outputLabel value="Deal Name:" style="font-weight:bold;"/>
+                <apex:selectList id="dealSelect" value="{!listDealSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="dealSelectValue" value="{!dealList}"/>
+                </apex:selectList> -->
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe2}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+             <apex:pageBlockSection id="section3" columns="4" rendered="{!section3}">
+               
+               <!--    <apex:outputLabel value="Deal Name:" style="font-weight:bold;"/>
+                <apex:selectList id="dealSelect" value="{!listDealSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="dealSelectValue" value="{!dealList}"/>
+                </apex:selectList> -->
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe3}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+             <apex:pageBlockSection id="section4" columns="4" rendered="{!section4}">
+               
+               <!--    <apex:outputLabel value="Deal Name:" style="font-weight:bold;"/>
+                <apex:selectList id="dealSelect" value="{!listDealSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="dealSelectValue" value="{!dealList}"/>
+                </apex:selectList> -->
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe4}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+             <apex:pageBlockSection id="section5" columns="4" rendered="{!section5}">
+               
+               <!--    <apex:outputLabel value="Deal Name:" style="font-weight:bold;"/>
+                <apex:selectList id="dealSelect" value="{!listDealSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="dealSelectValue" value="{!dealList}"/>
+                </apex:selectList> -->
+                
+                <!-- <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList> -->
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe5}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+             <apex:pageBlockSection id="section6" columns="4" rendered="{!section6}">
+               
+               <!--    <apex:outputLabel value="Deal Name:" style="font-weight:bold;"/>
+                <apex:selectList id="dealSelect" value="{!listDealSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="dealSelectValue" value="{!dealList}"/>
+                </apex:selectList> -->
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Receiving GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="DeliveryLocSelect" value="{!listDeliveryLocSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="DeliveryLocSelectValue" value="{!DeliveryLocations}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe6}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+             <apex:pageBlockSection id="section7" columns="4" rendered="{!section7}">
+               
+              <!--    <apex:outputLabel value="Deal Name:" style="font-weight:bold;"/>
+                <apex:selectList id="dealSelect" value="{!listDealSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="dealSelectValue" value="{!dealList}"/>
+                </apex:selectList> -->
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe7}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+             <apex:pageBlockSection id="section8" columns="4" rendered="{!section8}">
+               
+               <!--    <apex:outputLabel value="Deal Name:" style="font-weight:bold;"/>
+                <apex:selectList id="dealSelect" value="{!listDealSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="dealSelectValue" value="{!dealList}"/>
+                </apex:selectList> -->
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe8}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+             <apex:pageBlockSection id="section9" columns="4" rendered="{!section9}">
+                              
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Receiving GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="DeliveryLocSelect" value="{!listDeliveryLocSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="DeliveryLocSelectValue" value="{!DeliveryLocations}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Deal Name:" style="font-weight:bold;"/>
+                <apex:selectList id="dealSelect" value="{!listDealSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="dealSelectValue" value="{!dealList}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe9}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+             <apex:pageBlockSection id="section10" columns="4" rendered="{!section10}">
+               
+               <!--    <apex:outputLabel value="Deal Name:" style="font-weight:bold;"/>
+                <apex:selectList id="dealSelect" value="{!listDealSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="dealSelectValue" value="{!dealList}"/>
+                </apex:selectList> -->
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe10}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="section11" columns="4" rendered="{!section11}">
+               
+               <!--    <apex:outputLabel value="Deal Name:" style="font-weight:bold;"/>
+                <apex:selectList id="dealSelect" value="{!listDealSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="dealSelectValue" value="{!dealList}"/>
+                </apex:selectList> -->
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe11}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="section12" columns="4" rendered="{!section12}">
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                <apex:outputLabel value="Receiving GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="DeliveryLocSelect" value="{!listDeliveryLocSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="DeliveryLocSelectValue" value="{!DeliveryLocations}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe12}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="section13" columns="4" rendered="{!section13}">
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe13}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="section14" columns="4" rendered="{!section14}">
+                
+               <!-- <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList> -->
+                
+                <apex:outputLabel value="Receiving GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="DeliveryLocSelect" value="{!listDeliveryLocSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="DeliveryLocSelectValue" value="{!DeliveryLocations}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe14}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="section15" columns="4" rendered="{!section15}">
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe15}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+             <apex:pageBlockSection id="section16" columns="4" rendered="{!section16}">
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                
+                <apex:outputLabel value="Receiving GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="DeliveryLocSelect" value="{!listDeliveryLocSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="DeliveryLocSelectValue" value="{!DeliveryLocations}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe16}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="section17" columns="4" rendered="{!section17}">
+                
+                <apex:outputLabel value="Sending GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="clGeoAreaSelect" value="{!listGeoAreaSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="clGeoAreaSelectValue" value="{!clientGeoArea}"/>
+                </apex:selectList>
+                
+                
+                <apex:outputLabel value="Receiving GEO:" style="font-weight:bold;"/>
+                <apex:selectList id="DeliveryLocSelect" value="{!listDeliveryLocSelected}" multiselect="false" size="1" style="width:170px;height:20px;">
+                    <apex:selectOptions id="DeliveryLocSelectValue" value="{!DeliveryLocations}"/>
+                </apex:selectList>
+                               
+                <tr>
+                  <td colspan="4">
+                     <apex:commandButton action="{!reloadIframe17}" value=" Run Report" />
+                  </td>
+               </tr>
+            
+            </apex:pageBlockSection>
+            
+     </apex:pageBlockSection>
+</td>
+  </tr>
+</table>            
+          <!--  <apex:outputPanel id="theFrame1" >
+                   <a href="#" target="_self">
+                        <iframe height="600" marginheight="0" src="{!iframeSource1}" frameborder="0" width="100%" marginwidth="0"></iframe>
+                    </a>                
+            </apex:outputPanel> -->
+ 
+             <apex:outputPanel id="theFrame" >
+              <!--  <apex:iframe src="{!iframeSource}" frameborder="0" width="100%" marginwidth="0"/>
+                   <apex:iframe src="/{!iframeSource.Id}?isdtp=mn" scrolling="true" id="theIframe" />?   -->
+                    <a href="#" target="_self">
+                        <iframe height="600" marginheight="0" src="{!iframeSource}" frameborder="0" width="100%" marginwidth="0"></iframe>
+                    </a>                
+            </apex:outputPanel>
+    </apex:pageblock>
+ </apex:form>
+</apex:page>

@@ -1,0 +1,377 @@
+<!--
+Author : Varsha Chougle
+Story  : Story-0054/SOL_006  
+Description :Create/maintain an opportunity data.. 
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Opportunity_TGP__c" extensions="InsertNewopportunityExtension" tabStyle="Opportunity_TGP__c">
+<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />
+<script>
+jQuery(document).ready(function () {
+    jQuery('[id$=inputSerGr]').find('[value=""]').remove();  
+});
+</script>
+
+ <style type="text/css">   
+        .imgclass:hover{   
+            background-image: url(/img/help/helpOrbs.gif);   
+            background-repeat: no-repeat;   
+            width: 16px;   
+            height: 15px;      
+            background-position: right;   
+          
+        }   
+        .imgclass{   
+            background-image: url(/img/help/helpOrbs.gif);   
+            background-repeat: no-repeat;   
+            width: 16px;   
+            height: 15px;   
+        } 
+        
+    </style>   
+<script>
+    
+    
+    function hideSAPID(newval)
+    {   
+          
+        if(newval=='No')
+        {   
+            NoFunc();    
+        }
+        else
+        {            
+            YesFunc();
+        }
+    }
+    function prevPage()
+      {
+         
+          window.history.back();                               
+      }
+</script>
+    <apex:form id="formMsg" rendered="{!showFormMsg}">
+        <apex:inputHidden id="strUrlPrev" value="{!strUrl}"/>
+        <apex:inputHidden id="keyPrefix" value="{!keyPrefix}"/>
+        <apex:pageMessages ></apex:pageMessages>
+        <br/>
+       <!-- <h1>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            Click &nbsp;<apex:outputLink onclick="prevPage();">Here</apex:outputLink> to Return to Previous Page!
+        </h1> -->
+    </apex:form>
+    
+    <apex:form rendered="{!if(showFormMsg,false,true)}" id="mainform">
+     <apex:pageMessages id="msg"/>   
+        <apex:actionFunction action="{!NoSAPID}" name="NoFunc"/>
+        <apex:actionFunction action="{!YesSAPID}" name="YesFunc"/>
+        <apex:variable value="{!Opportunity_TGP__c}" var="o"/>
+        <apex:pageblock >
+        
+            <apex:pageBlockSection columns="3" rendered="{!NOT(editValue)}">
+                 <apex:outputLabel value="SAP OM ID available?(Y/N)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <apex:selectList value="{!Option}" multiselect="false" size="1" onchange="hideSAPID(this.value);" id="selectList"> 
+                        <apex:selectOptions value="{!SAPOMIDOptions}"/>
+                    </apex:selectList>
+                </apex:outputLabel>
+                
+                <apex:inputField value="{!o.SAP_OM_Opportunity__c}" rendered="{!field1}"></apex:inputField>
+                <!--<apex:inputField value="{!o.SAP_OM_ID__c}" rendered="{!field2}" />-->
+                
+                 <apex:actionStatus id="next_Btn">                 
+                            <apex:facet name="stop">
+                                 <apex:commandButton action="{!NextSection}" value="Next" reRender="newPage,buttons,msg,mainform" rendered="{!displayButton}" status="next_Btn" />
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                  <apex:commandButton action="{!NextSection}" value="Next..." reRender="newPage,buttons,msg,mainform" rendered="{!displayButton}" disabled="true"  status="next_Btn"/>
+                                </apex:outputPanel>
+                             </apex:facet> 
+                           </apex:actionStatus>   
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="3" rendered="{!editValue}">
+                 <apex:outputLabel value="SAP OM ID available?(Y/N)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                   <apex:outputLabel value="Yes" />
+                </apex:outputLabel>
+                
+                <apex:inputField value="{!o.SAP_OM_Opportunity__c}" rendered="{!field1}"></apex:inputField>
+                <!--<apex:inputField value="{!o.SAP_OM_ID__c}" rendered="{!field2}" />-->
+                <apex:commandButton action="{!NextSection}" value="Next" reRender="newPage,buttons,msg" rendered="{!displayButton}"></apex:commandButton>  
+                <!--<apex:outputField value="{!o.SAP_OM_Opportunity__c}"></apex:outputField>-->
+               <!-- <apex:outputField value="{!o.SAP_OM_Opportunity__c}"></apex:outputField>-->
+                <!--<apex:inputField value="{!o.SAP_OM_ID__c}" rendered="{!field2}" />-->
+                
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+        <apex:pageBlock >   
+            
+        <apex:outputPanel id="newPage">
+        
+            <apex:pageBlockSection title="General Information" rendered="{!NewValue1}" collapsible="false">
+                
+                <apex:outputField value="{!o.Client_Name__c}"/>
+                <apex:outputField value="{!o.Activity__c}"/> 
+                <apex:outputField value="{!o.Name}"/>
+                <apex:outputField value="{!o.Stage__c}"/>
+                
+                <apex:outputField value="{!o.Client_Geo_Area__c}"/>
+                
+                <apex:inputField value="{!o.On_Hold__c}"/>
+                
+                <apex:outputField value="{!o.Client_Geo_Unit__c}"/>
+                
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Risk Level"/>
+                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                         <apex:outputPanel styleClass="requiredBlock"/>       
+                         <apex:inputField value="{!o.Risk_Level__c}" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem> 
+                
+                
+                <apex:outputField value="{!o.Operating_Group__c}"/>
+                
+                <apex:outputField value="{!o.Win_Probability__c}"/>
+                
+                <apex:pageBlockSectionItem >                                                        
+                <apex:outputlabel >BPO Net Revenue (SAP OM)<br/>(Thousands)</apex:outputlabel>                           
+                <apex:outputField value="{!o.TCV__c}"/>                            
+                </apex:pageBlockSectionItem>
+                
+                <apex:outputField value="{!o.Expected_contract_sign_qtr__c}"/>
+                
+                <apex:pageBlockSectionItem >                                                        
+                <apex:outputlabel >BPO Net Revenue (SD Estimate) equal to BPO Net Revenue<br/>(Thousands)
+                &nbsp;
+                <img src="/s.gif" Class="imgclass" title="Field is populated with value from SAP OM unless overwritten.  If value changes in SAP OM, value is updated in SWB."/>   
+                </apex:outputlabel>                     
+                <apex:outputField value="{!o.Estimated_TCV__c}"/>                          
+                </apex:pageBlockSectionItem>
+                
+                <apex:outputField value="{!o.Competitive_Sole_Source__c}"/>
+                
+                 <apex:outputField value="{!o.Pricing_Type__c}"/>  
+                
+                <apex:outputField value="{!o.Competitors__c}"/>             
+                
+                <apex:outputField value="{!o.Service_Group__c}"/>
+                
+                <apex:pageBlockSectionItem >                                                        
+                <apex:outputlabel >IS Net Revenue (SAP OM)</apex:outputlabel>                           
+                <apex:outputField value="{!o.IS_Net_Revenue_SAP__c}"/>                            
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >                                                        
+                <apex:outputlabel >IS Net Revenue (SD Estimate) equal to IS Net Revenue<br/>
+                </apex:outputlabel>                     
+                <apex:outputField value="{!o.IS_Net_Revenue_SD_Estimate__c}"/>                          
+                </apex:pageBlockSectionItem>
+                
+                
+                
+                <!--<apex:inputField value="{!o.Business_Problem__c}"/> -->
+                               
+                
+                
+                <!--<apex:inputField value="{!o.Business_Objective__c}"/>
+                <apex:inputField value="{!o.Non_standard_BPO_scope__c}"/>
+                <apex:inputField value="{!o.Accenture_non_BPO_scope__c}"/> -->
+                
+                      
+            </apex:pageBlockSection>
+      <!--      <apex:pageBlockSection title="Comments/Status" collapsible="false" columns="1" rendered="{!NewValue1}">
+                 
+                <apex:inputField value="{!o.Comments_Status__c}" style="width: 80%; height: 90px" rendered="{!NewValue1}"/>
+            </apex:pageBlockSection> -->
+            
+           <apex:pageBlockSection title="General Information" rendered="{!NewValue2}" collapsible="false">
+            <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Client Name"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                         <apex:outputPanel styleClass="requiredBlock"/>    
+                         <apex:inputField value="{!o.Client_Name__c}"  required="false" taborderhint="2"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Reporting Status"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block" >
+                         <apex:outputPanel styleClass="requiredBlock"/>       
+                         <apex:inputField value="{!o.Activity__c}" taborderhint="9"/>  
+                    </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Opportunity Name"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block" >
+                         <apex:outputPanel styleClass="requiredBlock"/>       
+                         <apex:inputField value="{!o.Name}" taborderhint="3"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Stage"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block" >
+                         <apex:outputPanel styleClass="requiredBlock"/>       
+                         <apex:inputField value="{!o.Stage__c}" taborderhint="1"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                   <apex:outputlabel value="Geo Region"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block" >
+                         <apex:outputPanel styleClass="requiredBlock"/> 
+                              <apex:selectList size="1" value="{!clientGeoAreaMaster}" required="true" tabindex="5">
+                                <apex:selectOptions value="{!clientGeoArea}"></apex:selectOptions>
+                              </apex:selectList>      
+                         <!--<apex:inputField value="{!o.Client_Geo_Area__c}" required="false"/>-->
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!o.On_Hold__c}" taborderhint="10"/>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Geo Unit"/>
+                              <apex:selectList size="1" value="{!clientGeoUnitMaster}" required="true" tabindex="6">
+                                <apex:selectOptions value="{!clientGeoUnit}"></apex:selectOptions>
+                              </apex:selectList>         
+                         <!--<apex:inputField value="{!o.Client_Geo_Unit__c}" required="false"/>-->
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >    
+                 <apex:outputLabel value="Risk Level"/>
+                 <apex:outputPanel styleClass="requiredInput" layout="block" >
+                 <apex:outputPanel styleClass="requiredBlock"/>  
+                <apex:inputField value="{!o.Risk_Level__c}" taborderhint="8"/>
+                 </apex:outputPanel>
+                 </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Operating Group"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block" >
+                         <apex:outputPanel styleClass="requiredBlock"/> 
+                              <apex:selectList size="1" value="{!operatingGroupMaster}" required="true" tabindex="7">
+                                <apex:selectOptions value="{!operatingGroup}"></apex:selectOptions>
+                              </apex:selectList>         
+                         <!--<apex:inputField value="{!o.Operating_Group__c}" required="false"/>-->
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                 <apex:inputField value="{!o.Win_Probability__c}"/>
+                
+                <apex:pageBlockSectionItem rendered="{!if(o.SAP_OM_Opportunity__c==null,true,false)}">
+                <apex:outputlabel >BPO Net Revenue (SAP OM)<br/>(Thousands)</apex:outputlabel>
+                <apex:inputField value="{!o.TCV__c}" >
+                </apex:inputField>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem rendered="{!if(o.SAP_OM_Opportunity__c!=null,true,false)}">
+                <apex:outputlabel >BPO Net Revenue (SAP OM)<br/>(Thousands)</apex:outputlabel>
+                <apex:outputField value="{!o.TCV__c}" >
+                </apex:outputField>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Expected Contract Sign (Quarter)"/>
+                    <!-- <apex:inputField value="{!o.Expected_contract_sign_qtr__c}" required="false"/> -->
+                         <apex:selectList size="1" value="{!quarterName}"  tabindex="4">
+                           <apex:selectOptions value="{!QuarterNames}"  ></apex:selectOptions>
+                        </apex:selectList>
+                    
+                </apex:pageBlockSectionItem>
+                
+               
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputlabel >BPO Net Revenue (SD Estimate) equal to BPO Net Revenue<br/>(Thousands)
+                <img src="/s.gif" Class="imgclass" title="Field is populated with value from SAP OM unless overwritten.  If value changes in SAP OM, value is updated in SWB."/>   
+                </apex:outputlabel>
+                <apex:inputField value="{!o.Estimated_TCV__c}">
+                </apex:inputField>
+                </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!o.Competitive_Sole_Source__c}"/>
+                
+                 <apex:inputField value="{!o.Pricing_Type__c}"/>
+                
+                <apex:inputField value="{!o.Competitors__c}"/>
+                <apex:inputField id="inputSerGr" value="{!o.Service_Group__c}"/>
+                
+                <apex:pageBlockSectionItem rendered="{!if(o.SAP_OM_Opportunity__c==null,true,false)}">
+                <apex:outputlabel >IS Net Revenue (SAP OM)</apex:outputlabel>
+                <apex:inputField value="{!o.IS_Net_Revenue_SAP__c}" >
+                </apex:inputField>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem rendered="{!if(o.SAP_OM_Opportunity__c!=null,true,false)}">
+                <apex:outputlabel >IS Net Revenue (SAP OM)</apex:outputlabel>
+                <apex:outputField value="{!o.IS_Net_Revenue_SAP__c}" >
+                </apex:outputField>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                <apex:outputlabel >IS Net Revenue (SD Estimate) equal to IS Net Revenue
+                </apex:outputlabel>
+                <apex:inputField value="{!o.IS_Net_Revenue_SD_Estimate__c}">
+                </apex:inputField>
+                </apex:pageBlockSectionItem>
+                
+                    
+                
+                <!--<apex:inputField value="{!o.Business_Problem__c}"/>-->
+                
+                
+                
+                <!--<apex:inputField value="{!o.Business_Objective__c}"/>
+                <apex:inputField value="{!o.Non_standard_BPO_scope__c}"/>
+                <apex:inputField value="{!o.Accenture_non_BPO_scope__c}"/>
+                -->
+
+                
+            </apex:pageBlockSection>
+     <!--       <apex:pageBlockSection title="Comments/Status" collapsible="false" columns="1" rendered="{!NewValue2}">
+                     
+                <apex:inputField value="{!o.Comments_Status__c}" style="width: 80%; height: 90px" rendered="{!NewValue2}" taborderhint="11"/>
+            </apex:pageBlockSection> -->
+            
+           
+           
+        </apex:outputPanel>
+        <apex:pageBlockButtons location="bottom" rendered="{!saveEditButtonRender}">              
+                     <apex:outputPanel id="buttons">
+                          
+                         <apex:actionStatus id="save_Btn">                 
+                            <apex:facet name="stop">
+                                 <apex:commandButton value="Save" action="{!saverecord}" rendered="{!NewValue4}" reRender="mainform" status="save_Btn"/>                            
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                  <apex:commandButton value="Saving..." action="{!saverecord}" rendered="{!NewValue4}" reRender="mainform" disabled="true"  status="save_Btn"/>  
+                                </apex:outputPanel>
+                             </apex:facet> 
+                           </apex:actionStatus>  
+                                            
+                         <apex:actionStatus id="Cancel_Btn">                 
+                            <apex:facet name="stop">
+                                 <apex:commandButton value="Cancel" action="{!Cancel}" reRender="mainform" status="Cancel_Btn" />                           
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                  <apex:commandButton value="Canceling..." action="{!Cancel}" reRender="mainform" disabled="true"  status="Cancel_Btn" /> 
+                                </apex:outputPanel>
+                             </apex:facet> 
+                           </apex:actionStatus> 
+                     </apex:outputPanel>
+          </apex:pageblockButtons> 
+                 
+     </apex:pageblock>       
+    </apex:form>   
+</apex:page>

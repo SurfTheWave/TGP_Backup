@@ -1,0 +1,50 @@
+<apex:page standardController="Deal__c" showHeader="true" sidebar="true" id="pagetag">
+    <apex:form id="formtag">
+        <apex:sectionHeader title="Deal Edit" subtitle="{!Deal__c.Name}" id="secHeader1"/>   
+        <apex:pagemessages />    
+        <apex:pageBlock title="Deal Edit" mode="edit" id="pgblock1">
+            <apex:pageBlockButtons id="pgbbuttons1">
+                <apex:commandButton value="Save" action="{!save}" id="savebutton"/>
+                <apex:commandButton value="Cancel" action="{!cancel}" id="cancelbutton"/>
+                <!--<apex:commandButton value="Save and New" action="{!saveAndNew}"/> -->
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title="Information" columns="2" id="pgbsec1">
+               
+                    <apex:inputField value="{!Deal__c.Opportunity__c}" required="True" id="Dopp"/>
+                     <apex:outputField value="{!Deal__c.Approver__c}" id="Dapprover"/>
+                    <apex:inputField value="{!Deal__c.Status__c}" id="Dstatus"/>
+                    <apex:outputField value="{!Deal__c.Approval_Status__c}" id="DAppStatus"/>
+                    <apex:inputField value="{!Deal__c.Governance_Attention_Level__c}" required="true" id="DGovAlevel"/>
+                     <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    <apex:inputField value="{!Deal__c.Governance_Attention_Notes__c}" />
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    <!--<apex:pageBlockSectionItem id="pgbsecitem1"></apex:pageBlockSectionItem>
+                    <apex:outputField value="{!Deal__c.OwnerId}" />-->
+                    <!--<apex:outputText value="{!Deal__c.Owner.Name}" label="Owner" id="Downer"></apex:outputText>-->
+                    <apex:inputField value="{!Deal__c.Name}" required="true" id="Dname"/>
+                    <apex:outputField value="{!Deal__c.Client__c}" id="Dclient"/>
+                    <apex:inputField value="{!Deal__c.Watch_List__c}" id="Dwatchlist"/>
+                    <apex:inputField value="{!Deal__c.Pricing_Type__c}" id="Dpricetype"/>
+                    <apex:inputField value="{!Deal__c.Start_Date_of_Transition__c}" id="Dstartdate"/>
+                    <apex:inputField value="{!Deal__c.Deal_Category__c}" id="DCategory"/>
+                    <apex:inputField value="{!Deal__c.Is_MEC_Initiated__c}" id="Dismecinitiated"/>
+                    <apex:inputTextarea value="{!Deal__c.X3rd_Party_Vendor_dependency_Comments__c}"  cols="40" rows="5" id="DX3rdComments"/>
+                    <apex:inputField value="{!Deal__c.X3rd_Party_Vendor_dependency__c}" id="DX3rddependency"/>
+                    <apex:inputField value="{!Deal__c.Offering_Deal__c}" id="DoffDeal"/>
+                    <apex:inputTextarea value="{!Deal__c.Offering_Opportunity__c}" cols="40" rows="3" id="DoffOpportunity"/>
+                    <apex:inputField value="{!Deal__c.Deal_RAG_status__c}" required="true" id="DragStatus"/>
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    <apex:inputTextarea value="{!Deal__c.Deal_Comments__c}" cols="40" rows="5" id="Dcomments"/>
+                    <apex:inputField value="{!Deal__c.Total_Contract_IO_Value__c}" required="true" id="DtotContractIO"/>
+                    <apex:inputField value="{!Deal__c.Total_Contract_BPO_Value__c}" required="true" id="DtotContractBPO"/>
+                    <apex:inputField value="{!Deal__c.Total_Contract_Value__c}" required="true" id="DtotContract"/>
+                    
+
+            </apex:pageBlockSection>
+            
+            
+        </apex:pageBlock>
+    
+    </apex:form>
+</apex:page>

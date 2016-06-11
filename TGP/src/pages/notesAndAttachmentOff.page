@@ -1,0 +1,8 @@
+<apex:page standardController="Opportunity_Offering__c">
+
+
+              <apex:relatedList subject="{!Opportunity_Offering__c}"  list="NotesAndAttachments" />
+            
+
+
+</apex:page>

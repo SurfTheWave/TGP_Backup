@@ -1,0 +1,62 @@
+<!--
+Author : Varsha Chougle
+Story  : Story-0298/MOB_158
+Description :Budget Variance tab. 
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+-->
+<apex:page standardController="Wave_Plan_Version__c" extensions="Mob_ContingecyAllocationController">
+<script>
+    function valueChanged(newval)
+    {   
+          
+        if(newval=='Allocate to Contingency Partially')
+        {   
+            PartialFunc();    
+        }
+        else
+        {
+            NoPartialFunc();
+        }
+    }
+</script>
+    <apex:form id="form0">
+        <apex:pagemessages ></apex:pagemessages>
+    </apex:form>
+    <apex:form id="form1">
+        <apex:actionFunction action="{!PartialFunc}" name="PartialFunc" reRender="section1"/>
+        <apex:actionFunction action="{!NoPartialFunc}" name="NoPartialFunc" reRender="section1"/>
+        <apex:pageBlock >
+                <br/>
+                <table border="0" width="400" height="100">
+                    <tr>
+                        <td width="250"><b><font color="blue" size="2">&nbsp;&nbsp;&nbsp;&nbsp;Total Cost Above Budget :</font></b></td>
+                        <td><b><font color="blue" size="2">{!totalCostAboveBudge}</font></b></td>
+                    </tr>
+                    <tr>
+                        <td><b><font color="blue" size="2">&nbsp;&nbsp;&nbsp;&nbsp;Change Order :</font></b></td>
+                        <td><b><font color="blue" size="2">{!sumOfChangeOrder}</font></b></td>
+                    </tr>
+                    <tr>
+                        <td><b><font color="blue" size="2">&nbsp;&nbsp;&nbsp;&nbsp;Cost Overrun :</font></b></td>
+                        <td><b><font color="blue" size="2">{!sumOfCostOverrun}</font></b></td>
+                    </tr>
+                </table>
+                <br/>
+                <apex:pageBlockSection id="section1">
+                <apex:selectRadio value="{!Option}">
+                    <apex:selectOptions value="{!items}"/>
+                </apex:selectRadio>
+                    <apex:pageblockSectionItem >
+                        <apex:outputlabel value="Contingency Amount :" />
+                            <apex:inputField value="{!strWavePlanVersion.Contingency_Amount__c}"/>
+                    </apex:pageblockSectionItem>
+                </apex:pageBlockSection>
+                <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Submit" action="{!submitData}" reRender="form0,form1" rendered="{!if(isFinalSubmit,false,true)}"/>
+                </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

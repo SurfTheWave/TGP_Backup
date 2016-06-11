@@ -1,0 +1,29 @@
+<!--
+Author : Shridhar Patankar
+Story :  Story-0043/SOL_010    
+Description :  Page for Go to Assumption button for display logic of Assumption.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Opportunity_Offering__c" showHeader="true" sidebar="true" extensions="AssumptionButtonController">
+ 
+ <apex:form >
+ <apex:pageMessages />
+ <apex:outputpanel id="fullsearchbuttonpanel">
+
+  <apex:actionRegion id="FullSearchActionRegion">
+  <br/>
+    <apex:commandButton id="btnFullSearch1"  action="{!getAssumption}" value="Go to Assumption" >
+  
+ <!-- <apex:actionSupport event="onClick" action="{!getAssumption}" status="workstatustwo" />-->
+  
+   </apex:commandButton>
+  </apex:actionRegion>
+  </apex:outputpanel>
+  
+  </apex:form>
+  </apex:page>

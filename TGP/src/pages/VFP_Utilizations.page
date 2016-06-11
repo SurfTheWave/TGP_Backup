@@ -1,0 +1,174 @@
+<apex:page controller="VFC_Utilizations" id="page" > 
+ <style type="text/css">
+    .myHeader{
+    background-color : #0099CC !important;
+    
+    border-top-left-radius: 7px !important; 
+    border-top-right-radius: 7px !important;
+    font-weight:bold !important;
+    color: white !important;
+    font-size: 12px !important;
+}
+
+</style>
+    <apex:pageMessages id="mymsg" />
+    <apex:form id="myForm">
+        <apex:outputpanel id="panel" >
+            <apex:pageBlock id="blck" >
+            <apex:outputpanel id="panel" layout="block" style="color:black; font-size:10pt; font-weight: bold;">
+                Solution Architects are requested to update their allocation percentages on a weekly basis.
+                <br/>
+                Note that the reporting periods in the table below are updated every Sunday at 8 am IST.
+                <br/>
+                <br/> 
+            </apex:outputpanel>
+            <apex:pageBlockButtons id="btns"  location="top" >
+                <apex:commandButton id="cmdBtn1" value="{!$Label.Save}" action="{!doSave}" />
+                <apex:commandButton id="cmdBtn2" value="{!$Label.Cancel}" action="{!doCancel}"/>
+                <apex:commandButton id="cmdBtn3" value="{!$Label.Manage_Out_Of_Office}" action="{!reDirect}"/>
+            </apex:pageBlockButtons>
+            
+        <table width="100%" cellpadding="8">
+            <tr>
+                <th Class="myHeader">
+                    Client Name
+                </th>
+                <th Class="myHeader">
+                    Opportunity Name<br />/ Others
+                </th>
+                <th Class="myHeader"> 
+                    User Role(s)
+                </th>
+                <th Class="myHeader">
+                    Current Week (in %)<br />{!mondayDate}
+                </th>
+                <th Class="myHeader">
+                    Week+1 (in %)<br />{!MondayDate1}
+                </th>
+                <th Class="myHeader">
+                    Week+2 (in %)<br />{!MondayDate2}
+                </th>
+                <th Class="myHeader">
+                    Week+3 (in %)<br />{!MondayDate3}
+                </th>
+                <th Class="myHeader">
+                    Week+4 (in %)<br />{!MondayDate4}
+                </th>
+                <th Class="myHeader">
+                    Comments 
+                </th>
+            </tr>
+            <apex:repeat value="{!utilizationList}" var="a">
+                <tr>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <apex:outputField value="{!a.Client_Name__c}" rendered="{!NOT(If(a.Opportunity__r.Name == 'Training' || a.Opportunity__r.Name == 'Other Deal Support' || a.Opportunity__r.Name == 'Other Unavailable',true,false))}"/>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <apex:outputField value="{!a.Opportunity__c}" rendered="{!NOT(If(a.Opportunity__r.Name == 'Training' || a.Opportunity__r.Name == 'Other Deal Support' || a.Opportunity__r.Name == 'Other Unavailable',true,false))}"/> 
+                    <apex:outputText id="otxt2"  value="{!a.Opportunity__r.Name}" rendered="{!If(a.Opportunity__r.Name == 'Training' || a.Opportunity__r.Name == 'Other Deal Support' || a.Opportunity__r.Name == 'Other Unavailable',true,false)}"/> 
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <apex:outputField value="{!a.User_Role_s__c}" rendered="{!NOT(If(a.Opportunity__r.Name == 'Training' || a.Opportunity__r.Name == 'Other Deal Support' || a.Opportunity__r.Name == 'Other Unavailable',true,false))}"/>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <apex:inputField value="{!a.Current_Week__c}" style="width: 75%;"/>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <apex:inputField value="{!a.Current_Week_1__c}" style="width: 75%;" />
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <apex:inputField value="{!a.Current_Week_2__c}" style="width: 75%;"/> 
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <apex:inputField value="{!a.Current_Week_3__c}" style="width: 75%;"/>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <apex:inputField value="{!a.Current_Week_4__c}" style="width: 75%;"/>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <apex:inputField value="{!a.Comments__c}" style="width: 100%;"/>
+                    </td>
+                </tr>
+            </apex:repeat>
+            <tr >
+                <td style="border-bottom:3px solid #F0F0F0;" colspan="9">
+                   {!null}
+                </td>
+            </tr>
+            <apex:repeat value="{!aggregateValues1}" var="A">
+                <tr>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                       <b> {!A.clientName} </b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                       <b> {!A.opporunityName}</b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        {!null}
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <b>{!A.currentWeekPercent}</b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <b>{!A.currentWeek1Percent}</b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <b>{!A.currentWeek2Percent}</b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <b>{!A.currentWeek3Percent}</b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <b>{!A.currentWeek4Percent}</b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        
+                    </td>
+                </tr>
+            </apex:repeat>
+            <tr>
+                <td style="border-bottom:3px solid #F0F0F0;" colspan="9">
+                </td>
+            </tr>
+            <apex:repeat value="{!aggregateValues}" var="A">
+                <tr>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                       <b> {!A.clientName} </b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <b>{!A.opporunityName} </b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        {!null}
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <b>{!A.currentWeek}</b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <b>{!A.currentWeek1}</b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <b>{!A.currentWeek2}</b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <b>{!A.currentWeek3}</b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        <b>{!A.currentWeek4}</b>
+                    </td>
+                    <td style="border-bottom:1px solid #E8E8E8 ;">
+                        
+                    </td>
+                </tr>
+            </apex:repeat>
+
+        </table>
+         
+         
+     </apex:pageBlock>
+     
+     </apex:outputpanel>
+     
+  </apex:form>
+ 
+</apex:page>

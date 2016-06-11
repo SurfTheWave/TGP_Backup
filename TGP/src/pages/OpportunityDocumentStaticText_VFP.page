@@ -1,0 +1,13 @@
+<apex:page standardController="opportunity_documents__c">
+ <body>
+ <p><b>Please upload key solution documents to the required documents folder including but not limited to:<ul>
+ <li>Overall Solution Plan Deck</li>
+ <li>Mobilization Plan Deck</li>
+ <li>Technology Plan Deck </li>
+ <li>QEP Plan Summary</li>
+ <li>Risk Qualification Tool</li>
+</ul>  
+Document templates and tool links are available on <u>Solution Development Resources</u></b>
+</p>
+</body>
+</apex:page>

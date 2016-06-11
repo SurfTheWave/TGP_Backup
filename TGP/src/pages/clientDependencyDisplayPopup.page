@@ -1,0 +1,19 @@
+<!--
+Author : Shridhar Patankar
+Story : Story-0055/SOL_012    
+Description :  Display logic for Client Dependency. 
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Client_Dependency_Master__c" showHeader="false" sidebar="false" extensions="PopupClientDependency">
+  <apex:form >
+  
+         {!message }
+      
+  </apex:form>
+  
+</apex:page>

@@ -1,0 +1,17 @@
+<apex:page controller="UserWelcomeConroller" action="{!userLogin}">
+
+
+<apex:pageBlock rendered="{!firstTimeLogin = true}">
+
+<script>
+alert('Welcome to Mobilization Workbench. Please click Ok to continue.');
+ var url = location.href;
+ var Stringsplt = url.split("/");
+ window.open("https://" + Stringsplt[2] + "/apex/VFP_UserWelcome");
+
+
+</script>
+
+<!-- <a href="javascript:AlertIt();">click me</a> -->
+</apex:pageBlock>
+</apex:page>

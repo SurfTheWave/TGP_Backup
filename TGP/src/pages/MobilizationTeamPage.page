@@ -1,0 +1,176 @@
+<apex:page standardController="Mobilization_Team__c" extensions="MobilizationTeamController" id="MobpageTag">
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js'></script>
+    <apex:stylesheet value="{!URLFOR($Resource.jQuery_BlogForce9_162, 'css/ui-lightness/jquery-ui-1.8.16.custom.css')}" id="styleTag"/>
+    <style>
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+            /* add padding to account for vertical scrollbar */
+            padding-right: 20px;
+        }
+    </style>
+    
+    
+    <apex:form id="formId">
+        
+        <apex:PageMessages id="errMsg"> </apex:PageMessages>
+        
+        <apex:sectionHeader title="Mobilization Team Member Edit" subtitle="{!IF(mteamId == null, "New Mobilization Team Member", mTeam.Name)}"/>
+        
+        <apex:pageBlock title="Mobilization Team Member Edit" mode="edit">
+        
+            <apex:pageBlockButtons >
+                <input type="Button" class="btn" onclick="Javascript:callSave();" value="Save"/>
+                       <apex:actionFunction name="SaveRec" action="{!saveRecord}" reRender="SendLocError,errMsg,primLeadError,ItemError"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection title="Information" columns="1" id="Info">
+                <apex:inputField value="{!mteam.Deal__c}"/>
+                <apex:inputField value="{!mteam.Wave__c}"/>
+                <!--<apex:inputField value="{!mteam.Delivery_Location_Master__c}"/> -->
+                <apex:outputPanel id="teamLoc">
+                        <tbody>
+                            <tr>
+                                <td class="labelCol requiredInput">
+                                    <label >Location </label>
+                                </td>
+                                <td class="dataCol ">
+                                    <div class="requiredInput">
+                                        <apex:inputText value="{!LocLookUpStr}" styleClass="autoCompClassLocation" id="LocTxtId" />
+                                        <apex:outputPanel styleClass="errorMsg" style="{!diplayErrorLoc}" id="SendLocError" >
+                                                <font color="red"><strong>Error:</strong> Entered Location is Incorrect. You must enter a valid value</font>
+                                            </apex:outputPanel>
+                                        </div>    
+                                </td>
+                            </tr>
+                        </tbody>
+                </apex:outputPanel>
+                
+                
+               <apex:outputPanel >
+                 <tbody>
+                     <tr>
+                         <td class="labelCol requiredInput">
+                             <label >Role </label>
+                         </td>
+                         <td class="dataCol ">
+                             <div class="requiredInput">
+                             <div class="requiredBlock"></div>
+                                 <apex:inputField value="{!mteam.Role__c}" id="itemId" />
+                                 <apex:outputPanel style="{!diplayErrorRole}" id="ItemError">
+                                     <font color="red"><strong>Error:</strong> You must enter a value</font>
+                                 </apex:outputPanel>
+                             </div>    
+                          </td>
+                       </tr>
+                   </tbody>   
+               </apex:outputPanel>
+           
+           
+                <apex:outputPanel >
+                 <tbody>
+                     <tr>
+                         <td class="labelCol requiredInput">
+                             <label >Primary Lead</label>
+                         </td>
+                         <td class="dataCol ">
+                             <div class="requiredInput">
+                             <div class="requiredBlock"></div>
+                                 <apex:inputField value="{!mteam.Primary_Lead__c}" id="primLeadID" />
+                                 <apex:outputPanel style="{!diplayErrorPLead}" id="primLeadError">
+                                     <font color="red"><strong>Error:</strong> You must enter a value</font>
+                                 </apex:outputPanel>
+                             </div>    
+                          </td>
+                       </tr>
+                   </tbody>   
+               </apex:outputPanel>
+               <apex:inputField value="{!mteam.Secondary_Lead_1__c}"/>
+               <apex:inputField value="{!mteam.Secondary_Lead_2__c}"/>
+           </apex:pageBlockSection>
+           <apex:inputHidden value="{!mteam.Delivery_Location_Master__c}" id="hiddenLocId"/>
+        </apex:pageBlock>
+    </apex:form>    
+    <script>
+           
+        function callSave(){
+                if(jQuery('[id$=LocTxtId]').val().trim()==''){
+                   jQuery('[id$=hiddenLocId]').val(''); 
+                }
+               
+                var cl = setTimeout(SaveRec,10);
+            }     
+            /*
+        *check if jquery is loaded if not load jquery again
+       **/
+       if(typeof jQuery != 'undefined'){
+           $j =jQuery.noConflict();
+       }
+        
+       $j(function(){
+            $j( ".autoCompClassLocation" ).autocomplete({
+                source: function(request, response) {
+                   queryDataAutoComp1(response ,request.term);
+                },
+                minLength: 0,
+                select: function(event, ui) {
+                                    //pass the selected value to hidden input field
+                                    $j(this).val(ui.item.label);
+                                    jQuery('[id$=hiddenLocId]').val(ui.item.value);
+                                    return false;
+                                },
+                focus: function( event, ui ) {
+                        $j(this).val( ui.item.label );
+                        return false;  
+                }
+            });
+            
+            $j( ".autoCompClassLocation" ).change(function() {
+               if($j(this).val().trim()==''){
+                   jQuery('[id$=hiddenLocId]').val('');    
+               }
+            });
+            
+
+                   
+        });
+        
+        function queryDataAutoComp1(response,param){
+           Visualforce.remoting.Manager.invokeAction(
+                     '{!$RemoteAction.MobilizationTeamController.getData}',param,
+                     function(result, event){
+                         //if success
+                         if(event.status){ 
+                            var data = [];  
+                            $j.each(result,function(){
+                                 var obj = new Object();
+                                 for (var field in this) { 
+                                     //match the passed label and returned value to populate the label and value                                  
+                                     if((field.toUpperCase()=='Name'.toUpperCase())){
+                                         obj.label = this[field];                                                                               
+                                     }
+                                     else if((field.toUpperCase()=='Id'.toUpperCase())){
+                                         obj.value= this[field];                                                                               
+                                     }                                    
+                                }                                
+                                 data.push(obj);
+                             });
+                             //return the dataa
+                             response( data);
+                         }
+                         else{
+                              alert('Invalid Field/Object API Name : '+event.message);
+                         }
+                         
+                     }, 
+                      {escape: true}
+                );
+            }
+             
+        </script>      
+  
+</apex:page>

@@ -1,0 +1,126 @@
+<apex:page standardController="Deal_Track__c" extensions="VFC_Deal_Track_Controller" sidebar="false" showHeader="false" action="{!onLoad}">
+
+<script>
+
+  function OpenHistoryPopup(RecordID,ObjName,Field1, Field2,Field3, Field4,Field5)
+    {
+        var w = 500;
+        var h = 400;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/3)-(h/2));
+        var url = '/apex/MaintainHistory?ID='+RecordID+'&ObjName='+ObjName+'&Field1='+Field1+'&Field2='+Field2+'&Field3='+Field3+'&Field4='+Field4+'&Field5='+Field5;
+        var myWindow = window.open(url,'Mob_Deal_Track','scrollbars=no,width=650,height=500, resizable=no, chrome=yes, minimizable=no, z-index: 9999,location=no, left=' + left + ',top='+ top );
+        myWindow.focus();
+        return false;        
+    }
+</script>  
+<apex:pageMessages ></apex:pageMessages>
+ <apex:form >
+     <apex:pageBlock >
+                 <apex:pageBlockButtons location="top" rendered="{!isEditVisible}" >
+                      <apex:commandButton value="Save" id="saveButton" action="{!SaveGoLivePlan}" />
+                      <apex:commandButton value="Cancel" action="{!Cancel}"/>
+                  </apex:pageBlockButtons>
+         <apex:pageBlockSection title="Go-Live Plan Tracking" columns="1">          
+              <apex:pageBlockTable value="{!ListOfDealLocation}" var="DealLocation">
+                  <apex:column headerValue="Location" value="{!DealLocation.NewDealLocation.Deal_Home_Location__r.Delivery_Location_Master__r.name}" style="background-color:#EBEBFA ;"/>
+                  <apex:column headerValue="RAG Status" style="background-color:{!DealLocation.color};">
+                      <apex:outputField value="{!DealLocation.NewDealLocation.Location_RAG_Status__c}">
+                          <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!DealLocation.isDisabled}"/>
+                      </apex:outputField>    
+                  </apex:column>
+                  <apex:column headerValue="Comments" style="background-color:{!DealLocation.backgroundcolor};"> 
+                      <apex:outputField value="{!DealLocation.NewDealLocation.Comment__c }">
+                          <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!DealLocation.isDisabled}"/>
+                      </apex:outputField> 
+                  </apex:column> 
+                  <apex:column headerValue="Maintain History"  style="background-color:#EBEBFA ;">
+                      <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!DealLocation.NewDealLocation.Id}','Deal_Location__c','Location_RAG_Status__c','','','');"/>                                                
+                  </apex:column>  
+              </apex:pageBlockTable>
+              <br/>
+              
+              <apex:pageBlockTable value="{!ListOfWavePlanning}" var="WavePlan">
+                  <apex:column headerValue="Location" value="{!WavePlan.NewWavePlanning.Deal_Location__r.Deal_Home_Location__r.Delivery_Location_Master__r.name}" style="background-color:#EBEBFA ;"/>
+                  <apex:column headerValue="Wave Name" value="{!WavePlan.NewWavePlanning.Wave_Label__c}" style="background-color:#EBEBFA ;"/>
+                  <apex:column headerValue="Wave Completion Status (%)" style="background-color:{!WavePlan.backgroundcolor};">
+                      <apex:outputField value="{!WavePlan.NewWavePlanning.Wave_Completion_Status__c}" >
+                          <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!WavePlan.isDisabled}"/>
+                      </apex:outputField>    
+                  </apex:column>
+                  <apex:column headerValue="RAG Status" style="background-color:{!WavePlan.color};">
+                      <apex:outputField value="{!WavePlan.NewWavePlanning.Wave_RAG_Status__c}">
+                          <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!WavePlan.isDisabled}"/>
+                      </apex:outputField>    
+                  </apex:column>
+                  <apex:column headerValue="Comments" style="background-color:{!WavePlan.backgroundcolor};"> 
+                      <apex:outputField value="{!WavePlan.NewWavePlanning.Wave_Comment__c }">
+                          <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!WavePlan.isDisabled}"/>
+                      </apex:outputField> 
+                  </apex:column>
+                 <apex:column headerValue="Planned Go Live Date" value="{!WavePlan.NewWavePlanning.GO_Live_Date_del__c}" style="background-color:#EBEBFA ;"/> 
+                 <apex:column headerValue="Revised Go Live Date" style="background-color:{!WavePlan.backgroundcolor};"> 
+                    <apex:outputField value="{!WavePlan.NewWavePlanning.Revised_Go_Live__c }">
+                      <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!WavePlan.isDisabled}"/>
+                    </apex:outputField> 
+                </apex:column> 
+                
+                <apex:column headerValue="Revised Go Live Comments" style="background-color:{!WavePlan.backgroundcolor};"> 
+                    <apex:outputField value="{!WavePlan.NewWavePlanning.Revised_Go_Live_Comments__c }">
+                      <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!WavePlan.isDisabled}"/>
+                    </apex:outputField> 
+                </apex:column> 
+                
+                <apex:column headerValue="Actual Go Live Date" style="background-color:{!IF(WavePlan.NewWavePlanning.Wave_Status__c =='Gone Live',WavePlan.backgroundcolor,'#EBEBFA') };">                     
+                    <apex:outputField value="{!WavePlan.NewWavePlanning.Actual_Go_Live__c}" rendered="{!IF(WavePlan.NewWavePlanning.Wave_Status__c =='Gone Live','true','false')}">
+                    <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!WavePlan.isDisabled}"/>
+                    </apex:outputField> 
+                    <apex:outputField value="{!WavePlan.NewWavePlanning.Actual_Go_Live__c }" rendered="{!IF(WavePlan.NewWavePlanning.Wave_Status__c !='Gone Live','true','false')}">
+                    </apex:outputField> 
+                </apex:column> 
+                
+                <apex:column headerValue="Actual Go Live Comments" style="background-color:{!WavePlan.backgroundcolor};"> 
+                    <apex:outputField value="{!WavePlan.NewWavePlanning.Actual_Go_Live_Comments__c }">
+                      <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!WavePlan.isDisabled}"/>
+                    </apex:outputField> 
+                </apex:column>
+                
+                <apex:column headerValue="Wave Status" style="background-color:{!WavePlan.backgroundcolor};"> 
+                    <apex:outputField value="{!WavePlan.NewWavePlanning.Wave_Status__c}">
+                      <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!WavePlan.isDisabled}"/>
+                    </apex:outputField> 
+                </apex:column>
+                <apex:column headerValue="Maintain History"  style="background-color:#EBEBFA ;">
+                    <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!WavePlan.NewWavePlanning.Id}','Wave_Planning__c','Wave_Completion_Status__c','Wave_RAG_Status__c','Revised_Go_Live__c','Actual_Go_Live__c','Wave_Status__c');"/>                                                
+                </apex:column>  
+              </apex:pageBlockTable>
+              
+              <br/>
+               <apex:pageBlockTable value="{!ListOfWaveProcess}" var="WaveProcess">
+                  <apex:column headerValue="Location" value="{!WaveProcess.NewWaveProcess.Wave_Planning__r.Deal_Location__r.Deal_Home_Location__r.Delivery_Location_Master__r.name}" style="background-color:#EBEBFA ;"/>
+                  <apex:column headerValue="Wave Name" value="{!WaveProcess.NewWaveProcess.Wave_Planning__r.Wave_Label__c}" style="background-color:#EBEBFA ;"/>
+                  <apex:column headerValue="Process Name" value="{!WaveProcess.NewWaveProcess.Client_Specific_Process_Mapping__c}" style="background-color:#EBEBFA ;"/>
+                  <apex:column headerValue="Process Completion Status (%)" style="background-color:{!WaveProcess.backgroundcolor};">
+                      <apex:outputField value="{!WaveProcess.NewWaveProcess.Completion_Status__c}" >
+                          <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!WaveProcess.isDisabled}"/>
+                      </apex:outputField>    
+                  </apex:column>
+                  <apex:column headerValue="RAG Status" style="background-color:{!WaveProcess.color};">
+                      <apex:outputField value="{!WaveProcess.NewWaveProcess.Process_RAG_Status__c}" >
+                          <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!WaveProcess.isDisabled}"/>
+                      </apex:outputField>    
+                  </apex:column>
+                  <apex:column headerValue="Comments" style="background-color:{!WaveProcess.backgroundcolor};"> 
+                      <apex:outputField value="{!WaveProcess.NewWaveProcess.Comment__c}" >
+                          <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!WaveProcess.isDisabled}"/>
+                      </apex:outputField> 
+                  </apex:column>
+                   <apex:column headerValue="Maintain History"  style="background-color:#EBEBFA ;">
+                        <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!WaveProcess.NewWaveProcess.Id}','Wave_Process__c','Completion_Status__c','Process_RAG_Status__c','','','');"/>                                                
+                   </apex:column>   
+              </apex:pageBlockTable>
+          </apex:pageBlockSection>
+     </apex:pageBlock>
+ </apex:form>
+
+</apex:page>

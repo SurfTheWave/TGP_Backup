@@ -1,0 +1,279 @@
+<!--
+Author : Shridhar Patankar
+Story  :   Release 2
+Description :Under BPO Opportunity detail page
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    Sol_148                    5/15/2013           Sol UAM-Release 2
+
+-->
+<apex:page standardController="Opportunity_Offering__c" extensions="Solution_tabController" showHeader="true" sidebar="true">
+<style>
+.activeTab {background-color: #236FBD; color:white; 
+         background-image:none}
+      .inactiveTab { background-color: lightgrey; color:black; 
+         background-image:none}
+.rich-tab-header {
+padding: 2px 10px 2px 10px;
+text-align: left;
+cursor:pointer;
+}
+.rich-tabpanel-content {cursor:default};    
+</style>
+<script>
+
+   function starting(){
+   //alert('start');
+      loadingImageStart();
+      
+     
+   }
+   function endingService(){
+  
+      if({!CountService}==1){
+        
+                window.onload=getServiceDeliveryModel();
+      } 
+   }    
+   function ending(){
+  
+      if({!Count}==1){
+        
+                window.onload=getAssumption();
+     }     
+   }
+   function endingRisk(){
+      
+      if({!CountRisk}==1){
+              
+                window.onload=getRisk();
+                
+      }     
+      //loadingImageEnd();  
+   }
+   function endingClient(){
+      
+      if({!CountClient}==1){
+          
+                window.onload=getClientDependency();
+                
+      }     
+      loadingImageEnd();  
+   }
+   
+  function myfunction(){
+    
+    othercomments();
+  }
+  function offerTabEnter(){
+    
+    window.top.location='/apex/Solution_tab?id={!offId}&tabFocus=tab02';
+  }
+ 
+  function assumptionTabEnter(){
+     
+    window.onload=getAssumption();
+   //window.top.location= '/apex/Solution_tab?id={!offId}&Count=2&tabFocus=tab2&isVisible=true';
+  }
+  function riskTabEnter(){
+    window.onload=getRisk();
+    //window.top.location= '/apex/Solution_tab?id={!offId}&CountRisk=2&tabFocus=tab3&isVisible=true';
+  }
+  function clientdepTabEnter(){
+   window.onload=getClientDependency();
+   //window.top.location= '/apex/Solution_tab?id={!offId}&CountClient=2&tabFocus=tab4&isVisible=true';
+  }
+  
+   
+</script>
+ 
+<apex:variable value="{!Opportunity_Offering__c}" var="off"/>
+     <apex:form >
+     
+      <apex:pageBlock >
+      
+      <apex:outputPanel style="text-align:left" layout="block">
+             <font color="red">DO NOT USE BROWSER BACK BUTTON.</font> 
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <apex:commandButton value="Go to Opportunity General Information tab" action="{!GoBackToHomeTab}" />
+      </apex:outputPanel>
+       <apex:pageBlockSection columns="1">
+            
+         <table>
+             <tr>
+                 <td width="500"><b>SAP OM ID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!off.Opportunity_ID__c}</td>
+                 <td width="500"><b>Opportunity Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/{!off.Opportunity_TGP__c}">{!off.Opportunity_TGP__r.name}</a></td>
+                 <td width="500"><b>Client Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!off.Client_Name__c}</td>
+             </tr>
+             <tr>
+             <td colspan="3"/>
+             </tr>
+             <tr>
+             <td colspan="3"/>
+             </tr>
+             <tr>
+                 <td width="500"><b>Offering Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!off.Offering_Master__r.name}</td>
+                 <td width="500"><b>Solution Lead</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!oppTeamRec}</td>
+                 <td width="500"/>
+             </tr>
+         </table>
+      </apex:pageBlockSection>
+     <!--  <apex:pageBlockSection columns="3">
+        <apex:outputField value="{!off.Opportunity_ID__c}"/>
+        <apex:outputField value="{!off.Opportunity_TGP__c}"/>
+        <apex:outputField value="{!off.Client_Name__c}"/>
+        <apex:outputField value="{!off.Offering_Master__c}"/>
+        <apex:outputField value="{!off.Solution_Lead_New__c}"/>
+       </apex:pageBlockSection>-->
+     </apex:pageBlock>
+     </apex:form>        
+
+      <apex:tabPanel switchType="server" value="{!tabFocus}" id="theTabPanel" inactiveTabClass="inactiveTab" styleClass="rich-tab-header" >
+           <apex:tab label="General Information"  switchType="server"  name="tab01" id="tabZero1" style="width:100%; height:130px;font-weight: bold"  >
+               <!--<apex:tabPanel switchType="server"  id="theTabPanel2" inactiveTabClass="inactiveTab"  >-->
+                 <!-- <apex:tab label="Client As Is Operation" switchType="server" title="File Upload" name="tab011" id="tabZero11" style="width:100%; height:130px;font-weight: bold" >
+                  <br/>
+                  <apex:form id="imageLoading11">
+                     <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="imageLoading11" immediate="true" />
+                     <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="imageLoading11" immediate="true"/>
+                     <apex:outputPanel rendered="{!flag}">
+                        <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+                     </apex:outputPanel>                 
+                 </apex:form>
+             <br/>
+             <apex:pageBlock >
+                 <apex:pageBlockSection columns="1" collapsible="false">
+                     <apex:include pageName="clientAsOperationUpload"/>
+                 </apex:pageBlockSection>
+             </apex:pageBlock>             
+           </apex:tab>-->
+            <!--<apex:tab label="Current Client Capability Assessment"  switchType="server" name="tab012" id="tabZero12" style="width:100%; height:130px;font-weight: bold" >
+                 <br/>
+                <apex:form id="imageLoading121">
+                   <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="imageLoading11" immediate="true" />
+                   <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="imageLoading11" immediate="true"/>
+                   <apex:outputPanel rendered="{!flag}">
+                       <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+                   </apex:outputPanel>
+               </apex:form>
+               <br/>
+               <apex:pageBlock >               
+               <apex:pageBlockSection title="Current Client Capability Assessment"  columns="1" collapsible="false"> 
+-->
+            
+            <apex:include pageName="assessmentUpload"/>
+            <!-- 
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+            <apex:tab label="Additional Solution Characteristics" switchType="server" name="tab013" id="tabZero13" style="width:102%; height:130px;font-weight: bold" >
+            <br/>
+            -->                       
+            <!--</apex:tab>    -->          
+       <!-- </apex:tabPanel> --> 
+        
+   </apex:tab>
+   <!--<apex:tab label="Offering Team"  switchType="server" name="tab02" id="tabZero2" style="width:100%; height:130px;font-weight: bold" ontabenter="offerTabEnter();" >
+        <apex:form id="imageLoading12">
+        <apex:pageMessages id="pageMsgOfferUser"/>
+        <apex:variable value="{!Opportunity_Offering__c}" var="off"/>
+        <apex:pageBlock rendered="{!OfferingUser}">
+            <apex:pageBlockButtons location="top" >
+                <apex:commandButton value="Edit" action="{!edit1}" reRender="imageLoading12" rendered="{!saveEditButtonRender}" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1" > 
+                <apex:outputField value="{!Opportunity_Offering__c.Solution_Specialist__c}"/>
+                <apex:outputField value="{!Opportunity_Offering__c.Functional_Architect_Mobilization__c}"/>
+                <apex:outputField value="{!Opportunity_Offering__c.Domain_Expert_Functional_Architect__c}"/>
+                <apex:outputField value="{!Opportunity_Offering__c.Domain_Expert_Functional_Architect_1__c}" rendered="{!if(Opportunity_Offering__c.Domain_Expert_Functional_Architect_1__c!=null,true,false)}"/>
+                <apex:outputField value="{!Opportunity_Offering__c.Domain_Expert_Functional_Architect_2__c}" rendered="{!if(Opportunity_Offering__c.Domain_Expert_Functional_Architect_2__c!=null,true,false)}"/>
+                <apex:outputField value="{!Opportunity_Offering__c.Domain_Expert_Functional_Architect_3__c}" rendered="{!if(Opportunity_Offering__c.Domain_Expert_Functional_Architect_3__c!=null,true,false)}"/>
+                <apex:outputField value="{!Opportunity_Offering__c.Domain_Expert_Functional_Architect_4__c}" rendered="{!if(Opportunity_Offering__c.Domain_Expert_Functional_Architect_4__c!=null,true,false)}"/> 
+                <apex:outputField value="{!Opportunity_Offering__c.Technical_Architect__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageblock id="block2" rendered="{!OfferingUserEdit}">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Save" action="{!saverecordOfferingUser}" reRender="imageLoading12" />
+                <apex:commandButton value="Cancel" action="{!cancelRecord}" immediate="true" reRender="imageLoading12"/> 
+            </apex:pageblockButtons> 
+            <apex:pageBlockSection columns="2"> 
+                <apex:outputField value="{!Opportunity_Offering__c.Solution_Specialist__c}"/><apex:outputLabel ></apex:outputLabel>                                     
+                <apex:outputField value="{!Opportunity_Offering__c.Functional_Architect_Mobilization__c}"/><apex:outputLabel ></apex:outputLabel>                                                                         
+                <apex:inputField value="{!Opportunity_Offering__c.Domain_Expert_Functional_Architect__c}"/><apex:commandButton value="+" action="{!plus1}" rendered="{!if(button0==true && Opportunity_Offering__c.Domain_Expert_Functional_Architect_1__c==null,true,false)}" />                                                                        
+                <apex:outputLabel rendered="{!plus1}"/><apex:inputField value="{!Opportunity_Offering__c.Domain_Expert_Functional_Architect_1__c}" rendered="{!plus1}"/><apex:commandButton value="+" action="{!plus2}" rendered="{!button1}" />  
+                <apex:outputLabel rendered="{!plus2}"/><apex:inputField value="{!Opportunity_Offering__c.Domain_Expert_Functional_Architect_2__c}" rendered="{!plus2}"/><apex:commandButton value="+" action="{!plus3}" rendered="{!button2}" />   
+                <apex:outputLabel rendered="{!plus3}"/><apex:inputField value="{!Opportunity_Offering__c.Domain_Expert_Functional_Architect_3__c}" rendered="{!plus3}"/><apex:commandButton value="+" action="{!plus4}" rendered="{!button3}" /> 
+                <apex:outputLabel rendered="{!plus4}"/><apex:inputField value="{!Opportunity_Offering__c.Domain_Expert_Functional_Architect_4__c}" rendered="{!plus4}"/><apex:outputLabel rendered="{!plus4}"></apex:outputLabel>                                     
+                <apex:outputField value="{!Opportunity_Offering__c.Technical_Architect__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock> 
+    </apex:form>
+</apex:tab>-->
+           <apex:tab label="Scope" switchType="ajax"  name="tab0" id="tabZero" style="width:100%; height:130px;font-weight: bold"  oncomplete="endingService();">
+             <br/>
+             <apex:form id="imageLoading1">
+                 <apex:actionFunction name="getServiceDeliveryModel" action="{!getServiceDeliveryModel}"   />
+                </apex:form>
+             <br/>
+             <apex:include pageName="ServiceComponentUpdate_inline" rendered="{!isVisible}"/>
+             <!-- <apex:include pageName="offeringLocations"/> -->
+             </apex:tab>
+                      
+            <apex:tab label="Assumptions" switchType="ajax"  name="tab2" id="tabTwo"  style="width:100%; height:130px;font-weight: bold"  oncomplete="ending();"  >
+              
+               <br/>
+               
+              <apex:form id="imageLoading3">
+              <apex:actionFunction name="getAssumption" action="{!getAssumption}"   />
+
+                </apex:form>
+                 <br/>
+              
+            
+             <apex:include pageName="assumptionInline" id="outAssume" rendered="{!isVisible}"/>
+             
+             
+           </apex:tab>
+          
+          <!-- <apex:tab label="Risks"  switchType="ajax" name="tab3" id="tabThree" style="width:100%; height:130px;font-weight: bold" oncomplete="endingRisk();" >
+                <br/>
+               <apex:form id="imageLoading4">
+               <apex:actionFunction name="getRisk" action="{!getRisk}" immediate="true"  />
+               <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="imageLoading4" immediate="true" />
+               <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="imageLoading4" immediate="true"/>
+               <apex:outputPanel rendered="{!flag}">
+                    <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+                 </apex:outputPanel>
+                 
+                </apex:form>
+                 <br/>
+            <apex:include pageName="riskInline" rendered="{!isVisible}"/>
+           </apex:tab>-->
+           <apex:tab label="Client Dependencies"  switchType="ajax" name="tab4" id="tabFour" style="width:101%; height:130px;font-weight: bold" oncomplete="endingClient();" >
+              <br/>
+             <apex:form id="imageLoading5">
+             <apex:actionFunction name="getClientDependency" action="{!getClientDependency}" immediate="true"  />
+             <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="imageLoading5" immediate="true" />
+             <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="imageLoading5" immediate="true"/>
+             <apex:outputPanel rendered="{!flag}">
+                    <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+                 </apex:outputPanel>
+                 
+                </apex:form>
+                 <br/>
+            <apex:include pageName="clientDependencyInline" rendered="{!isVisible}"/>
+           </apex:tab>
+          <apex:tab label="Non Standard Scope"  switchType="ajax" name="tab5" id="tabFive" style="width:101%; height:130px;font-weight: bold">
+                <apex:include pageName="nonStandardInline"/>
+                 
+          </apex:tab>
+      </apex:tabPanel>  
+    
+</apex:page>

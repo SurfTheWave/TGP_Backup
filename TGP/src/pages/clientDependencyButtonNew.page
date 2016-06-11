@@ -1,0 +1,27 @@
+<!--
+Author : Shridhar Patankar
+Story :  Story-0055/SOL_012      
+Description :  Display logic for Client Dependencies.Button added.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Opportunity_Offering__c" showHeader="true" sidebar="true" extensions="ClientDependencyButtonController">
+
+ <apex:form >
+ <apex:pageMessages />
+ <apex:outputpanel id="fullsearchbuttonpanel">
+
+  <apex:actionRegion id="FullSearchActionRegion">
+  <br/>
+    <apex:commandButton id="btnFullSearch1"  action="{!getClientDependency}" value="Go to Client Dependency" >
+ <!-- <apex:actionSupport event="onClick" action="{!getClientDependency}" status="workstatustwo" /> -->
+  </apex:commandButton>
+  </apex:actionRegion>
+  </apex:outputpanel>
+
+ </apex:form>
+</apex:page>

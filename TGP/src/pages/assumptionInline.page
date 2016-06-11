@@ -1,0 +1,364 @@
+<!--
+Author : Shridhar Patankar
+Story :  Story-0043/SOL_010    
+Description :  Display logic for Assumption.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    Sol_148                    5/15/2013        Sol UAM-Release 2
+
+-->
+<apex:page standardController="Opportunity_Offering__c"  title="addnewRecord"  extensions="Solution_tabController" id="pg" sidebar="true" showHeader="false" >
+   <script>
+   var url = location.href;
+         var match = url.match(/inline=1/);
+            if (match != null) { 
+            var newUrl = url.replace(/inline=1/, '');
+            window.top.location=newUrl;
+    }
+    function openNewWindow()
+    {
+      window.open("/apex/ExportAssumptionPage?id={!oppOffId}");
+    }
+    </script>
+<style>
+.reqSelect {
+}
+
+table.inlineEditTbl td{
+    height: 26px !important; 
+}
+table.inlineEditTbl input[type="text"] {
+    width: 80px;
+}
+body {
+    font-size: 75% important;
+}
+table.inlineEditTbl2 td{
+    height: 50px !important; 
+}
+body .pbBody table.list tr.dataRow td, body .pbBody table.list tr {vertical-align: top;}
+</style>
+ 
+<apex:outputPanel id="refresh1" rendered="{!refreshPage}">
+</apex:outputPanel>
+ <apex:form id="form1">
+    <apex:pageBlock mode="edit" id="block1" >
+     <table cellpadding="2" cellspacing="2" id="table1"> 
+      <tr id="row1">
+     <td>
+       <apex:commandButton action="{!applyFilter}" value="{!valueFilter}" rendered="{!apply}" />
+       <apex:commandButton action="{!clearFilter}" value="{!valueFilter}" rendered="{!cancel}"/>
+    </td>
+    <td>
+    </td>
+    <td>
+    </td>
+    <td>
+    </td>
+    <td>
+    </td>
+    <apex:outputPanel id="outp" rendered="{!appFilter}">
+       <apex:actionFunction name="searchServer" action="{!runSearch}" reRender="form3,debug" >
+          <apex:param name="Categ"  assignTo="{!cat}" value=""/>
+          <apex:param name="edit" assignTo="{!edit}" value="" />
+          <apex:param name="Applic" assignTo="{!app}" value="" />
+          <apex:param name="ser" assignTo="{!serv}" value="" />
+       </apex:actionFunction>
+     
+        <td style="font-weight:bold;">Category<br/>
+        
+             <apex:selectList id="Categ" size="1" value="{!categoryMasterFilter}" required="true" onchange="search1234();">
+                            <apex:selectOptions value="{!CategoryFilter}"></apex:selectOptions>
+             </apex:selectList>
+         
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td style="font-weight:bold;">Services<br/>
+            <apex:selectList id="servic" size="1" value="{!ServiceFilter}"  onchange="search1234();">
+                   <apex:selectOptions value="{!ServicesFilter}"></apex:selectOptions>
+            </apex:selectList>
+        
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td style="font-weight:bold;">Edited<br/>
+        <apex:inputCheckbox id="edit" value="{!edit}" onchange="search1234();"/>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td style="font-weight:bold;">Applicable<br/>
+        <apex:inputCheckbox id="Applic" selected="true" value="{!app}" onchange="search1234();" />
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </apex:outputPanel>
+      </tr>
+   </table>
+  </apex:pageBlock>
+  </apex:form>
+  <apex:form id="form3">
+  <apex:pageMessages id="pgmsg" /> 
+     <apex:pageBlock mode="edit" id="results">
+            <apex:pageBlockButtons rendered="{!saveEditButtonRender}" location="top">
+
+               <apex:actionStatus id="save_Btn">                 
+                            <apex:facet name="stop">
+                                <apex:commandButton value="Save" action="{!saveAccProfileDetails}" id="saveButton" reRender="form3" status="save_Btn" />
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                <apex:commandButton value="Saving..." action="{!saveAccProfileDetails}" id="saveButton1" reRender="form3" status="save_Btn" disabled="true" />
+                                </apex:outputPanel>
+                             </apex:facet> 
+              </apex:actionStatus> 
+               <apex:commandButton action="{!doCancel}" id="cancelNow" value="Cancel" reRender="assumpDetail,frm,form3" />
+               <apex:commandButton value="Export"  onclick="openNewWindow();" />
+               
+            </apex:pageBlockButtons>
+           <apex:pageBlockSection title="Assumption Details" columns="1" id="assumpDetail" collapsible="false" rendered="{!if(readOnlyMode,false,true)}">   
+             <apex:outputPanel id="table1">
+                 <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                    <apex:pageBlockTable value="{!lstAssume}" var="profDetail" columnsWidth="10%,40%,10%,10%,5%,5%,10%,10%" id="NewPage">
+                        <apex:column >
+                            <apex:facet name="header">
+                              <apex:commandLink value="Category" action="{!toggleSort}" reRender="form3">
+                                <apex:param name="sortField" value="Category_Master__r.Name" assignTo="{!sortField}" />
+                               </apex:commandLink>
+                            </apex:facet>
+                            <apex:selectList size="1" value="{!profDetail.newAssumption.Category_Master__c}">
+                                <apex:selectOptions value="{!category}"></apex:selectOptions>
+                            </apex:selectList>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Assumptions" >
+                          <apex:facet name="header">
+                              <apex:commandLink value="Assumptions" action="{!toggleSort}" reRender="form3">
+                                <apex:param name="sortField" value="Assumption__c" assignTo="{!sortField}" />
+                               </apex:commandLink>
+                            </apex:facet>
+                           <apex:outputField value="{!profDetail.newAssumption.Assumption__c}" id="assumption" style="width: 290px; height:45px;font-size:13px">
+                           <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" />                  
+                            </apex:outputField>                       
+                        </apex:column>
+                      
+                        <apex:column headerValue="Services" >
+                            <apex:outputField value="{!profDetail.newAssumption.Services_per_Offering__c}" rendered="{!profDetail.flagMaster1}"/>
+                            <apex:selectList size="1" value="{!profDetail.newAssumption.Services_per_Offering__c}" id="serviceList" rendered="{!profDetail.flagMaster2}">
+                                    <apex:selectOptions value="{!Servicesdrop}"></apex:selectOptions>
+                            </apex:selectList>
+                            <!--<apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!profDetail.flagMaster}" />-->
+                                                         
+                        </apex:column>
+                        <apex:column headerValue="Classification" >
+                            <apex:inputField value="{!profDetail.newAssumption.Classification__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="Edited" >
+                      <apex:outputField value="{!profDetail.newAssumption.Editable__c}" id="edit"/>
+                       </apex:column>
+                        <apex:column headerValue="Applicable" >
+                       <apex:outputField value="{!profDetail.newAssumption.Applicable__c}" >
+                         <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" />
+                         </apex:outputField>
+                       </apex:column>
+                       <apex:column headerValue="Link to Master Assumption" >
+                      <apex:commandButton Value="{!profDetail.newAssumption.Click_Here__c }" onclick="myFunction('{!profDetail.newAssumption.Assumption_Master__c}'); " rendered="{!profDetail.flagMaster3}"/>
+                      </apex:column>
+                      <apex:column rendered="{!deleteButtonRender}" >                
+                         <apex:commandLink action="{!deleteFileForAssumptions}" value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" rendered="{!if(profDetail.flagMaster3,false,true)}">
+                             <apex:param name="fileIdDelete" value="{!profDetail.newAssumption.id}" assignTo="{!fileIdDelete}"/>
+                         </apex:commandLink>
+                      </apex:column>                
+                   </apex:pageBlockTable>
+               </apex:outputPanel>
+           </apex:outputPanel>
+       </apex:pageBlockSection>
+       <!--Read Only Mode Detail List-->
+       <apex:pageBlockSection title="Assumption Details" columns="1" id="assumpDetailRead" collapsible="false" rendered="{!readOnlyMode}">   
+             <apex:outputPanel id="tableRead">
+                 <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                    <apex:pageBlockTable value="{!lstAssume}" var="profDetail" columnsWidth="10%,40%,10%,10%,5%,5%,10%,10%" id="NewPageR">
+                        <apex:column >
+                            <apex:facet name="header">
+                              <apex:commandLink value="Category" action="{!toggleSort}" reRender="form3">
+                                <apex:param name="sortField" value="Category_Master__r.Name" assignTo="{!sortField}" />
+                               </apex:commandLink>
+                            </apex:facet>
+                            <apex:outputField value="{!profDetail.newAssumption.Category_Master__c}"/>                           
+                        </apex:column>
+                        
+                        <apex:column headerValue="Assumptions" >
+                           <apex:outputField value="{!profDetail.newAssumption.Assumption__c}" id="assumptionR" style="width: 290px; height:45px;font-size:13px" >                                         
+                            </apex:outputField>                       
+                        </apex:column>
+                      
+                        <apex:column headerValue="Services" >
+                            <apex:outputField value="{!profDetail.newAssumption.Services_per_Offering__c}"/>                            
+                                                         
+                        </apex:column>
+                        <apex:column headerValue="Classification" >
+                            <apex:outputField value="{!profDetail.newAssumption.Classification__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="Edited" >
+                              <apex:outputField value="{!profDetail.newAssumption.Editable__c}" id="editR"/>
+                       </apex:column>
+                        <apex:column headerValue="Applicable" >
+                               <apex:outputField value="{!profDetail.newAssumption.Applicable__c}" >                         
+                               </apex:outputField>
+                       </apex:column>
+                       <apex:column headerValue="Link to Master Assumption" >
+                              <apex:commandButton Value="{!profDetail.newAssumption.Click_Here__c }" onclick="myFunction('{!profDetail.newAssumption.Assumption_Master__c}'); " rendered="{!profDetail.flagMaster3}"/>
+                       </apex:column>
+                      <apex:column rendered="{!deleteButtonRender}" >                
+                         <apex:commandLink action="{!deleteFileForAssumptions}" value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" rendered="{!if(profDetail.flagMaster3,false,true)}">
+                             <apex:param name="fileIdDelete" value="{!profDetail.newAssumption.id}" assignTo="{!fileIdDelete}"/>
+                         </apex:commandLink>
+                      </apex:column>                
+                   </apex:pageBlockTable>
+               </apex:outputPanel>
+           </apex:outputPanel>
+       </apex:pageBlockSection>
+        </apex:pageBlock>
+        </apex:form> 
+        
+        <apex:form rendered="{!addButtonRender}" id="frm"> 
+        
+      <apex:outputpanel id="counter">
+      
+           <apex:pageBlock >
+                        <!--
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Opportunity Name" />               
+                <apex:outputText value="{!opportunityName}" label="Opportunity Name" />               
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Offering Name" />               
+                <apex:outputText value="{!offeringName}" label="Offering Name" />               
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >    
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >    
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >    
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >    
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >    
+            </apex:pageBlockSectionItem>
+                <apex:commandButton action="{!backToOffer}" value="Back to Offering" style="height:33px;size:20px"/> 
+                <apex:commandLink value="Back to Offering" action="{!backToOffer}" style="font-family:arial;color:blue;font-size:15px;"/> 
+            
+            -->              
+            <apex:pageBlockSection title="Add Assumption" columns="1" collapsible="false" >
+            
+                <apex:pageBlockTable value="{!newAssumption }" var="newAssumption" columnsWidth="15%,40%,20%,15%,10%">
+                     <apex:column headerValue="Category">
+                        <apex:outputPanel styleClass="requiredInput" layout="block" id="panel">
+                        <apex:outputPanel styleClass="requiredBlock"/>    
+                          <apex:selectList size="1" value="{!categoryMaster}" required="true">
+                            <apex:selectOptions value="{!category}"></apex:selectOptions>
+                          </apex:selectList>
+                        </apex:outputPanel>
+                     </apex:column>
+                     
+                     <apex:column headerValue="Assumptions" width="550px" >
+                      <apex:outputPanel styleClass="requiredInput" layout="block">
+                      <apex:outputPanel styleClass="requiredBlock"/>
+                       <apex:inputField value="{!newAssumption.Assumption__c}" style="width: 90%; height: 90px;font-size:13px"/>
+                      </apex:outputPanel>
+                     </apex:column>
+                    
+                     <apex:column headerValue="Services"  id="service">
+                      
+                            <apex:selectList size="1" value="{!Service}" id="serviceList" >
+                                <apex:selectOptions value="{!Servicesdrop}"></apex:selectOptions>
+                            </apex:selectList>
+                                       
+                        </apex:column>
+                      <apex:column headerValue="Classification" >
+                        <apex:outputPanel styleClass="requiredInput" layout="block" id="panelClass">
+                        <apex:outputPanel styleClass="requiredBlock"/>    
+                            <apex:inputField value="{!newAssumption.Classification__c}"/>
+                        </apex:outputPanel>
+                      </apex:column>
+                      <apex:column >
+
+                            <apex:actionStatus id="add_Btn">                 
+                            <apex:facet name="stop">
+                                <apex:commandButton action="{!addNewOppOffer}" value="Add" reRender="frm,form3,pgmsg" status="add_Btn" />
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                <apex:commandButton action="{!addNewOppOffer}" value="Adding..." reRender="frm,form3,pgmsg" status="add_Btn" disabled="true" />
+                                </apex:outputPanel>
+                             </apex:facet> 
+              </apex:actionStatus>                       
+                      </apex:column>
+                          
+        </apex:pageBlockTable>
+        </apex:pageBlockSection>
+        </apex:pageBlock>
+     </apex:outputpanel>
+    <!--<apex:pageBlock title="Debug - SOQL" id="debug">
+        <apex:outputText value="{!debugSoql}" />    
+     </apex:pageBlock>-->
+  </apex:form>
+ <script>
+  
+   function search1234(){
+   var cat = document.getElementById("{!$Component.form1.block1.Categ}").value;
+   var serv = document.getElementById("{!$Component.form1.block1.servic}").value;
+   var edit1 = document.getElementById("{!$Component.form1.block1.edit}").checked;
+   
+   var app1 = document.getElementById("{!$Component.form1.block1.Applic}").checked;
+   
+   searchServer(cat,edit1,app1,serv);
+    
+          
+   }
+ </script>         
+<script>
+   
+   function myFunction(assume)
+    {
+      
+        var w = 500;
+        var h = 200;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/2)-(h/2));
+       
+        window.open('/apex/assumptionDisplayPopup?id='+assume,'Assumption','scrollbars=yes,width=500,height=200,left=' + left + ',top='+ top );
+        return true;
+    }
+</script>  
+</apex:page>

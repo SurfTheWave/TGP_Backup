@@ -1,0 +1,65 @@
+<!--
+Author : Varsha Chougle
+Story  : Story-0298/MOB_158
+Description :Budget Variance tab. 
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+-->
+
+<apex:page standardController="Wave_Plan_Version__c" extensions="Mob_VarianceAnalysisController">
+<style type="text/css">
+    .empty-column-content {
+        display: none;
+    }
+</style>
+
+    <apex:form id="formMsg" rendered="{!disableMsg}">
+        <apex:pageMessage severity="INFO" strength="2" summary="{!msg}"></apex:pageMessage>   
+    </apex:form>
+    <apex:form id="form0">
+        <apex:pagemessages ></apex:pagemessages>
+    </apex:form>
+    <apex:form id="form1" rendered="{!if(disableMsg,false,true)}">
+        <apex:pageblock >
+            <apex:pageBlockButtons rendered="{!if(isSubmit,false,true)}">
+                <apex:commandButton value="Save" action="{!saveBudgetVariance}" />
+                <apex:commandButton value="Cancel" action="{!cancelBudgetVariance}" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+                <apex:outputPanel >
+                    <center>
+                        <apex:commandButton action="{!showPreviousMonths}" reRender="form0,form1" value="< Previous" rendered="{!showPrevious}"/>  
+                        <apex:commandButton action="{!showNextMonths}" reRender="form0,form1" value="Next >" rendered="{!showNext}"/>
+                    </center>
+                </apex:outputPanel>
+                <center><b>Variances (Forecast - Acutals)</b></center>
+                <center><b style="color:red"> Comments for all positive and negative variances is mandatory to submit Actuals </b></center>
+                <apex:pageBlockTable value="{!ListOfBudgetSolution}" var="BudgetSolution">
+                    <apex:column headerValue="Cost Heads" style="background-color:{!BudgetSolution.bgColor};" width="400">
+                        <b><apex:outputField value="{!BudgetSolution.newBudgetSolution.name}"/></b>
+                    </apex:column>
+                    <apex:repeat value="{!BudgetSolution.listBudgetVarience}" var="listBudgetVarience">
+                        <apex:column style="background-color:{!BudgetSolution.bgColor};" width="80"> 
+                            <apex:outputField value="{!listBudgetVarience.newBudgetVarience.Variance__c}" style="width:80px;" rendered="{!BudgetSolution.isDisableInputMonth}"/>      
+                            <apex:outputField value="{!listBudgetVarience.newBudgetVarience.Variance__c}" style="width:80px;" rendered="{!BudgetSolution.isDisableOutputMonth}"/>
+                        </apex:column>
+                         <apex:column style="background-color:{!BudgetSolution.bgColor};" width="100">       
+                            <apex:inputField value="{!listBudgetVarience.newBudgetVarience.Comments_for_Variance__c}" rendered="{!BudgetSolution.isDisableInputMonth}"/>
+                            <apex:outputField value="{!listBudgetVarience.newBudgetVarience.Comments_for_Variance__c}" rendered="{!BudgetSolution.isDisableOutputMonth}"/>
+                        </apex:column> 
+                    </apex:repeat>
+                    <apex:repeat var="header" value="{!Months}">
+                    <apex:column headerValue="{!header}" styleClass="empty-column-content"/>
+                    </apex:repeat>
+                    <apex:column headerValue="YTD (in $ ‘000)" style="background-color:{!BudgetSolution.bgColor};" width="400">
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.summation__c}" rendered="{!BudgetSolution.isDisableInputMonth}"/>
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.summation__c}" rendered="{!BudgetSolution.isDisableOutputMonth}"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+                
+            </apex:pageBlockSection>
+        </apex:pageblock>    
+    </apex:form>    
+</apex:page>

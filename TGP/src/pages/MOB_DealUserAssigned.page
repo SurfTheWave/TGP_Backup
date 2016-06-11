@@ -1,0 +1,68 @@
+<apex:page standardController="Deal_TGP__c" title="addnewRecord" extensions="MOB_DealUserAssignedController" id="pg">
+
+<apex:form id="msg" >
+    <apex:pageMessages />
+</apex:form>
+<apex:form id="frm" rendered="{!isNA}">    
+    <apex:pageBlock >
+        <apex:pageBlockButtons rendered="{!isAddVisible}">
+            <apex:commandButton value="Edit" action="{!edit}" id="editButton" reRender="frm,msg"  rendered="{!IF(isNA && isEdit,false,true)}" />
+            <apex:commandButton value="Save" action="{!save}" id="saveButton" reRender="frm,msg" rendered="{!IF(isNA && isEdit,true,false)}" oncomplete="refreshPage();" />
+            <apex:commandButton action="{!cancel}" id="cancelButton" value="Cancel" reRender="frm,msg" rendered="{!IF(isNA && isEdit,true,false)}" />
+        </apex:pageBlockButtons>
+        <apex:pageBlockTable value="{!lstUserRoleAssign}" var="userAssign" styleClass="inlineEditTbl" id="userTable" rendered="{!IF(isNA && isEdit,true,false)}">    
+             <apex:column headerValue="Role Name">
+                <apex:outputField value="{!userAssign.Role_Name__c}" />
+            </apex:column>                  
+             <apex:column headerValue="Primary Lead">
+                <apex:inputField value="{!userAssign.User_Assigned_New__c }">
+                    <!--<apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" />--> 
+                </apex:inputField>    
+            </apex:column>
+             <apex:column headerValue="Secondary Lead 1">
+                <apex:inputField value="{!userAssign.User_Assigned_Secondary_New__c }">
+                    <!--<apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" /> -->
+                </apex:inputField>    
+            </apex:column>
+            <apex:column headerValue="Secondary Lead 2">
+                <apex:inputField value="{!userAssign.User_Assigned_Secondary_Lead__c }">
+                    <!--<apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" /> -->
+                </apex:inputField>    
+            </apex:column>            
+        </apex:pageBlockTable>
+
+        <apex:pageBlockTable value="{!lstUserRoleAssign}" var="userAssign" styleClass="inlineEditTbl" id="userTableReadOnly" rendered="{!IF(isNA && isEdit,false,true)}">    
+             <apex:column headerValue="Role Name">
+                <apex:outputField value="{!userAssign.Role_Name__c}" />
+            </apex:column>                  
+             <apex:column headerValue="Primary Lead">
+                <apex:outputField value="{!userAssign.User_Assigned_FF__c}">
+                    <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" /> 
+                </apex:outputField>    
+            </apex:column>
+             <apex:column headerValue="Secondary Lead 1">
+                <apex:outputField value="{!userAssign.User_Assigned_Secondary_FF__c }">
+                    <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" /> 
+                </apex:outputField>    
+            </apex:column>
+            <apex:column headerValue="Secondary Lead 2">
+                <apex:outputField value="{!userAssign.User_Assigned_Secondary_Lead_FF__c }">
+                    <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" /> 
+                </apex:outputField>    
+            </apex:column>            
+        </apex:pageBlockTable>
+
+    </apex:pageBlock>      
+    <apex:inputHidden value="{!isError}" id="isErrorHidden" />    
+</apex:form>  
+<script>
+function refreshPage()
+{
+    var objError = document.getElementById("{!$Component.frm.isErrorHidden}");
+    var strError = objError.value;
+    if ( objError != null && strError != '' && strError =='false' ) 
+       // window.top.location='/{!Deal_TGP__c.id}';
+}
+</script>
+             
+</apex:page>

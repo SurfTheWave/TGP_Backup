@@ -1,0 +1,274 @@
+<!--
+Page name : MOB_DealClientSpecificProcess
+Author : Nilesh Adkar
+
+-->
+
+<apex:page standardController="Deal_TGP__c" extensions="MOB_DealClientSpecificProcessController" showHeader="false" sidebar="false" tabStyle="Client_Specific_Process_Mapping__c" id="ClientProcessPage">
+<body onLoad="init();"/>
+&nbsp;
+    <apex:form id="msg">
+        <apex:pageMessages ></apex:pageMessages>
+            <apex:inputHidden value="{!strProcessName}" id="strProcessNameHidden" />
+            <apex:inputHidden value="{!strOffering}" id="strOfferingHidden" />
+            <apex:inputHidden value="{!strService}" id="strServiceHidden" />
+            <apex:inputHidden value="{!strServiceComponent}" id="strServiceComponentHidden" />
+            <apex:inputHidden value="{!strActive}" id="strActiveHidden" />
+            <apex:inputHidden value="{!strComments}" id="strCommentsHidden"/>
+            <apex:inputHidden value="{!strDealId}" id="strDealIdHidden" />
+            <apex:inputHidden value="{!strClientInlinePageURL}" id="strClientInlinePageURLHidden" />
+    </apex:form>
+    
+    <apex:form id="frm" rendered="{!isNA}">
+        <apex:outputText value="{!strMessage}" style="color:red;; font-weight:bold; font-size:14px"/>
+        <apex:actionregion >
+        <apex:outputPanel id="refreshBlock">
+            <apex:pageBlock id="Block" rendered="{!isAddVisible}">
+            <apex:inputHidden id="DealId" value="{!strDealId}"/>
+                <apex:pageBlockSection columns="{!columnNos}" id="BlockSection" title="{!sectionTitle}">
+                    <apex:pageBlockSectionItem id="BlockSectionItem1">
+                        <apex:outputText value="Process Name "/>
+                        <apex:outputPanel styleClass="requiredInput" layout="block" >
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                            <apex:inputText id="ProcessName" value="{!strProcessName}"/>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="BlockSectionItem2">
+                        <apex:outputText value="Offerings "/>
+                        <apex:outputPanel styleClass="requiredInput" layout="block" >
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                                <apex:selectList id="Offering" value="{!strOffering}" multiselect="false" size="1" style="width:160px;height:20px;" onchange="refreshServicesValues();" >
+                                    <apex:selectOptions id="Offerings" value="{!strOfferingsList}"/>
+                                </apex:selectList>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="BlockSectionItem3" >                        
+                            <apex:outputText value="Services " />
+                            <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                <apex:outputPanel styleClass="requiredBlock"/>
+                                <apex:selectList id="Service" value="{!strService}" multiselect="false" size="1" style="width:160px;height:20px;" onchange="refreshServiceComponentValues();">
+                                    <apex:selectOptions id="Services" value="{!strServicesList}"/>
+                                </apex:selectList>
+                            </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="BlockSectionItem4">
+                        <apex:outputText value="Service Components "/>
+                        <apex:selectList id="ServiceComponent" value="{!strServiceComponent}" multiselect="false" size="1" style="width:160px;height:20px;" >
+                            <apex:selectOptions id="ServiceComponents" value="{!strServiceComponentsList}"/>
+                        </apex:selectList>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="BlockSectionItem6">
+                        <apex:outputText value="Active " rendered="{!isVisible}"/>
+                        <apex:inputCheckbox id="Active" value="{!strActive}" rendered="{!isVisible}"/>
+                    </apex:pageBlockSectionItem>   
+                    <apex:pageBlockSectionItem id="BlockSectionItem7">
+                        <apex:outputText value="Comments" rendered="{!isVisible}"/>
+                        <apex:inputtextarea id="Comments" value="{!strComments}" rendered="{!isVisible}"/>
+                    </apex:pageBlockSectionItem>                                                        
+                    <apex:pageBlockSectionItem id="BlockSectionItem5">
+                       <apex:commandButton id="saveButton" value="{!strButtonName}" action="{!CheckProcessExistInWave}" oncomplete="saveValues('{!isProcessExistInWave}');" reRender="refreshBlock"/>
+                    </apex:pageBlockSectionItem>
+                    
+                </apex:pageBlockSection>
+                </apex:pageBlock>
+        </apex:outputPanel>
+                <apex:pageBlock id="Block1" rendered="{!isTableRendedered}" >
+                <apex:pageBlockSection title="Client Specific Process Details" columns="1" id="ClientSection">
+                <apex:pageBlockTable id="ClientProcessTable" value="{!strClientProcessList}" var="process" >
+                    <apex:column value="{!process.name}" headerValue="Process Name" />
+                    <apex:column value="{!process.offering__r.name}" headerValue="Offerings"/>
+                    <apex:column value="{!process.Process__r.name}" headerValue="Services"/>
+                    <apex:column value="{!process.Service_Component__r.name}" headerValue="Service Components"/>  
+                    <apex:column value="{!process.Active__c}" headerValue="Active"/>
+                    <apex:column value="{!process.Comments__c}" headerValue="Comments"/>
+                    <apex:column headerValue="Edit" rendered="{!isEditVisible}">
+                        <apex:commandButton value="Edit" onclick="update('{!process.id}');" />
+                    </apex:column>    
+                </apex:pageBlockTable>
+              </apex:pageBlockSection>  
+            </apex:pageBlock>
+            
+            <apex:actionFunction name="SaveProcess" action="{!SaveProcess}" oncomplete="updateTable();" reRender="msg,refreshBlock,ClientSection">  <!-- reRender="frm" >{!strRerenderString} -->
+            </apex:actionFunction>
+            <apex:actionFunction name="refreshServices" action="{!refreshServices}" immediate="true" rerender="Service,ServiceComponent" >
+                <apex:param name="strOffering" value="" AssignTo="{!strOffering}" />
+            </apex:actionFunction>
+            <apex:actionFunction name="refreshServiceComponents" action="{!refreshServiceComponents}" immediate="true" rerender="ServiceComponent" >
+                <apex:param name="strService" value="" AssignTo="{!strService}" />
+            </apex:actionFunction>
+            <apex:actionFunction name="RefreshAfterUpdate" action="{!LoadData}" reRender="{!strRerenderString}"> <!-- reRender="frm" > -->
+            </apex:actionFunction>
+            
+<!--            <apex:actionSupport event="onclick" rerender="frm" /> -->
+    
+         </apex:actionregion>         
+     </apex:form>
+
+    
+    
+    <script>
+    function saveValues(isProcessExistInWave)
+    {
+        var DealId = document.getElementById("{!$Component.frm.Block.DealId}");
+        var strDealId = DealId.value;
+        if ( DealId != null && DealId.value != '' )
+        { 
+            document.getElementById("{!$Component.msg.strDealIdHidden}").value = DealId.value;
+        }
+
+        var ProcessName = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem1.ProcessName}");
+        var strProcessName = ProcessName.value;
+        if ( ProcessName != null && ProcessName.value != '' )
+        { 
+            document.getElementById("{!$Component.msg.strProcessNameHidden}").value = ProcessName.value;
+        }
+
+        var Offering = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem2.Offering}");
+        var strOffering = Offering.value;
+        if ( Offering != null && Offering.value != '' ) 
+        {
+            document.getElementById("{!$Component.msg.strOfferingHidden}").value = Offering.value;
+        }
+        else
+        {
+            document.getElementById("{!$Component.msg.strProcessNameHidden}").value =  null;
+        }
+
+        var Service = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem3.Service}");
+        var strService = Service.value;
+        if ( Service != null && Service.value != '' ) 
+        {
+            document.getElementById("{!$Component.msg.strServiceHidden}").value = Service.value;
+        }
+        else
+        {
+            document.getElementById("{!$Component.msg.strProcessNameHidden}").value =  null;
+        }
+        var ServiceComponent = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem4.ServiceComponent}");
+        var strServiceComponent = ServiceComponent.value;
+        if ( ServiceComponent != null && ServiceComponent.value != '' ) 
+        {
+            document.getElementById("{!$Component.msg.strServiceComponentHidden}").value = ServiceComponent.value;
+        }
+        else
+        {
+            document.getElementById("{!$Component.msg.strProcessNameHidden}").value = null;
+        }
+        
+        var Active = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem6.Active}");
+        if( Active != null)
+        {
+            var strActive = Active.value;
+            if ( Active  != null && Active.value != '' ) 
+            {
+                document.getElementById("{!$Component.msg.strActiveHidden}").value = Active.value;
+            }
+            else
+            {
+                document.getElementById("{!$Component.msg.strActiveHidden}").value = false;
+            }
+        }
+        
+        var comments = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem7.comments }");
+        //var strComments  = comments.value;
+        if ( comments != null && comments.value != '' ) 
+        {
+            document.getElementById("{!$Component.msg.strCommentsHidden}").value = comments.value;
+        }
+        else
+        {
+            document.getElementById("{!$Component.msg.strCommentsHidden}").value = null;
+        }
+        //alert(isProcessExistInWave );
+        if(isProcessExistInWave == 'true')
+        {
+            alert('Process is used in High Level Mobilization Plan. Cannot be deactivated');
+        }
+        else
+        {
+            SaveProcess();
+        }
+    }
+    
+    function refresh()
+    {
+        RefreshAfterUpdate();
+    }
+    
+    function refreshServicesValues()
+    {    
+         var Offering = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem2.Offering}");
+         var strOffering = Offering.value;
+         if ( Offering != null && Offering.value != '' ) 
+            document.getElementById("{!$Component.msg.strOfferingHidden}").value = Offering.value;
+         refreshServices(Offering.value);  
+    }
+
+    function refreshServiceComponentValues()
+    {    
+        var Service = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem3.Service}");
+        var strService = Service.value;
+        if ( Service != null && Service.value != '' ) 
+            document.getElementById("{!$Component.msg.strServiceHidden}").value = Service.value;
+        refreshServiceComponents(Service.value);  
+    }
+    
+    function update(ProcessId)
+    {
+        var w = 350;
+        var h = 350;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/2)-(h/2));
+        var DealId = document.getElementById("{!$Component.msg.strDealIdHidden}").value;
+        window.open('/apex/MOB_DealClientSpecificProcess?ProcessId='+ProcessId + '&id='+ DealId,'Product','scrollbars=yes,width=350,height=350,left=' + left + ',top='+ top );
+    }
+
+    function updateTable()
+    {
+        var ButtonName = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem5.saveButton}");
+        var OprName = ButtonName.value;
+            if(OprName =='Update')
+            {
+                if(top.window.parent.opener != null)
+                {
+                    top.window.parent.opener.closePage();
+                   // top.window.close("/apex/MOB_DealClientSpecificProcess");         
+                }
+            }
+            else
+            {
+ /*                   alert('save');
+                var ua = navigator.userAgent.toLowerCase();
+                alert(ua);
+                if(ua.indexOf('msie')== -1)
+                {
+                    alert('chrome');
+                    RefreshAfterUpdate();
+                }
+                else
+                {
+                    alert('IE');
+                    RefreshAfterUpdate();
+                }
+ */                                          
+            }
+    }  
+    
+    function closePage()
+    {
+        var ua = navigator.userAgent.toLowerCase();
+        if(ua.indexOf('msie')== -1)
+        {
+            RefreshAfterUpdate();
+        }
+        else
+        {
+            location.href = location.href;
+        }
+    } 
+    
+    function init()
+    {
+    } 
+    </script>
+</apex:page>

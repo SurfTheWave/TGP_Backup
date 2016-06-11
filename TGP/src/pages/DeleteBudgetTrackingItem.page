@@ -1,0 +1,3 @@
+<apex:page standardcontroller="Budget_Trac__c"  extensions="CheckDeleteMWB" action="{!CheckDeleteMWB}">
+<apex:pageMessages />
+</apex:page>

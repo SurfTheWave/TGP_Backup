@@ -1,0 +1,2 @@
+<apex:page standardController="Wave__c" extensions="OnboardUserStatus" action="{!getExcel}">
+</apex:page>

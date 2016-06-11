@@ -1,0 +1,478 @@
+<apex:page controller="OpportunitySearchController" sidebar="false">
+
+  <apex:form id="frm" >
+  <apex:inputHidden value="{!variable}" id="chkvar" />
+  <apex:inputHidden value="{!testurl}" id="rptUrl" />
+  <apex:pageMessages id="errors" />
+
+  <apex:pageBlock title="Opportunity Search!" mode="edit">
+
+  <table width="100%" border="0">
+  <tr>  
+    <td width="200" valign="top">
+
+      <apex:pageBlock mode="edit" id="criteria">
+
+      <script type="text/javascript">
+
+      function calling()
+      {
+         var check = document.getElementById("{!$Component.frm.chkvar}").value;
+         
+          if( check =='true')
+          {
+             var rpt  = document.getElementById("{!$Component.frm.rptUrl}").value;
+             return window.open(rpt);
+          }
+      }
+     function doSearch(input,lookupId) {
+
+     var offeringName= document.getElementById("{!$Component.offeringName}").value;
+   
+     var operatingGroupName= document.getElementById("{!$Component.opGroup}").value;
+   
+     var clientGeoAreaName= document.getElementById("{!$Component.geoArea}").value;
+    
+   
+      var oppsol = null;
+      // alert('lookupId :' + lookupId);
+      // alert('Input:' + input);
+      // alert(document.getElementById("{!$Component.oppSolLead}").value)
+      if(typeof lookupId!="undefined" && document.getElementById(lookupId)!=null){
+          oppsol=input.value?document.getElementById(lookupId+'_lkid').value:null;   
+      }
+      else if(document.getElementById("{!$Component.oppSolLead}").value != null 
+              && document.getElementById("{!$Component.oppSolLead}").value != '') {
+          oppsol=document.getElementById("{!$Component.oppSolLead}" +'_lkid').value;
+      }   
+       // alert(oppsol);
+        searchServer(
+        
+          document.getElementById("opportunityName").value,          
+          offeringName,
+          document.getElementById("sapOMId").value,
+          document.getElementById("clientName").value,
+          clientGeoAreaName,
+          operatingGroupName,
+          document.getElementById("stage").options[document.getElementById("stage").selectedIndex].value,
+          document.getElementById("activity").options[document.getElementById("activity").selectedIndex].value,
+          document.getElementById("serviceGrp").options[document.getElementById("serviceGrp").selectedIndex].value,  
+           oppsol           
+          );
+      }
+      function doListSearch(input,lookupId) {
+         var offeringName=document.getElementById("{!$Component.offeringName}").value;
+         var operatingGroupName= document.getElementById("{!$Component.opGroup}").value;
+         var clientGeoAreaName= document.getElementById("{!$Component.geoArea}").value;
+         
+          var oppsol = null; 
+           if(typeof lookupId!="undefined" && document.getElementById(lookupId)!=null)
+           {
+                oppsol=document.getElementById(lookupId+'_lkid').value
+           }
+           searchListServer(
+           document.getElementById("opportunityName").value,
+          offeringName,
+          document.getElementById("sapOMId").value,
+          document.getElementById("clientName").value,
+          clientGeoAreaName,
+          operatingGroupName,
+          document.getElementById("stage").options[document.getElementById("stage").selectedIndex].value,
+          document.getElementById("activity").options[document.getElementById("activity").selectedIndex].value,
+          oppsol
+       );
+          var str1 = document.getElementById("listViewId");
+      }
+      function clearComponents(input,lookupId) {
+        document.getElementById("opportunityName").value='';
+        document.getElementById("sapOMId").value='';
+        document.getElementById("clientName").value='';
+        document.getElementById("stage").options[document.getElementById("stage").selectedIndex].value='All';
+        document.getElementById("activity").options[document.getElementById("activity").selectedIndex].value='All';
+        document.getElementById("serviceGrp").options[document.getElementById("serviceGrp").selectedIndex].value='All';
+        document.getElementById("{!$Component.offeringName}").selectedIndex = 0;
+        document.getElementById("{!$Component.opGroup}").selectedIndex = 0;
+        document.getElementById("{!$Component.geoArea}").selectedIndex = 0;
+        document.getElementById("{!$Component.oppSolLead}").selectedIndex = 0;
+        document.getElementById("{!$Component.oppSolLead}").value='';
+        
+        
+      }
+      </script> 
+ 
+      <apex:actionFunction name="searchServer" action="{!runSearchWrapper}" rerender="ParentBlock,debug,errors">
+          <apex:param name="opportunityName" value="" />
+          <apex:param name="offeringName" value="" />
+          <apex:param name="sapOMId" value="" />
+          <apex:param name="clientName" value="" />
+          <apex:param name="geoArea" value="" />
+          <apex:param name="opGroup" value="" />
+          <apex:param name="stage" value="" />
+          <apex:param name="activity" value="" />
+          <apex:param name="serviceGrp" value="" />
+          <apex:param name="oppSolLead" value="" />
+        
+      </apex:actionFunction>
+      
+      <apex:actionFunction name="searchListServer" action="{!runListSearch}" rerender="ParentBlock,debug,errors">
+          <apex:param name="opportunityName" value="" />
+          <apex:param name="offeringName" value="" />
+          <apex:param name="sapOMId" value="" />
+          <apex:param name="clientName" value="" />
+          <apex:param name="geoArea" value="" />
+          <apex:param name="opGroup" value="" />
+          <apex:param name="stage" value="" />
+          <apex:param name="activity" value="" />  
+          <apex:param name="serviceGrp" value="" /> 
+           <apex:param name="oppSolLead" value="" />
+          
+        
+      </apex:actionFunction>
+      <br/>
+      <table cellpadding="2" cellspacing="2"  frame="box">
+      <tr>
+          <td style="font-weight:bold;">
+          </td>
+      </tr>
+      <tr>
+         <td style="font-weight:bold;">Standard Views<br/>
+            <apex:selectList value="{!listViewSelected}" onchange="doListSearch();" multiselect="false" size="1" style="width:170px;height:20px;">
+                <apex:selectOptions value="{!listViewsOptions}"/>
+            </apex:selectList>
+        </td>
+      </tr>
+      <tr>
+          <td style="font-weight:bold;">
+          <apex:commandButton value="Generate Report" action="{!generateReport}" oncomplete="calling();" reRender="frm"/>
+          </td>
+      </tr>
+      </table>
+      <br/>
+       <table  cellpadding="2" cellspacing="2" frame="box"> 
+      <tr>
+          <td style="font-weight:bold;"><I><U>Filter Criteria:</U></I>
+          <br/>
+          </td>
+      </tr>
+      <tr>
+        <td style="font-weight:bold;">MMS ID<br/>
+        <input type="text" id="sapOMId" onkeyup="doSearch();"/><br/>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-weight:bold;">Stage<br/>
+          <select id="stage" onchange="doSearch();">
+            <option value="{!allStagePicklistDefault}">{!allStagePicklistDefault}</option>
+            <apex:repeat value="{!stages}" var="tech1">
+              <option value="{!tech1}">{!tech1}</option>
+            </apex:repeat>
+          </select><br/>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-weight:bold;">Client Name<br/>
+        <input type="text" id="clientName" onkeyup="doSearch();"/><br/>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-weight:bold;">Opportunity Name<br/>
+        <input type="text" id="opportunityName" onkeyup="doSearch();"/><br/>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-weight:bold;">Geo Region<br/>
+        <apex:selectList id="geoArea" value="{!strClientGeoArea}" multiselect="false" size="1" style="width:160px;height:20px;" onchange="doSearch();">
+               <apex:selectOptions id="geoAreas" value="{!strClientGroAreaList}"/>
+        </apex:selectList><br/>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-weight:bold;">Operating Group<br/>
+        <apex:selectList id="opGroup" value="{!strOperatingGroup}" multiselect="false" size="1" style="width:160px;height:20px;" onchange="doSearch();">
+               <apex:selectOptions id="operatingGroups" value="{!strOperatingGroupList}"/>
+        </apex:selectList><br/>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-weight:bold;">Offerings<br/>
+        <apex:selectList id="offeringName" value="{!strOffering}" multiselect="false" size="1" style="width:160px;height:20px;" onchange="doSearch();">
+               <apex:selectOptions id="Offerings" value="{!strOfferingsList}"/>
+        </apex:selectList><br/>
+        </td>
+      </tr>
+      <tr>
+       <td style="font-weight:bold;">Lead Solution Architect - BPO<br/>
+        <apex:inputField value="{!oppTgp.Enterprise_Solution_Architect_New__c}" id="oppSolLead"  onchange="doSearch(this,'{!$Component.oppSolLead}');"/><br/>
+       </td>
+      </tr>
+      <tr>
+        <td style="font-weight:bold;">Reporting Status<br/>
+          <select id="activity" onchange="doSearch();">
+          <option value="{!allActivityPicklistDefault}">{!allActivityPicklistDefault}</option>
+          <apex:repeat value="{!activities}" var="tech2">
+              <option value="{!tech2}">{!tech2}</option>
+            </apex:repeat>
+          </select><br/>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-weight:bold;">Service Group<br/>
+          <select id="serviceGrp" onchange="doSearch();">
+          <option value="{!allServiceGrpPicklistDefault}">{!allServiceGrpPicklistDefault}</option>
+          <apex:repeat value="{!serviceGrpValues}" var="tech2">
+              <option value="{!tech2}">{!tech2}</option>
+            </apex:repeat>
+          </select><br/>
+        </td>
+      </tr>
+      <tr>
+          <td style="font-weight:bold;">
+          <apex:commandButton value="Clear Filter Criteria" action="{!clearFilter}"  reRender="frm" oncomplete="clearComponents();"/>
+          </td>
+      </tr>
+      </table>
+
+      </apex:pageBlock>
+
+    </td>
+    <td valign="top">
+<apex:pageblock id="ParentBlock">
+    <apex:pageBlock mode="edit" id="results" rendered="{!!IsSearchPage}">
+         <apex:outputPanel layout="block" style="overflow:auto;height:100%;width:100%">
+
+        <apex:pageBlockTable value="{!opptys}" var="oppty">
+
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >MMS ID</apex:outputText>
+                </apex:facet>
+                <apex:outputText value="{!oppty.SAP_OM_Opportunity__r.Name}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Stage</apex:outputText>
+                </apex:facet>
+                <apex:outputField value="{!oppty.Stage__c}"/>
+            </apex:column>
+           
+            <apex:column >
+                <apex:facet name="header">
+                   <apex:outputText >Client Name</apex:outputText>
+                </apex:facet>
+                <apex:outputText value="{!oppty.Client_Name__r.Name}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                   <apex:outputText >Opportunity<br/>Name</apex:outputText> 
+                </apex:facet>
+                <apex:outputLink value="/{!oppty.Id}">{!oppty.Name}</apex:outputLink>
+                <!--<apex:outputField value="{!oppty.Name}"/>-->
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                   <apex:outputText >Expected<br/>Contract<br/>Sign</apex:outputText>  
+                </apex:facet>
+                <apex:outputField value="{!oppty.Expected_contract_sign_qtr__c}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                   <apex:outputText >Geo<br/>Region</apex:outputText>   
+                </apex:facet>
+                <apex:outputText value="{!oppty.Client_Geo_Area__r.Name}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                   <apex:outputText >Geo<br/>Unit</apex:outputText>    
+                </apex:facet>
+                <apex:outputText value="{!oppty.Client_Geo_Unit__r.Name}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Operating<br/>Group</apex:outputText> 
+                </apex:facet>
+                <apex:outputText value="{!oppty.Operating_Group__r.Name}"/>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Staffing<br/>Status</apex:outputText> 
+                </apex:facet>
+                <apex:outputText value="{!oppty.Staffing_Status__c}"/>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Offerings</apex:outputText> 
+                </apex:facet>
+                <apex:outputField value="{!oppty.Offerings__c}"/>
+                
+            </apex:column>
+             <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Opportunity<br/>Solution<br/>Lead</apex:outputText> 
+                </apex:facet>
+                <apex:outputField value="{!oppty.Enterprise_Solution_Architect_New__c}"/>
+            </apex:column>  
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Reporting<br/>Status</apex:outputText> 
+                </apex:facet>
+                <apex:outputField value="{!oppty.Activity__c}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Service<br/>Group</apex:outputText> 
+                </apex:facet>
+                <apex:outputField value="{!oppty.Service_Group__c}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Created Date</apex:outputText> 
+                </apex:facet>
+                <apex:outputField value="{!oppty.Created_Date__c}"/>
+            </apex:column>
+             <apex:facet name="footer">Showing Page # {!pageNumber} of {!totalPages} </apex:facet>
+        </apex:pageBlockTable>
+        
+         </apex:outputPanel>         
+         <apex:pageblockButtons location="both">
+            <apex:commandButton value="<<" rerender="results" action="{!beginning}" disabled="{!prev}"/>
+            <apex:commandButton value="<" rerender="results" action="{!previous}" disabled="{!prev}"/>
+            <apex:commandButton value=">" rerender="results" action="{!next}" disabled="{!nxt}"/>
+            <apex:commandButton value=">>" rerender="results" action="{!end}" disabled="{!nxt}"/>                                    
+        </apex:pageblockButtons>
+    </apex:pageBlock>
+    
+    
+    <!--for Filter Criterion -->
+    
+    <apex:pageBlock mode="edit" id="results1" rendered="{!IsSearchPage}">
+         <apex:outputPanel layout="block" style="overflow:auto;height:100%;width:100%">
+
+        <apex:pageBlockTable value="{!opptysearched}" var="opptysSearched">
+
+            <apex:column >
+                <apex:facet name="header">
+                     <apex:outputText >MMS ID</apex:outputText>
+                </apex:facet>
+                <apex:outputText value="{!opptysSearched.SAP_OM_Opportunity__r.Name}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Stage</apex:outputText>
+                </apex:facet>
+                <apex:outputField value="{!opptysSearched.Stage__c}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                   <apex:outputText >Client Name</apex:outputText>
+                </apex:facet>
+                <apex:outputText value="{!opptysSearched.Client_Name__r.Name}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Opportunity<br/>Name</apex:outputText>
+                </apex:facet>
+                <apex:outputLink value="/{!opptysSearched.Id}">{!opptysSearched.Name}</apex:outputLink>
+                <!--<apex:outputField value="{!opptysSearched.Name}"/>-->
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Expected<br/>Contract<br/>Sign</apex:outputText> 
+                </apex:facet>
+                <apex:outputField value="{!opptysSearched.Expected_contract_sign_qtr__c}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Geo<br/>Region</apex:outputText>  
+                </apex:facet>
+                <apex:outputText value="{!opptysSearched.Client_Geo_Area__r.Name}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Geo<br/>Unit</apex:outputText>
+                </apex:facet>
+                <apex:outputText value="{!opptysSearched.Client_Geo_Unit__r.Name}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Operating<br/>Group</apex:outputText> 
+                </apex:facet>
+                <apex:outputText value="{!opptysSearched.Operating_Group__r.Name}"/>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Staffing<br/>Status</apex:outputText>
+                </apex:facet>
+                <apex:outputText value="{!opptysSearched.Staffing_Status__c}"/>
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">
+                   <apex:outputText >Offerings</apex:outputText> 
+                </apex:facet>
+                <apex:outputField value="{!opptysSearched.Offerings__c}"/>
+                
+            </apex:column>
+             <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Opportunity<br/>Solution<br/>Lead</apex:outputText> 
+                </apex:facet>
+                <apex:outputField value="{!opptysSearched.Enterprise_Solution_Architect_New__c}"/>
+            </apex:column>  
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Reporting<br/>Status</apex:outputText> 
+                </apex:facet>
+                <apex:outputField value="{!opptysSearched.Activity__c}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Service<br/>Group</apex:outputText> 
+                </apex:facet>
+                <apex:outputField value="{!opptysSearched.Service_Group__c}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputText >Created Date</apex:outputText> 
+                </apex:facet>
+                <apex:outputField value="{!opptysSearched.Created_Date__c}"/>
+            </apex:column>
+         <apex:facet name="footer">Showing Page # {!pageNumberSearch} of {!totalPagesSearch} </apex:facet>
+        </apex:pageBlockTable>
+        
+         </apex:outputPanel>
+         <apex:pageblockButtons location="both">
+            <apex:commandButton value="<<" rerender="results1"  action="{!beginningSearch}" disabled="{!prevSearch}"/>
+            <apex:commandButton value="<" rerender="results1"  action="{!previousSearch}" disabled="{!prevSearch}"/>
+            <apex:commandButton value=">" rerender="results1" action="{!nextSearch}" disabled="{!nxtSearch}"/>
+            <apex:commandButton value=">>" rerender="results1" action="{!endSearch}" disabled="{!nxtSearch}"/>                                    
+        </apex:pageblockButtons>
+        
+    </apex:pageBlock>
+    </apex:pageblock>
+    </td>
+  </tr>
+  </table>
+
+  </apex:pageBlock>
+
+  </apex:form>
+
+</apex:page>

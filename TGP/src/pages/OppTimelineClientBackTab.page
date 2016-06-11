@@ -1,0 +1,362 @@
+<!--
+Author :  Mayank Tayal
+Story  : Story-0123  
+Description : Opportunity Timeline/Client Background Tab under Opportunity Context.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    Sol_148                    5/15/2013        Sol UAM-Release 2
+
+-->
+<apex:page standardController="Opportunity_TGP__c"  extensions="BPO_Opportunity_tabController"  >
+<script>
+ function refresh(){
+  window.top.reload(true)
+ } 
+</script>
+
+<!-- Style Panel Satrts--->   
+    <style type="text/css">   
+        .imgclass:hover{   
+            background-image: url(/img/help/helpOrbs.gif);   
+            background-repeat: no-repeat;   
+            width: 16px;   
+            height: 15px;      
+            background-position: right;   
+          
+        }   
+        .imgclass{   
+            background-image: url(/img/help/helpOrbs.gif);   
+            background-repeat: no-repeat;   
+            width: 16px;   
+            height: 15px;   
+        }   
+    </style>   
+<!-- Style Panel Ends--->   
+    <apex:variable value="{!Opportunity_TGP__c}" var="o"/>
+    <apex:form id="form1" >
+        <apex:pageBlock id="block1" rendered="{!flagOppTimeLine}" >
+            <apex:outputPanel style="text-align:left" layout="block">
+             <font color="red" >DO NOT USE BROWSER BACK BUTTON. CLICK ON THE GENERAL INFORMATION TAB TO GO BACK.</font>             
+          </apex:outputPanel>
+          <apex:pageBlockButtons location="top">
+              <apex:commandButton value="Edit" action="{!editForOppTimeLine}" reRender="form1" rendered="{!saveEditButtonRender}" />
+          </apex:pageBlockButtons>
+            <apex:pageMessages id="msg"/>
+            
+            <apex:pageBlockSection title="Opportunity Timeline" collapsible="false" >
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Solution Start Date"/>
+                        <apex:outputField value="{!o.Solution_Start_Date__c}">
+                         </apex:outputfield> 
+                      </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Due Diligence Start Date"/>
+                        <apex:outputField value="{!o.Due_Diligence_Start_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="RFI Received"/>
+                        <apex:outputField value="{!o.RFI_Received__c}"/>
+                    </apex:pageBlockSectionItem>  
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Due Diligence End Date"/>
+                        <apex:outputField value="{!o.Due_Diligence_End_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Stage 1 Submit Date (RFI Response Due)"/>
+                        <apex:outputField value="{!o.RFI_response_due__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Reference Checks and Site Visits"/>
+                        <apex:outputField value="{!o.Reference_Checks_and_Site_Visits__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="RFP Received"/>
+                        <apex:outputField value="{!o.RFP_Received__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Negotiations"/>
+                        <apex:outputField value="{!o.Negotiations__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Solution Workshop Start Date"/>
+                        <apex:outputField value="{!o.Solution_Workshop_Start_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Stage 3 Submit (or BAFO Submit)"/>
+                        <apex:outputField value="{!o.BAFO_Submit__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Stage 2 Submit Date (RFP or Proposal Response Due)" style="font-weight:bold;">
+                        
+                      <!--  <img src="/s.gif" Class="imgclass" title="Should not be less than RFI date. If no RFP, leave blank."/>  -->
+                        
+                        </apex:outputLabel>
+                        <apex:outputField value="{!o.RFP_response_due__c}">
+                        </apex:outputField>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Contract Signature"/>
+                        <apex:outputField value="{!o.Contract_Signature__c}"/>
+                    </apex:pageBlockSectionItem>                    
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="RFP Down Select"/>
+                        <apex:outputField value="{!o.RFP_Down_Select__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Contract Start Date"/>
+                        <apex:outputField value="{!o.Contract_Start_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Presentations Orals"/>
+                        <apex:outputField value="{!o.Presentations_Orals__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Contract End Date"/>
+                        <apex:outputField value="{!o.Contract_End_Date__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                    </apex:pageBlockSectionItem>
+                                        
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Initial Go-live" style="font-weight:bold;">
+                        &nbsp;
+                        <img src="/s.gif" Class="imgclass" title="Should not be less than contract sign date."/>   
+                        
+                        </apex:outputLabel>
+                        <apex:outputField value="{!o.Initial_Go_live__c}">
+                        </apex:outputField>
+                    </apex:pageBlockSectionItem>
+                    
+             </apex:pageBlockSection>
+             
+             <apex:pageBlockSection title="Client Background" columns="1" collapsible="false">
+                 <apex:outputField value="{!o.Client_Overview__c}" style="width: 80%; height: 90px"/>
+                 <apex:outputField value="{!o.Business_Problem__c}"/>
+                 <apex:outputField value="{!o.Business_Objective__c}"/>
+                 <apex:outputField value="{!o.Link_to_client_website__c}" style="width: 30%; height: 20px"/>
+                 <apex:outputField value="{!o.Existing_Accenture_client__c}"/>
+                 <apex:outputField value="{!o.Existing_BPO_Client__c}"/>
+                 </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+        <apex:pageBlock id="block2" rendered="{!flagEditOppTimeLine}" >
+            <apex:pageMessages id="msg"/> 
+            <apex:outputPanel style="text-align:left" layout="block">
+                 <font color="red">DO NOT USE BROWSER BACK BUTTON. CLICK ON THE GENERAL INFORMATION TAB TO GO BACK.</font> 
+             </apex:outputPanel>  
+            <apex:pageBlockButtons location="top">
+                
+                <apex:actionStatus id="save_Btn">                 
+                    <apex:facet name="stop">
+                         <apex:commandButton value="Save" action="{!saverecordForOppTimeLineClientBackTab}" reRender="form1" status="save_Btn" />                          
+                    </apex:facet>
+                    <apex:facet name="start">
+                        <apex:outputPanel >
+                            <apex:commandButton value="Saving..." action="{!saverecordForOppTimeLineClientBackTab}" reRender="form1" disabled="true" status="save_Btn" />                          
+                        </apex:outputPanel>
+                     </apex:facet> 
+             </apex:actionStatus> 
+             <apex:commandButton value="Cancel" action="{!cancelRecordForOppTimeLineClientBackTab}" immediate="true"  reRender="form1" /> 
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title="Opportunity Timeline" collapsible="false" >
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Solution Start Date"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock"/>
+                         <c:noDateLink >
+                        <apex:inputField value="{!o.Solution_Start_Date__c}"  />     
+                                </c:noDateLink>          
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                  
+                   <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Due Diligence Start Date"/>
+                      <c:noDateLink >
+                    <apex:inputField label="Due Diligence Start Date" value="{!o.Due_Diligence_Start_Date__c}" >   
+                          </apex:inputField>
+                            </c:noDateLink>          
+                               </apex:pageBlockSectionItem>
+    
+
+                         <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="RFI Received"/>
+                           <c:noDateLink >                                                          
+                    <apex:inputField value="{!o.RFI_Received__c}">                
+                </apex:inputField>
+                      </c:noDateLink>          
+                   </apex:pageBlockSectionItem>
+        
+                     <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Due Diligence End Date"/>
+                        <c:noDateLink >
+                 <apex:inputField value="{!o.Due_Diligence_End_Date__c}">                    
+                </apex:inputField>
+                   </c:noDateLink>          
+                   </apex:pageBlockSectionItem>
+
+                  
+                              <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Stage 1 Submit Date (RFI Response Due)"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock"/>
+                         <c:noDateLink > 
+                        <apex:inputField value="{!o.RFI_response_due__c}"/>   
+                         </c:noDateLink>            
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Reference Checks and Site Visits"/>
+                        <c:noDateLink >
+                <apex:inputField value="{!o.Reference_Checks_and_Site_Visits__c}">                
+                </apex:inputField>
+                 </c:noDateLink>   
+                     </apex:pageBlockSectionItem>
+
+                                                
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="RFP Received"/>
+                    <c:noDateLink >
+                     <apex:inputField value="{!o.RFP_Received__c}">                
+                </apex:inputField>
+                </c:noDateLink>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Negotiations"/>
+                        <c:noDateLink >
+                <apex:inputField value="{!o.Negotiations__c}">                
+                </apex:inputField>
+                   </c:noDateLink>   
+                   </apex:pageBlockSectionItem>
+        
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Solution Workshop Start Date"/>
+                        <c:noDateLink >
+                <apex:inputField value="{!o.Solution_Workshop_Start_Date__c}">                
+                </apex:inputField>
+              </c:noDateLink>   
+                  </apex:pageBlockSectionItem>
+    
+                  <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Stage 3 Submit (or BAFO Submit)"/>
+                        <c:noDateLink >
+                <apex:inputField value="{!o.BAFO_Submit__c}" >                
+                </apex:inputField>
+                  </c:noDateLink>   
+                   </apex:pageBlockSectionItem>
+    
+        <apex:pageBlockSectionItem >
+            <apex:outputlabel value="Stage 2 Submit Date(RFP or Proposal Response Due)" />
+            <apex:outputPanel styleClass="requiredInput" layout="block">
+<apex:outputPanel styleClass="requiredBlock"/>
+<c:noDateLink >
+<apex:inputField value="{!o.RFP_response_due__c}">                
+<!-- <img src="/s.gif" Class="imgclass" title="Should not be less than RFI date. If no RFP, leave blank."/> -->
+</apex:inputField>
+</c:noDateLink>
+</apex:outputPanel>
+        </apex:pageBlockSectionItem>
+        
+                    
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Contract Signature"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock"/>
+                         <c:noDateLink >
+                        <apex:inputField value="{!o.Contract_Signature__c}"/> 
+                         </c:noDateLink> 
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+                 <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="RFP Down Select"/>
+                        <c:noDateLink >
+                <apex:inputField value="{!o.RFP_Down_Select__c}">              
+                </apex:inputField>
+                      </c:noDateLink>   
+                      </apex:pageBlockSectionItem>
+
+                
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Contract Start Date"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock"/>
+                      <c:noDateLink >
+                        <apex:inputField value="{!o.Contract_Start_Date__c}" />    
+                        </c:noDateLink>          
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+               <apex:pageBlockSectionItem >
+                 <apex:outputlabel value="Presentations Orals"/> 
+               <c:noDateLink >
+                     <apex:inputField value="{!o.Presentations_Orals__c}">                
+                </apex:inputField>
+                 </c:noDateLink>
+               </apex:pageBlockSectionItem>
+               
+               
+                   <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Contract End Date"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock"/>
+                      <c:noDateLink >
+                        <apex:inputField value="{!o.Contract_End_Date__c}" />    
+                            &nbsp;
+                        <img src="/s.gif" Class="imgclass" title="Should not be less than Contract Start Date."/>   
+                        
+                        </c:noDateLink>          
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>               
+                                                
+                <apex:pageBlockSectionItem > </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Initial Go-live" style="font-weight:bold;">
+                    </apex:outputLabel>
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock"/>
+                     <c:noDateLink >
+                            <apex:inputField value="{!o.Initial_Go_live__c}"> 
+                            &nbsp;
+                            <img src="/s.gif" Class="imgclass" title="Should not be less than contract sign date."/>
+                            </apex:inputfield>    
+                            </c:noDateLink>          
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                
+           </apex:pageBlockSection>
+           <apex:pageBlockSection title="Client Background" columns="1" collapsible="false">
+                 <apex:inputField value="{!o.Client_Overview__c}" style="width: 80%; height: 90px"/>
+                 <apex:inputField value="{!o.Business_Problem__c}" style="width: 80%; height: 90px"/>
+                 <apex:inputField value="{!o.Business_Objective__c}" style="width: 80%; height: 90px"/>
+                 <apex:inputField value="{!o.Link_to_client_website__c}" style="width: 30%; height: 20px"/>
+                 <apex:inputField value="{!o.Existing_Accenture_client__c}"/>
+                 <apex:inputField value="{!o.Existing_BPO_Client__c}"/>
+              
+           </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

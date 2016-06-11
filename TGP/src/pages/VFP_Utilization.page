@@ -1,0 +1,110 @@
+<apex:page controller="VFC_Utilization">
+ <style type="text/css">
+    .myHeader{
+    background-color : #0099CC !important;
+    
+    border-top-left-radius: 7px !important; 
+    border-top-right-radius: 7px !important;
+    font-weight:bold !important;
+    color: white !important;
+    font-size: 12px !important;
+}
+</style>
+<!-- 00a3d1    0099CC #007aa5
+background-image: -webkit-linear-gradient(rgba(255,255,255,.50),rgba(255,255,255,0) 12px) !important;
+-->
+    <apex:form id="myForm">
+      <apex:outputpanel >
+      <apex:pageBlock >
+          <apex:outputpanel layout="block" style="color:black; font-size:10pt; font-weight: bold;">
+                
+               Solution Architects are requested to update their allocation percentages on a weekly basis.
+               <br/>
+               Note that the reporting periods in the table below are updated every Sunday at 8 am IST.
+              <br/>
+              <br/> 
+          </apex:outputpanel>
+          <apex:pageBlockButtons location="top" >
+              <apex:commandButton value="Save" action="{!doSave}" />
+              <apex:commandButton value="Cancel" action="{!doCancel}"/>
+          </apex:pageBlockButtons>
+          <apex:pageBlockTable value="{!utilizationList}" var="a" id="NewPage" columnsWidth="10%,10%,10%,10%,10%,10%,10%,30%" width="100%">          
+              <apex:column headerClass="myHeader"> 
+                  <apex:facet name="header">Client Name</apex:facet>
+                  <apex:outputField value="{!a.Client_Name__c}" style="Width:95%"/>
+              </apex:column>
+                         
+             <apex:column headerClass="myHeader">
+                 <apex:facet name="header">Opportunity Name <br/>/ Others</apex:facet>
+                 <apex:outputField value="{!a.BPO_Opportunity__c}" rendered="{!NOT(If(a.BPO_Opportunity__r.Name == 'PTO' || a.BPO_Opportunity__r.Name == 'Training' || a.BPO_Opportunity__r.Name == 'Other Deal Support' || a.BPO_Opportunity__r.Name == 'Other Unavailable',true,false))}" style="Width:95%"/> 
+                 <apex:outputField value="{!a.BPO_Opportunity__r.Name}" rendered="{!If(a.BPO_Opportunity__r.Name == 'PTO' || a.BPO_Opportunity__r.Name == 'Training' || a.BPO_Opportunity__r.Name == 'Other Deal Support' || a.BPO_Opportunity__r.Name == 'Other Unavailable',true,false)}" style="Width:95%"/>                
+             </apex:column>
+             
+             <apex:column headerClass="myHeader">
+                 <apex:facet name="header"> Current Week (in %)<br/>{!mondayDate}</apex:facet>
+                 <apex:inputField value="{!a.Current_Week__c}" style="Width:95%"/>
+             </apex:column>
+             
+             <apex:column headerClass="myHeader">
+                 <apex:facet name="header"> Week+1 (in %)<br/> {!MondayDate1}</apex:facet>
+                 <apex:inputField value="{!a.Current_Week_1__c}" style="Width:95%"/>
+             </apex:column>
+             
+             <apex:column headerClass="myHeader">
+                 <apex:facet name="header"> Week+2 (in %)<br/> {!MondayDate2}</apex:facet>
+                 <apex:inputField value="{!a.Current_Week_2__c}" style="Width:95%"/>
+             </apex:column>
+             
+             <apex:column headerClass="myHeader">
+                 <apex:facet name="header"> Week+3 (in %)<br/> {!MondayDate3}</apex:facet>
+                 <apex:inputField value="{!a.Current_Week_3__c}" style="Width:95%"/> 
+             </apex:column>
+             
+             <apex:column headerClass="myHeader">
+                 <apex:facet name="header"> Week+4 (in %)<br/> {!MondayDate4}</apex:facet>
+                 <apex:inputField value="{!a.Current_Week_4__c}" style="Width:95%"/>
+             </apex:column>
+             
+             <apex:column headerClass="myHeader">
+                 <apex:facet name="header"> Comments <br/> </apex:facet>             
+                 <apex:inputField value="{!a.Comments__c}" style="Width:95%"/>
+             </apex:column>             
+         </apex:pageBlockTable>
+         <apex:pageBlockTable id="NewPage1" value="{!aggregateValues}" var="A" columnsWidth="10%,10%,10%,10%,10%,10%,10%,30%" width="100%">          
+              <apex:column > 
+                  <apex:outputText value="{!A.clientName}"/>
+              </apex:column>
+                         
+             <apex:column >
+                 <apex:outputText value="{!A.opporunityName}" style="font-weight:800"/>                 
+             </apex:column>
+             
+             <apex:column >
+                 <apex:outputText value="{!A.currentWeek}" style="font-weight:800"/>
+             </apex:column>
+             
+             <apex:column >
+                 <apex:outputText value="{!A.currentWeek1}" style="font-weight:800"/>
+             </apex:column>
+             
+             <apex:column >
+                 <apex:outputText value="{!A.currentWeek2}" style="font-weight:800"/>
+             </apex:column>
+             
+             <apex:column >
+                 <apex:outputText value="{!A.currentWeek3}" style="font-weight:800"/>
+             </apex:column>
+             
+             <apex:column >
+                 <apex:outputText value="{!A.currentWeek4}" style="font-weight:800"/>
+             </apex:column>
+             
+             <apex:column >
+                 
+             </apex:column>
+                          
+         </apex:pageBlockTable>
+     </apex:pageBlock>
+     </apex:outputpanel>
+  </apex:form>
+</apex:page>

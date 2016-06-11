@@ -1,0 +1,102 @@
+<apex:page standardController="Costing_Request__c" extensions="CanvasClass">
+<script src="/soap/ajax/25.0/connection.js" type="text/javascript"></script>
+<!--
+<apex:form id="frm">
+    <apex:inputText value="{!servGrpfromEdit}" id="servGrp" />
+</apex:form>
+-->
+    <script>
+    window.onLoad=validateRedirect();
+
+        
+        function validateRedirect(){
+            
+           // if((('{!$Profile.Name}'.indexOf('IO')<-1)||('{!$Profile.Name}'.indexOf('IC')<-1))){
+            //    alert('You do not have access to Costing Request.');
+             //   window.location.href = '{!$Setup.Rest_URL__c.Base_URL__c}'+'{!URLFOR(Costing_Request__c.Opportunity__c)}'; 
+           // }
+           // else{
+                var access = false;
+                var shareaccess = false
+                sforce.connection.sessionId = "{!$Api.Session_ID}";  
+                var scopeCheck = sforce.connection.query("SELECT id,name,solution_component__c, Opportunity__r.Service_Grp__c FROM Solution_scope__c WHERE opportunity__c='{!Costing_Request__c.Opportunity__c}' and solution_component__c='Delivery'"); 
+                scopeRecords = scopeCheck.getArray("records"); 
+                //alert(scopeRecords); 
+                if(scopeRecords.length>0){ 
+                    serviceGroup = scopeRecords[0].Opportunity__r.Service_Grp__c;
+                    //alert(serviceGroup);
+                    //alert('{!Costing_Request__c.Opportunity__c}');
+                    //alert('{!$Profile.Name}'.indexOf('IO'));
+                    access=true; 
+                    
+                   if(serviceGroup!= 'BPO' && serviceGroup!= 'IO'){
+                        //alert('Bundled');
+                        var accessCheck= sforce.connection.query("SELECT HasEditAccess, RecordId FROM UserRecordAccess WHERE RecordId='{!Costing_Request__c.Opportunity__c}' and UserId='{!$User.Id}'"); 
+                        scopeRecords= accessCheck.getArray("records"); 
+                        //alert(scopeRecords);
+                        if(scopeRecords.length>0){
+                            if(scopeRecords[0].HasEditAccess==false || scopeRecords[0].HasEditAccess== 'false'){
+                                shareaccess=false;
+                            }else{
+                                shareaccess=true
+                            }
+
+                        //    alert( scopeRecords[0].HasEditAccess + '<- scopeRecords[0].HasEditAccess');
+                               
+                        }else{
+                            shareaccess= false;
+                        }
+                    } else if( '{!$Profile.Name}' != 'System Administrator' && (serviceGroup == 'BPO' && ('{!$Profile.Name}'.indexOf('IO')>-1)|| serviceGroup == 'IO' && ('{!$Profile.Name}'.indexOf('IO')<0))){
+                            shareaccess= false;
+                   } else{
+                       shareaccess= true;
+                   }
+                    
+                    
+                }
+                //alert(access + '= access  -> '+ shareaccess + ' = shareaccess');
+                if(access==true && shareaccess==true){
+                       var sg = '';
+                       var query = window.location.search.substring(1);
+                       //alert(query + 'query');
+                       var vars = query.split('&SG=');
+                       //alert(vars + 'vars');
+                       if(vars.length>1){
+                            
+                           //alert(vars[1].substring(0,3)); 
+                           if(vars[1].substring(0,2)== 'IO'){
+                               sg = 'IO';
+                           }
+                           else if(vars[1].substring(0,3)== 'BPO'){
+                               sg = 'BPO';
+                           }
+                       }
+                       if(sg== ''){
+                           if(serviceGroup=='IO'){
+                               sg='IO';
+                           }
+                           else{
+                               sg= 'BPO';
+                           }
+                               
+                       }
+                       window.location.href = '{!$Setup.Rest_URL__c.Base_URL__c}'+'apex/EditCanvas?id='+'{!URLFOR(Costing_Request__c.Id)}' + '&SG=' + sg;
+                         //alert('{!$Setup.Rest_URL__c.Base_URL__c}'+'apex/EditCanvas?id='+'{!URLFOR(Costing_Request__c.Id)}' + '&SG=' + sg);
+               } else if(shareaccess==false && access==true){
+                       alert('You do not have access to Costing Request.');
+                        //alert('{!$Setup.Rest_URL__c.Base_URL__c}'+'{!URLFOR(Costing_Request__c.Opportunity__c)}');
+                        window.location.href = '{!$Setup.Rest_URL__c.Base_URL__c}'+'{!URLFOR(Costing_Request__c.Opportunity__c)}'; 
+               } else if(access==false){
+                   alert('No active delivery scope has been added for the opportunity. Please add scope from the “Solution Scope” screen to load costing page.');
+                   window.location.href = '{!$Setup.Rest_URL__c.Base_URL__c}'+'{!URLFOR(Costing_Request__c.Opportunity__c)}';    
+               }
+         //  }
+       
+        }
+       </script>
+        
+        
+    
+    
+    
+</apex:page>

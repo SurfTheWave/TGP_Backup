@@ -1,0 +1,147 @@
+<!--
+   @Author         : Komal Priya
+   @name           : VFP_LinkToSAPOM 
+   @CreateDate     : 22 December 2014
+   @Description    : VF Page for selecting and linking an opportunity with MMS 
+   @Version        : 1.0
+  -->
+
+
+<apex:page controller="VFC_LinkToSAPOMController">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        jQuery(document).ready(function() {
+            jQuery('[id$=searchSAPOMId]').click(function(event){
+                event.preventDefault();
+                var searchedText = jQuery('[id$=searchTextId]').val();
+                searchSAPOM(searchedText);
+            });
+        });
+    </script>
+  <apex:form id="searchForm">
+  <apex:pageMessages id="errors" escape="true" />
+  <apex:actionFunction name="callSelectFunction" action="{!callSelect}" rerender="view"> 
+        <apex:param id="selectId" name="selectedId" value="" />
+  </apex:actionFunction>
+  <apex:actionFunction name="searchSAPOM" action="{!searchSelectedSAPOM}" rerender="sapOmTable,view"> 
+        <apex:param id="searchId" name="searchId" value="" />
+  </apex:actionFunction>
+      <apex:pageBlock id="enterSearchText">
+         <apex:pageBlockSection columns="2" title="Search">
+             <apex:pageBlockSectionItem >
+                 <apex:inputText id="searchTextId"/>
+             </apex:pageBlockSectionItem>
+             <apex:pageBlockSectionItem >
+                 <apex:commandButton value="Search" id="searchSAPOMId" />
+             </apex:pageBlockSectionItem>
+         </apex:pageBlockSection> 
+       </apex:pageBlock>
+         <apex:pageBlock id="sapOmTable">
+         <font style="color:#FF0000;size:13px;"><b><apex:outputText value="{!$Label.No_Record_Found}" rendered="{!ListOfSAPOM.size=0}" /></b></font>
+         <apex:pageBlockSection columns="1">
+           <apex:pageBlockTable value="{!ListOfSAPOM}" var="sapOMValue" >
+                 <apex:outputLabel rendered="If{!ListOfSAPOM.size = 0}" value="{!$Label.No_Record_Found}"></apex:outputLabel>
+                 <apex:column headerValue="Select" width="10%">
+                            <a href='#' name="hrefSel" id="{!sapOMValue.ID}">Select</a>
+                 </apex:column>
+                 <apex:column headerValue="Opportunity ID" width="20%">
+                            <apex:outputField value="{!sapOMValue.SAP_OM_ID__c}" />
+                 </apex:column>
+                 <apex:column headerValue="Opportunity Name" width="20%">
+                            <apex:outputField value="{!sapOMValue.Name}" />
+                 </apex:column>
+                 <apex:column headerValue="Client Name" width="20%">
+                            <apex:outputField value="{!sapOMValue.Account.name}" />
+                 </apex:column>
+                 <apex:column headerValue="Lead Solution Architect - BPO" width="20%">
+                        <apex:outputField value="{!sapOMValue.Opportunity_Solution_Lead__r.name}" />
+                 </apex:column>
+                  
+                 <apex:column headerValue="Lead Solution Architect - IO" width="20%">
+                        <apex:outputField value="{!sapOMValue.Opportunity_Solution_Lead__r.name}" />
+                 </apex:column>
+                 <apex:column headerValue="Lead Solution Architect - IC" width="20%">
+                        <apex:outputField value="{!sapOMValue.Opportunity_Solution_Lead__r.name}" />
+                 </apex:column>
+                 
+                 
+                 <apex:column headerValue="LastModifiedDate" width="20%">
+                            <apex:outputField value="{!sapOMValue.LastModifiedDate }" />
+                 </apex:column>
+                 <apex:column headerValue="LastModifiedBy" width="20%">
+                            <apex:outputField value="{!sapOMValue.LastModifiedBy.name}" />
+                 </apex:column>
+                 <apex:facet name="footer">Page #{!pageNumber}</apex:facet>
+                 
+             </apex:pageBlockTable>
+             
+         </apex:pageBlockSection>
+        <!--  <apex:pageBlockButtons location="bottom" >
+               <apex:outputPanel id="myButtons" style="align:center">                
+                    <apex:commandButton action="{!Beginning}" title="Beginning" value="<<" disabled="{!disablePrevious}" />
+                    <apex:commandButton action="{!Previous}" title="Previous" value="<" disabled="{!disablePrevious}" />        
+                    <apex:commandButton action="{!Next}" title="Next" value=">" disabled="{!disableNext}" />
+                    <apex:commandButton action="{!End}" title="End" value=">>" disabled="{!disableNext}" /> 
+               </apex:outputPanel>
+               </apex:pageBlockButtons> -->
+               <script>
+                jQuery(document).ready(function() {
+                    jQuery("a[name='hrefSel']").click(function(event){
+                        event.preventDefault();
+                        var currentId = jQuery(this).attr('id');
+                        callSelectFunction(currentId);
+                    });
+                });
+            </script>
+            
+              <apex:panelGrid columns="5">
+                
+                    <apex:commandButton action="{!first}" title="Beginning" value="<<" disabled="{!!hasPrevious}" />
+                    <apex:commandButton action="{!Previous}" title="Previous" value="<" disabled="{!!hasPrevious}" />        
+                    <apex:commandButton action="{!Next}" title="Next" value=">" disabled="{!!hasNext}" />
+                    <apex:commandButton action="{!last}" title="End" value=">>" disabled="{!!hasNext}" /> 
+                    <apex:outputText >{!(Con.pageNumber * size)+1-size}-{!IF((Con.pageNumber * size)>noOfRecords, noOfRecords,(Con.pageNumber * size))} of {!noOfRecords}</apex:outputText>
+            </apex:panelGrid>
+      </apex:pageBlock>
+     
+      <apex:pageblock id="view" >
+        <apex:pageBlockSection columns="1">
+            <apex:outputText rendered="{!selectedSection}"><b> you have selected following opportuntiy</b></apex:outputText>&nbsp;
+            &nbsp;&nbsp;
+            <apex:pageBlockTable value="{!ListOfSelectedSAPOM}" var="selectedSapOMValue" rendered="{!selectedSection}">
+                 <apex:column headerValue="Opportunity ID">
+                            <apex:outputField value="{!selectedSapOMValue.SAP_OM_ID__c}" />
+                 </apex:column>
+                 <apex:column headerValue="Opportunity Name">
+                            <apex:outputField value="{!selectedSapOMValue.name}" />
+                 </apex:column>
+                 <apex:column headerValue="Client Name">
+                            <apex:outputField value="{!selectedSapOMValue.Account.name}" />
+                 </apex:column>
+                 <apex:column headerValue="Lead Solution Architect - BPO">
+                            <apex:outputField value="{!selectedSapOMValue.Opportunity_Solution_Lead__r.name}" />
+                 </apex:column>
+                 <apex:column headerValue="Lead Solution Architect - IO">
+                            <apex:outputField value="{!selectedSapOMValue.IO_Solution_Architect__r.name}" />
+                 </apex:column>
+                 <apex:column headerValue="Lead Solution Architect - IC">
+                            <apex:outputField value="{!selectedSapOMValue.IC_Solution_Architect__r.name}" />
+                 </apex:column>
+                 <apex:column headerValue="LastModifiedDate">
+                            <apex:outputField value="{!selectedSapOMValue.LastModifiedDate}" />
+                 </apex:column>
+                 <apex:column headerValue="LastModifiedBy">
+                            <apex:outputField value="{!selectedSapOMValue.LastModifiedBy.name}" />
+                 </apex:column>
+                 
+             </apex:pageBlockTable>
+             
+          </apex:pageBlockSection>
+
+          <apex:outputText rendered="{!selectedSection}"><b> Please confirm if you want to associate the selected opportunity with your opportunity</b></apex:outputText>&nbsp;
+            &nbsp;&nbsp;
+          <apex:commandButton value="Confirm" id="selectSAPOMRec" rendered="{!selectedSection}" action="{!doLink}"/>&nbsp;&nbsp;
+          <apex:commandButton value="Cancel" id="cancelSAPOMRec" rendered="{!selectedSection}" action="{!doCancel}"/>
+          </apex:pageblock>
+  </apex:form>
+</apex:page>

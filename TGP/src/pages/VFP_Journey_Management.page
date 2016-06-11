@@ -1,0 +1,112 @@
+<!--
+Author : Shashank Shastri.
+Description : 'Journey Management' screen 
+-->
+<apex:page standardController="Deal_Track__c" extensions="VFC_Deal_Track_Controller" action="{!journeyManagementConstrutor}" sidebar="false" showHeader="false">
+<script>
+
+  function OpenHistoryPopup(RecordID,ObjName,Field1, Field2,Field3, Field4,Field5)
+    {
+        var w = 500;
+        var h = 400;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/3)-(h/2));
+        var url = '/apex/MaintainHistory?ID='+RecordID+'&ObjName='+ObjName+'&Field1='+Field1+'&Field2='+Field2+'&Field3='+Field3+'&Field4='+Field4+'&Field5='+Field5;
+        var myWindow = window.open(url,'Mob_Deal_Track','scrollbars=no,width=650,height=500, resizable=no, chrome=yes, minimizable=no, z-index: 9999,location=no, left=' + left + ',top='+ top );
+        myWindow.focus();
+        return false;        
+    }
+</script>  
+<apex:pageMessages ></apex:pageMessages>  
+    <apex:form >
+        <apex:pageBlock >
+        <apex:pageBlockButtons location="top" rendered="{!isEditVisible}" >
+            <apex:commandButton value="Save" id="saveButton" action="{!SaveJourneyManagement}"/>
+            <apex:commandButton value="Cancel" action="{!Cancel}" />
+        </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="7">
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==true}">
+                      <apex:outputLabel value="Overall Completion Status (%)"/>
+                      <apex:inputField value="{!wpv.Journey_Overall_Completion_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==false}">
+                      <apex:outputLabel value="Overall Completion Status (%)"/>
+                      <apex:outputField value="{!wpv.Journey_Overall_Completion_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==true}">
+                      <apex:outputLabel value="Overall RAG Status"/>
+                      <apex:inputField value="{!wpv.Jou_Overall_RAG_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==false}">
+                      <apex:outputLabel value="Overall RAG Status"/>
+                      <apex:outputField value="{!wpv.Jou_Overall_RAG_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==true}">
+                      <apex:outputLabel value="Comments(Max Limit on character:32768)"/>
+                      <apex:inputField value="{!wpv.JourneyMgmt_Comments__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem> 
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==false}">
+                      <apex:outputLabel value="Comments(Max Limit on character:32768)"/>
+                      <apex:outputField value="{!wpv.JourneyMgmt_Comments__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem> 
+                  <apex:pageBlockSectionItem >
+                      <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!wpv.Id}','Wave_Plan_Version__c','Journey_Overall_Completion_Status__c','Jou_Overall_RAG_Status__c','','','');"/>                                                
+                  </apex:pageBlockSectionItem>  
+              </apex:pageBlockSection>
+              
+              <apex:pageBlockSection columns="1">
+                  <apex:outputLabel value="Journey Management Plans" style="font-size:10pt; text-decoration : underline;"/>
+                         <apex:pageBlockTable value="{!ListOfJourney}" var="PlanInner" >
+                                <apex:column headerValue="Section Number" value="{!PlanInner.newJourneyManagement.Section_Number__c}" width="100" style="background-color:#EBEBFA ;"/>
+                                <apex:column headerValue="Section Name" value="{!PlanInner.newJourneyManagement.Section_Name__c}" style="background-color:#EBEBFA ;"/>
+                                <apex:column headerValue="Deliverable number" style="background-color:#EBEBFA ;">
+                                    <apex:outputField value="{!PlanInner.newJourneyManagement.Deliverable_Number__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Deliverable" style="background-color:#EBEBFA ;">
+                                    <apex:outputField value="{!PlanInner.newJourneyManagement.Deliverable_Name__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Planned Start Date" style="background-color:#EBEBFA ;">
+                                    <apex:outputField value="{!PlanInner.newJourneyManagement.Planned_Start_Date__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Planned End Date" style="background-color:#EBEBFA ;">
+                                    <apex:outputField value="{!PlanInner.newJourneyManagement.Planned_End_Date__c}" />
+                                </apex:column>                  
+                                <apex:column headerValue="Responsibilty" style="background-color:#EBEBFA ;">
+                                    <apex:outputField value="{!PlanInner.newJourneyManagement.Responsibility__c}" />
+                                </apex:column>   
+                                 <apex:column headerValue="% Completed" style="background-color:{!PlanInner.backgroundcolor};">
+                                   <apex:outputField value="{!PlanInner.newJourneyManagement.Completed__c}">
+                                   <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!PlanInner.isDisabled}"/>
+                                   </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Actual Start Date" style="background-color:{!PlanInner.backgroundcolor};">
+                                   <apex:outputField value="{!PlanInner.newJourneyManagement.Actual_Start_Date__c}">
+                                   <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!PlanInner.isDisabled}"/>
+                                   </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Actual End Date" style="background-color:{!PlanInner.backgroundcolor};">
+                                   <apex:outputField value="{!PlanInner.newJourneyManagement.Actual_End_Date__c }">
+                                   <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!PlanInner.isDisabled}"/>
+                                   </apex:outputField> 
+                                </apex:column>  
+                                <apex:column headerValue="Status" style="background-color:{!PlanInner.backgroundcolor};">
+                                   <apex:outputField value="{!PlanInner.newJourneyManagement.status__c }">
+                                   <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!PlanInner.isDisabled}"/>
+                                   </apex:outputField> 
+                                </apex:column>               
+                                <apex:column headerValue="Tracking Comments" style="background-color:{!PlanInner.backgroundcolor};">
+                                      <apex:outputField value="{!PlanInner.newJourneyManagement.Tracking_Comments__c}"> 
+                                      <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!PlanInner.isDisabled}"/>
+                                      </apex:outputField> 
+                                </apex:column>
+                                <apex:column headerValue="Milestone" style="background-color:#EBEBFA ;">
+                                    <apex:outputField value="{!PlanInner.newJourneyManagement.Milestone__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Maintain History"  style="background-color:#EBEBFA ;">
+                                      <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!PlanInner.newJourneyManagement.Id}','Journey_Management_Planning__c','Completed__c','Actual_Start_Date__c','Actual_End_Date__c','status__c','');"/>                                                
+                                </apex:column>
+                            </apex:pageBlockTable>
+                                      </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>    
+</apex:page>

@@ -1,0 +1,25 @@
+<apex:page standardController="Commercial_Data__c" extensions="Commercial_InlineeController"  id="page1" doctype="html-5.0" >
+
+
+                <apex:pageBlock >
+                <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                <apex:outputLabel value=" OADM Level, Location and Number of FTEs"  styleClass="green"/>
+                </apex:pageBlockSectionItem>
+               
+                 <apex:pageblocktable Value="{!listBPOSEOADM}" var="OADMfields">
+                    <apex:column value="{!OADMfields.OADM_FTE_Level__c}">
+                    <apex:facet name="header">Career Level</apex:facet>
+                    </apex:column>
+                    <apex:column value="{!OADMfields.OADM_FTE_Location__c}">
+                    <apex:facet name="header">Country</apex:facet>
+                    </apex:column>
+                    <apex:column value="{!OADMfields.OADM_FTEs__c}">
+                    <apex:facet name="header">Baseline FTE</apex:facet>
+                    </apex:column>
+                 </apex:pageblocktable>
+               </apex:pageBlockSection>
+               </apex:pageBlock>
+
+
+</apex:page>

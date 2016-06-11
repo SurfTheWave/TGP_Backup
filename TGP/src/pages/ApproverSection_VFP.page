@@ -1,0 +1,75 @@
+<apex:page standardController="approval_request__c" extensions="ApprovalSection">
+<style>
+table.table_on_the_left {
+    float:left;
+   }
+
+  table.table_on_the_right {
+    position:center;
+    float:left;
+    aling=center;
+  }
+</style>
+<script>
+   var url = location.href;
+     var match = url.match('&inline=1');
+    if (match != null) { 
+        var newUrl = url.replace('&inline=1', '');
+        window.top.location=newUrl;
+    }
+    function reDirect(){
+    
+        if('{!req.approval_request_status__c}'.toUpperCase()=='PENDING WITH APPROVER'){
+        
+            window.top.location = '/apex/OpportunityDocumentsPopup_VFP?id='+'{!req.opp_dev__c}'+'&list='+'{!req.Id}'+'&stgId='+'{!req.Approval_Stage__c}';
+        }
+        
+    }
+    function reDirect1(){
+    
+        //target="_parent";
+        window.reload();
+        //window.top.location = '/apex/OpportunityDocumentsPopup_VFP?id='+'{!req.opp_dev__c}'+'&list='+'{!req.Id}'+'&stgId='+'{!req.Approval_Stage__c}';
+        
+    }
+</script>
+<!--<apex:outputpanel id="show">
+<apex:pageMessages ></apex:pageMessages>
+</apex:outputpanel> -->
+ <apex:form id="frm1" rendered="{!bool}">
+
+  <table style="background:white" class="table_on_the_left">
+  
+     <tr>
+     <td font-size="5px;"><b>Approval Request Status</b></td>
+     <td><apex:inputField value="{!req.approval_request_status__c}" rendered="{!bool}" required="true"/></td>
+     </tr>
+     <tr>
+     <td><b>Comments By Approver</b></td>
+     <td><apex:inputField value="{!req.comments_by_approver__c}" rendered="{!bool}" label="Comments By Approver"/></td>
+     </tr>
+     <tr>
+     <td></td>
+     <td><apex:commandLink value="Save" action="{!saveData}" rendered="{!bool}"  styleClass="btn"  style="text-decoration:none;padding:4px;" target="_parent" /></td>
+     </tr>
+   </table>
+ </apex:form>
+ <!-- Requestor -->
+  <apex:form >
+   <table background="white" align="center" class="table_on_the_right ">
+   
+   <tr>
+   <td></td> <td></td> <td></td>
+   </tr>
+   <tr>
+   <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+   <td>
+  <apex:commandLink value="Send Reminder" action="{!sendReminder}" rendered="{!bool1}" target="_parent" styleClass="btn"  style="text-decoration:none;padding:4px;"/> 
+  
+  <apex:commandLink value="Recall" action="{!recallRequest}"   rendered="{!bool2}"  target="_parent" styleClass="btn"  style="text-decoration:none;padding:4px;"/> 
+  <!-- <apex:commandButton action="{!URLFOR($Action.approval_request__c.Recall, Id)}" id="recallButton" value="Recall"/> added by Jyotsna -->
+  </td>
+  </tr>
+ </table>
+ </apex:form>
+</apex:page>

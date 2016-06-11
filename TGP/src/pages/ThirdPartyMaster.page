@@ -1,0 +1,45 @@
+<!--
+Author : Manik Chaudhary
+Story  : Story-0276/SOL_127_a  
+Description : Create/update Third party vendor master for each offering 
+
+-->
+
+<apex:page standardController="Third_Party_Vendor_Master_Custom__c" extensions="Third_Party_Vendor_Master_Controller">
+ 
+    <apex:sectionHeader title="Third Party Vendor Master"/>
+        <apex:form id="frm">
+        <apex:pageMessages ></apex:pageMessages>
+                    
+          <apex:pageBlock >
+              <apex:pageBlockTable var="ThirdPartyMaster" value="{!thirdPVendorname}"> 
+                  <apex:column headerValue="Offering Name" id="offering" style="width: 30%;">
+                  <apex:selectList size="1" value="{!Offering}">
+                  <apex:actionSupport event="onchange" rerender="servicelist"/>
+                  <apex:selectOptions value="{!Offerings}"></apex:selectOptions>
+                  </apex:selectList>
+                  </apex:column>
+                      
+                  <apex:column headerValue="Third Party Vendor Name" style="width: 30%; ">
+                  <apex:outputPanel styleClass="requiredInput" layout="block">
+                  <apex:outputPanel styleClass="requiredBlock"/>
+                  <apex:inputField value="{!ThirdPartyMaster.Third_Party_Vendor_Name__c}"/>
+                  </apex:outputPanel>
+                  </apex:column>
+                        
+                  <apex:column headerValue="Comments"  >
+                  <apex:inputField value="{!ThirdPartyMaster.Comments__c}" style="width: 78%; " />               
+                  </apex:column>
+                     
+      
+               </apex:pageBlockTable>
+               
+               <apex:pageBlockButtons location="top">
+               <apex:commandButton value="Save" action="{!saveMethod}" reRender="frm"/>              
+               <apex:commandButton action="{!Cancel}" value="Cancel" /><!-- reRender="frm" immediate="true"/>         -->
+               </apex:pageBlockButtons>
+               
+        </apex:pageBlock>
+        </apex:form>
+        
+</apex:page>

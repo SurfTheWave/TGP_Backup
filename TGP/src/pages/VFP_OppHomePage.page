@@ -1,0 +1,131 @@
+<apex:page sidebar="False" showHeader="False" tabStyle="Opportunity" controller="VFC_OppHomePageController" id="page">
+<apex:actionstatus id="Status">
+    <apex:facet name="start">
+        <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
+            <div class="waitingHolder" style="top: 100px; width: 91px;">
+            <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+            <span class="waitingDescription">Loading...</span>
+            </div>
+        </div>
+    </apex:facet>
+</apex:actionstatus>
+<style>
+ .table{
+     width:100%;
+     height : 200px;
+ }
+.header {   
+  background-image: url({!$Resource.defaultsortimage});  
+     cursor: pointer;     font-weight: bold;     
+     background-repeat: no-repeat;     
+     background-position: center left;    
+      padding-left: 20px;     
+      border-right: 1px solid #dad9c7;     
+      margin-left: -1px; } 
+</style>
+
+<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" id="xs1"/>
+ <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" id="xs2"/>
+ <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" id="xs3" />
+ <apex:includeScript value="{!URLFOR($Resource.Tablesorter, 'jquery.tablesorter.min.js')}" id="xs4"/>
+ 
+
+ 
+      <apex:form id="frm">
+      <script type="text/javascript">
+   $j = jQuery.noConflict();    
+     $j(document).ready(function () {
+     $j("[id$=theaddrs]").tablesorter();
+ 
+    });
+    
+    </script>
+     <!-- <div style="overflow: scroll; height: 350px;">-->
+      <div style="overflow: scroll;height: 350px; ">
+      <apex:pageBlock id="pgblock" title="{!$Label.My_Solution_Opportunities}">
+      <b>Select Reporting Status :</b> <apex:selectList size="1" value="{!reportstat}">
+       <apex:actionSupport event="onchange" action="{!myMethod}" reRender="frm" status="Status"/>&nbsp;
+          <apex:selectOptions value="{!ReportingStatus}"></apex:selectOptions>
+      </apex:selectList><br/><br/>
+          <apex:pageBlockTable value="{!SolList}" var="opp" id="theaddrs" styleClass="tablesorter" headerClass="header" >
+              <apex:column id="clm">
+                 <apex:facet name="header">
+                    <apex:outputText id="otyxt" styleClass="header" value="{!$ObjectType.Opportunity.Fields.SAP_OM_ID__c.Label}" />
+                 </apex:facet>
+                 <apex:outputText id="oxtxts" value="{!opp.Opportunity__r.SAP_OM_ID__c}" />
+ 
+              </apex:column>
+          
+          <apex:column id="clmn2">  
+          <apex:facet name="header">
+                       <apex:outputText id="otxt2" styleClass="header" value="{!$ObjectType.Opportunity.Fields.name.Label}" />
+                             </apex:facet>
+                             <apex:outputLink id="olink" target="_blank" value="/{!opp.Opportunity__c}">{!opp.Opportunity__r.name}</apex:outputLink></apex:column>
+          <apex:column id="clmn3" >
+               <apex:facet name="header">
+                    <apex:outputLabel id="lbl3" styleClass="header" value="{!$ObjectType.Opportunity.Fields.AccountId.Label}" />
+                 </apex:facet>
+                  <apex:outputText id="otyxt3" value="{!opp.Opportunity__r.account.name}" />
+          </apex:column>
+            
+              <apex:column id="clmn4" width="200px">
+                 <apex:facet name="header">
+                    <apex:outputLabel id="lbl5" styleClass="header" value="{!$Label.Roles}" />
+                 </apex:facet>
+                    <apex:outputField id="oFld3" value="{!opp.User_Role_s__c}"/>
+              </apex:column>
+          <apex:column id="clmn5">
+           <apex:facet name="header">
+                    <apex:outputLabel id="label5" styleClass="header" value="{!$ObjectType.Opportunity.Fields.Opportunity_Solution_Lead__c.Label}" />
+                 </apex:facet>
+                  <apex:outputText id="txt5" value="{!opp.Opportunity__r.Opportunity_Solution_Lead__r.name}"/>
+          </apex:column>
+          <apex:column id="clmn6">
+           <apex:facet name="header">
+                    <apex:outputLabel id="label6" styleClass="header" value="{!$ObjectType.Opportunity.Fields.Staffing_Status__c.Label}" />
+                 </apex:facet>
+                  <apex:outputText id="txt6" value="{!opp.Opportunity__r.Staffing_Status__c}" />
+          </apex:column>
+          <apex:column id="colmn7">
+           <apex:facet name="header">
+                    <apex:outputLabel id="label7" styleClass="header" value="{!$ObjectType.Opportunity.Fields.Off__c.Label}" />
+                 </apex:facet>
+                  <apex:outputText id="txt7" value="{!opp.Opportunity__r.Off__c}" />
+          </apex:column>
+          <apex:column id="colmn8">
+          
+               <apex:facet name="header">
+                    <apex:outputLabel id="label8" styleClass="header" value="{!$ObjectType.Opportunity.Fields.Reporting_Status__c.Label}" />
+                 </apex:facet>
+                  <apex:outputText id="txt8" value="{!opp.Opportunity__r.Reporting_Status__c}" />
+          </apex:column>
+         <apex:column id="colmn9">
+         
+       
+         
+         
+           <apex:facet name="header">
+                    <apex:outputLabel id="label9" styleClass="header" value="{!$ObjectType.Opportunity.Fields.Latest_Comment__c.Label}" />
+                 </apex:facet>
+                <div style="max-height:3.5em;width:200px;overflow:hidden;"> 
+                  <apex:outputText id="txt9" value="{!opp.Opportunity__r.Latest_Comment__c}" />
+                  </div>
+          </apex:column>
+          
+          </apex:pageBlockTable>
+          <apex:commandLink id="cmdbtn" value="{!$Label.Double_Less_Than}" action="{!first}" rerender="frm" status="Status" rendered="{!setCon.hasPrevious}" /> &nbsp;&nbsp;&nbsp;&nbsp;
+          <apex:commandLink id="cmdbtn1" value="{!$Label.Greater_Than}" action="{!previous}" rerender="frm" status="Status" rendered="{!setCon.hasPrevious}" />&nbsp;&nbsp;&nbsp;&nbsp;
+          <apex:commandLink id="cmdbtn2" value="{!$Label.Less_Than}" action="{!next}"  rerender="frm" status="Status" rendered="{!setCon.hasNext}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+          <apex:commandLink id="cmdbtn3" value="{!$Label.Double_Greater_Than}" action="{!last}" rerender="frm" status="Status" rendered="{!setCon.hasNext}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+          <apex:outputText id="cmdbtn4" value="{!pageNumber}"> </apex:outputText> of &nbsp;<apex:outputText value="{!totalPages }"> </apex:outputText>
+      </apex:pageBlock>
+      
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+         <script type="text/javascript">
+            
+     
+}
+            </script>
+      </div>
+      </apex:form>
+    </apex:page>

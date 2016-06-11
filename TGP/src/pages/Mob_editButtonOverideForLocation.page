@@ -1,0 +1,23 @@
+<apex:page standardController="Deal_Location__c" extensions="Mob_editButtonOverideLocationController">
+<apex:sectionHeader title="Deal Location Edit" subtitle="{!Deal_Location__c.name}"/>
+<apex:form id="form1">
+        <apex:pageMessages ></apex:pageMessages>
+    <apex:pageBlock title="Deal Location Edit">
+        <apex:pageBlockButtons >
+            <apex:commandButton value="Save" action="{!doSave}" reRender="form1" rendered="{!IF(isWaveVersionActive==true && isAddVisible==true && isNA,true,false)}"/>
+            <apex:commandButton value="Cancel" action="{!doCancel}" immediate="true"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection columns="3" title="Information" collapsible="false">
+        <apex:outputField value="{!Deal_Location__c.Wave_Plan_Version__c}"/>
+        <apex:outputLabel value=" "/>
+        <apex:outputLabel value=" "/>        
+        <apex:inputField value="{!Deal_Location__c.Deployment_Lead_New__c}"/>
+        <apex:inputField value="{!Deal_Location__c.Location_Mobilization_Lead_Secondary_New__c}"/>
+        <apex:inputField value="{!Deal_Location__c.Location_Mobilization_Lead_Secondary_2__c}"/>        
+        <apex:inputField value="{!Deal_Location__c.Mob_Recruitment_Lead_Primary_New__c}"/>
+        <apex:inputField value="{!Deal_Location__c.Mob_Recruitment_Lead_Secondary_New__c}"/>
+        <apex:inputField value="{!Deal_Location__c.Mob_Recruitment_Lead_Secondary_New_2__c}"/>        
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

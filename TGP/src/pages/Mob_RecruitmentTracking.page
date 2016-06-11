@@ -1,0 +1,40 @@
+<!--
+Author : Varsha Chougule.
+Story  :  MOB_146 
+Description : Display the list of waves that are available for tracking recruitment.
+
+Updated by        Story no                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page controller="Mob_RecruitmentTrackingcontroller">
+ <script>
+var strurl = location.href;
+var newUrl = strurl.replace('&inline=1', '');
+if(newUrl != strurl )
+{
+    window.top.location=newUrl;
+}
+</script>
+    <apex:pageMessages ></apex:pageMessages>
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockTable value="{!strDealLocationList}" var="DealLocationList">
+                    <apex:column headerValue="Deal Name" value="{!DealLocationList.Wave_Plan_Version__r.Deal__c}"/>
+                    <apex:column headerValue="High Level Mobilization Plan" value="{!DealLocationList.Wave_Plan_Version__c}"/>    
+                    <apex:column headerValue="Location">
+                        <apex:outputLink value="/{!DealLocationList.id}">{!DealLocationList.Location_Name__c}</apex:outputLink>
+                    </apex:column>
+                     <apex:column headerValue="Track Recruitment">
+                         <apex:commandLink action="{!goToRecTrack}" value="Track Recruitment">
+                         <apex:param assignTo="{!locationId}" value="{!DealLocationList.id}" name="locationId"/>
+                         </apex:commandLink>
+                        <!--<apex:outputLink value="/apex/RecruitmentTrackerUpDownLoad?id={!DealLocationList.id}">Track Recruitment</apex:outputLink>-->
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>  
+</apex:page>

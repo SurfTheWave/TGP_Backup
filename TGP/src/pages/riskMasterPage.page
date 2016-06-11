@@ -1,0 +1,135 @@
+<!--
+Author : Shridhar Patankar
+Story  : Story-0041/SOL_004  
+Description : Create/Maintain Risk Master.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Risk_Master__c" extensions="RiskMasterController" >
+ 
+ <style>
+.reqSelect {
+}
+
+table.inlineEditTbl td{
+    height: 35px !important; 
+}
+table.inlineEditTbl input[type="text"] {
+    width: 80px;
+}
+body {
+    font-size: 75% important;
+}
+table.inlineEditTbl2 td{
+    height: 50px !important; 
+}
+
+ </style>
+ <apex:sectionHeader title="Risk Master"/>
+ <apex:form >
+ <apex:pagemessages ></apex:pagemessages>
+    <apex:actionRegion >
+      <apex:pageBlock >
+       <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Insert" action="{!insertNewRecord}" />               
+                <apex:commandButton action="{!Cancel}" value="Cancel"/>                
+        </apex:pageBlockButtons> 
+       
+        <apex:pageblockSection columns="1">
+           
+       <apex:pageBlockTable value="{!newRisk}" var="newRisk"><!-- styleClass="inlineEditTbl">-->
+         <apex:column headerValue="Category">
+            <apex:outputPanel styleClass="requiredInput" layout="block" id="panel">
+            <apex:outputPanel styleClass="requiredBlock"/>    
+              <apex:selectList size="1" value="{!categoryMaster}" required="true">
+                <apex:selectOptions value="{!category}"></apex:selectOptions>
+              </apex:selectList>
+            </apex:outputPanel>
+        </apex:column>
+        
+        <apex:column headerValue="Risks">
+        <apex:outputPanel styleClass="requiredInput" layout="block">
+         <apex:outputPanel styleClass="requiredBlock"/>
+        <apex:inputField value="{!newRisk.Risks__c}" style="width: 200px; height: 20px" />
+        </apex:outputPanel>
+        </apex:column>
+        
+        <apex:column headerValue="Offerings">
+       
+           <apex:selectList size="1" value="{!Offering}" >
+           <apex:actionSupport event="onchange" rerender="service"/>
+           <apex:selectOptions value="{!Offerings}"></apex:selectOptions>
+           </apex:selectList>
+         
+        </apex:column>
+        
+        <apex:column headerValue="Services per Offering" >
+        <apex:selectList size="1" value="{!Service}" id="service">
+        <apex:selectOptions value="{!Services}"></apex:selectOptions>
+        </apex:selectList>             
+        </apex:column>  
+        
+         <apex:column headerValue="Classification" >
+        <apex:outputPanel styleClass="requiredInput" layout="block" id="panelClass">
+        <apex:outputPanel styleClass="requiredBlock"/>    
+           <apex:inputField value="{!newRisk.Classification__c}"/>
+        </apex:outputPanel>
+        </apex:column> 
+        
+   </apex:pageBlockTable>
+     </apex:pageBlockSection>
+   </apex:pageBlock>
+   </apex:actionRegion>
+   </apex:form>
+   
+   <apex:form >
+       <apex:pageBlock >
+           <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Update" action="{!updateRecord}" />               
+                <apex:commandButton action="{!cancelUpdate}" value="Cancel"/>                
+            </apex:pageBlockButtons>               
+                <apex:pageBlockSection columns="1" >
+               
+                    <apex:pageBlockTable value="{!listProfileDetailsActual }" var="profDetail" 
+                        cellpadding="50%" frame="lhs" rules="cols" >
+                       <apex:column headerValue="Category" >
+                          <apex:selectList size="1" value="{!profDetail.Category_Master__c}">
+                            <apex:selectOptions value="{!category}"></apex:selectOptions>
+                          </apex:selectList> 
+                        </apex:column>
+                       <apex:column headerValue="Risks" colspan="5">
+                            <apex:outputField value="{!profDetail.Risks__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="Offering" colspan="5">
+                            <apex:outputField value="{!profDetail.Offering_Form__c}"/>
+                            <!--<apex:selectList size="1" value="{!Assumption.Offering_text__c}" readonly="true">
+                                <apex:selectOptions value="{!Offerings}"></apex:selectOptions>
+                            </apex:selectList>-->
+                        </apex:column>
+                        <apex:column headerValue="Services per Offering" colspan="5">
+                            <apex:outputField value="{!profDetail.Services_per_Offering_form__c}"/>
+                            <!--<apex:selectList size="1" value="{!Assumption.Services_per_Offering_text__c}" readonly="true">
+                                <apex:selectOptions value="{!Services}"></apex:selectOptions>
+                            </apex:selectList>-->             
+                        </apex:column>
+                        
+                         <apex:column headerValue="Classification" > 
+                        <apex:outputField value="{!profDetail.Classification__c}"/>
+                        </apex:column>                  
+                          
+                        <apex:column headerValue="Active/Inactive" colspan="5">
+                            <apex:outputField value="{!profDetail.Active_Inactive__c}">
+                            <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                            </apex:outputField>
+                        </apex:column>   
+                    </apex:pageBlockTable>  
+                    
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            </apex:form> 
+
+</apex:page>

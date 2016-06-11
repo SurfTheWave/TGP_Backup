@@ -1,0 +1,313 @@
+<apex:page showHeader="false" standardController="BenchMark__c" extensions="VFC_Cost_Summary_Metrics" action="{!beanchmarkSummary}" >
+<style type="text/css">
+table{
+    border-collapse:collapse
+}</style>
+
+
+<apex:outputPanel id="thePanel" rendered="{!showSummary}">
+
+<table cellpadding="5" style="width:100%;border:2px;text-align:left;vertical-align:Top; solid #000">
+<!--New Row Total Cost -->
+
+
+
+
+
+
+
+<!--New Row Contingency -->
+
+<tr style="background-color: #A8A8A8;vertical-align:Top;">
+  <apex:outputPanel >
+      <th>Type</th>
+      <th>Offering</th>
+      <th>Service</th>  
+      <th >Transition</th>
+      <th >Transformation</th>
+      <th>Year 1</th>
+      <th>Year 2</th>
+      <th>Year 3</th>
+      <th>Year 4</th>
+      <th>Year 5</th>
+      <th>Year 6</th>
+      <th>Year 7</th>
+      <th>Year 8</th>
+      <th>Year 9</th>
+      <th>Year 10</th>
+      <th>Total Cost</th>
+      <th style="border-top:5px;">% of Costs</th>
+      <th>&nbsp;</th>
+  </apex:outputPanel>
+</tr>
+<apex:repeat value="{!opprBeancMarkSummaryList}" var="opprBeancMarkSummary">
+<tr style="vertical-align:Top;">
+  <td>{!opprBeancMarkSummary.Costing_Type__c}</td>
+  <td>{!opprBeancMarkSummary.Offering__c}</td>
+  <td>{!opprBeancMarkSummary.Service__c}</td>
+  <apex:outputPanel >
+      
+      <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_Transition_cost__c}"/></apex:outputText></td>
+      <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_Transformation_Cost__c}"/></apex:outputText></td>
+
+  </apex:outputPanel>
+  <apex:outputPanel >
+      <td ><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year1__c}"/></apex:outputText></td>
+      <td ><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year2__c}"/></apex:outputText></td>
+      <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year3__c}"/></apex:outputText></td>
+      <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year4__c}"/></apex:outputText></td>
+      <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year5__c}"/></apex:outputText></td>
+      <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year6__c}"/></apex:outputText></td>
+      <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year7__c}"/></apex:outputText></td>
+      <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year8__c}"/></apex:outputText></td>
+      <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year9__c}"/></apex:outputText></td>
+      <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year10__c}"/></apex:outputText></td>
+      <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_Total_Cost__c}"/></apex:outputText></td>
+      <!--<td><apex:outputText value="{0,number,###.00}%"><apex:param value="{!opprBeancMarkSummary.percent_of_costs__c}"/></apex:outputText></td>-->
+      <td>{!opprBeancMarkSummary.percent_of_costs__c}%</td>
+      <td>&nbsp;</td>
+  </apex:outputPanel>
+</tr>
+
+</apex:repeat>
+<!-- Row Following this line is for Total -->
+<hr/>
+<tr style="vertical-align:Top;">
+  <td style="border-bottom:5px solid #01A9DB">&nbsp; </td>
+  <td style="border-bottom:5px solid #01A9DB"> &nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB"> &nbsp;</td>
+  <apex:outputPanel >
+      
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost1}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost0}</b></td>
+  </apex:outputPanel>
+  <!--
+  <apex:outputPanel rendered="{!BenchMark__c.Service_Group__c = 'BPO'}">
+      
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost1}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"> </td>
+  </apex:outputPanel>
+  -->
+  <apex:outputPanel >
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost2}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost3}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost4}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost5}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost6}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost7}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost8}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost9}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost10}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost11}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;<b>{!totalCost12}</b></td>
+      <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"><b>{!totalCost13}%</b></td>
+      <td style="border-bottom:5px solid #01A9DB"> &nbsp;</td>
+  </apex:outputPanel>
+</tr>
+<tr>
+  <td colspan='17' align='left'><font size="2"><b>Average FTE's / Year</b></font></td>
+</tr>
+
+<tr style="background-color: #A8A8A8;vertical-align:Top;">
+  <th>Type</th>
+  <th>Offering</th>
+  <th>Service</th>
+  <th></th>
+  <th></th>
+  <th>Year 1</th>
+  <th>Year 2</th>
+  <th>Year 3</th>
+  <th>Year 4</th>
+  <th>Year 5</th>
+  <th>Year 6</th>
+  <th>Year 7</th>
+  <th>Year 8</th>
+  <th>Year 9</th>
+  <th>Year 10</th>
+  <th>Total FTE</th>
+  <th>&nbsp;</th>
+  <th>&nbsp;</th>
+  <td>&nbsp;</td>
+ 
+</tr>
+<apex:repeat value="{!opprBeancMarkSummaryList}" var="opprBeancMarkSummary">
+    <apex:outputPanel rendered="{!opprBeancMarkSummary.Costing_Type__c == 'SDO'}">
+        <tr style="vertical-align:Top;">
+          <td>{!opprBeancMarkSummary.Costing_type__c}</td>
+          <td>{!opprBeancMarkSummary.Offering__c}</td>
+          <td>{!opprBeancMarkSummary.Service__c}</td>
+          <!-- <td><apex:outputText value="{0,number,0}%"><apex:param value="{!opprBeancMarkSummary.percent_of_costs__c}"/></apex:outputText></td> -->
+          <td > </td>
+          <td > </td>
+           <td>{!ROUND(opprBeancMarkSummary.Sum_of_FTE_YR1__c, 2)}</td>
+          <td>{!ROUND(opprBeancMarkSummary.Sum_of_FTE_YR2__c, 2)}</td>
+          <td>{!ROUND(opprBeancMarkSummary.Sum_of_FTE_YR3__c, 2)}</td>
+          <td>{!ROUND(opprBeancMarkSummary.Sum_of_FTE_YR4__c, 2)}</td>
+          <td>{!ROUND(opprBeancMarkSummary.Sum_of_FTE_YR5__c, 2)}</td>
+          <td>{!ROUND(opprBeancMarkSummary.Sum_of_FTE_YR6__c, 2)}</td>
+          <td>{!ROUND(opprBeancMarkSummary.Sum_of_FTE_YR7__c, 2)}</td>
+          <td>{!ROUND(opprBeancMarkSummary.Sum_of_FTE_YR8__c, 2)}</td>
+          <td>{!ROUND(opprBeancMarkSummary.Sum_of_FTE_YR9__c, 2)}</td>
+          <td>{!ROUND(opprBeancMarkSummary.Sum_of_FTE_YR10__c, 2)}</td>
+          <td>{!ROUND(opprBeancMarkSummary.Total_FTE_all_years__c,2)}</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+</apex:outputPanel>
+</apex:repeat>
+<!-- Row Following this line is for Total -->
+<tr style="vertical-align:Top;">
+  <td style="border-bottom:5px solid #01A9DB">&nbsp; </td>
+  <td style="border-bottom:5px solid #01A9DB"> &nbsp;</td>
+<!--  <td style="border-bottom:5px solid #01A9DB"> &nbsp;</td> -->
+  <!-- <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost13}%</td> -->
+  <td style="border-bottom:5px solid #01A9DB;">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB;" > </td>
+  <td  style="border-bottom:5px solid #01A9DB;"> </td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"><b>{!totalCost14}</b></td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"><b>{!totalCost15}</b></td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"><b>{!totalCost16}</b></td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"><b>{!totalCost17}</b></td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"><b>{!totalCost18}</b></td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"><b>{!totalCost19}</b></td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"><b>{!totalCost20}</b></td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"><b>{!totalCost21}</b></td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"><b>{!totalCost22}</b></td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"><b>{!totalCost23}</b></td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000"><b>{!totalCost24}</b></td>
+  <th style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">&nbsp;</th>
+  <th style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">&nbsp;</th>
+  <th style="border-bottom:5px solid #01A9DB"> &nbsp;</th>
+</tr>
+
+<!--    Commenting the code as part of SWB Ticket-563 
+<apex:outputPanel id="AvgCostPerFte" rendered="{!BenchMark__c.Service_Group__c = 'BPO'}"> 
+<tr>
+    
+  <td colspan='17' align='left'><font size="2"><b>Average Cost / FTE</b></font></td>
+  
+</tr>
+<tr style="background-color: #A8A8A8;vertical-align:Top;">
+  <th>Type</th>
+  <th>Offering</th>
+  <th>Service</th>
+  <th></th>
+  <th></th>
+  <th>Year 1</th>
+  <th>Year 2</th>
+  <th>Year 3</th>
+  <th>Year 4</th>
+  <th>Year 5</th>
+  <th>Year 6</th>
+  <th>Year 7</th>
+  <th>Year 8</th>
+  <th>Year 9</th>
+  <th>Year 10</th>
+  <th>Avg All <br/>Years</th>
+  <th>&nbsp;</th>
+  <th>&nbsp;</th>
+  <th>&nbsp;</th>
+</tr>
+<apex:repeat value="{!opprBeancMarkSummaryList}" var="opprBeancMarkSummary">
+<tr style="vertical-align:Top;">
+  <td>{!opprBeancMarkSummary.Costing_Type__c}</td>
+  <td>{!opprBeancMarkSummary.Offering__c}</td>
+  <td>{!opprBeancMarkSummary.Service__c}</td>
+  <td></td>
+  <td></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_1_Mob__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_2__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_3__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_4__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_5__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_6__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_7__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_8__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_9__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_10__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_Full_deal__c}"/></apex:outputText></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+</apex:repeat>
+<tr>
+
+  <td style="border-bottom:5px solid #01A9DB">&nbsp; </td>
+  <td style="border-bottom:5px solid #01A9DB"> &nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB"> &nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+</tr>
+</apex:outputPanel>
+-->
+<apex:outputPanel id="CostPerFteLoc" rendered="{!BenchMark__c.Service_Group__c = 'BPO'}"> 
+<tr>
+
+
+  <td colspan='17' align='left'><font size="2"><b>Cost Per FTE By Location </b></font></td>
+</tr>
+<tr style="background-color: #A8A8A8;vertical-align:Top;">
+<!--   <th>SAP OM <br/>Id</th>
+  <th>Opportunity <br/>Name</th>
+  <th>Client</th> -->
+  <th>Type</th>
+  <th>Service</th>
+  <th>Standard <br/>Location</th><!--Need to change Location to Standard Location as part of SWB Ticket-563 -->
+  <th>Custom <br/>Location</th><!--Added Custom Location from BenchmarkServiceLocation Object as part of SWB Ticket-563 -->
+  <th>Language <br/>Premium</th>
+  <th>Total<br/> FTE Years</th>
+  <th>Payroll</th>
+  <th>Tools </th>  
+  <th>DVE </th>
+  <th>SC </th>  
+  <th>SM </th>
+  <th>EDM </th>  
+  <th>CC </th>
+  <th>Mob </th>  
+  <th>PMO </th>  
+  <th>Total </th>
+  <th>&nbsp;</th>
+  <th>&nbsp;</th>
+</tr>
+<apex:repeat value="{!lstServLocations}" var="opprBeancMarkSeviceLocation">
+<tr style="vertical-align:Top;">
+ <!--  <td><b>{!opprBeancMarkSeviceLocation.BenchMark_Offering_Service__r.BenchMark_Offering__r.BenchMark__r.Opportunity__r.SAP_OM_ID__c}</b></td>
+  <td><b>{!opprBeancMarkSeviceLocation.BenchMark_Offering_Service__r.BenchMark_Offering__r.BenchMark__r.Opportunity__r.name}</b></td>
+  <td><b>{!opprBeancMarkSeviceLocation.BenchMark_Offering_Service__r.BenchMark_Offering__r.BenchMark__r.Opportunity__r.Account.name}</b></td>
+  -->
+  <td>{!opprBeancMarkSeviceLocation.BenchMark_Offering_Service__r.Costing_Type__c}</td>
+  <td>{!opprBeancMarkSeviceLocation.BenchMark_Offering_Service__r.Name}</td>
+  <td><apex:outputText value="{!opprBeancMarkSeviceLocation.DCN_Location__c}"></apex:outputText></td>
+  <td><apex:outputText value="{!opprBeancMarkSeviceLocation.Custom_Location__c}"></apex:outputText></td>
+  <td><apex:outputText value="{!opprBeancMarkSeviceLocation.Language_Premium__c}"></apex:outputText></td>  
+  <td><apex:outputText value="{0, number, #######.##}"><apex:param value="{!opprBeancMarkSeviceLocation.Sum_of_Total_FTE_Year__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSeviceLocation.SDO_Cost_Per_FTE__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSeviceLocation.Tools_Cost_Per_FTE__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSeviceLocation.DVE_Cost_Per_FTE__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSeviceLocation.Support_Center_Cost_Per_FTE__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSeviceLocation.SM_Cost_Per_FTE__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSeviceLocation.EDM_Cost_Per_FTE__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSeviceLocation.CC_Cost_Per_FTE__c}"/></apex:outputText></td>    
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSeviceLocation.Mob_Cost_Per_FTE__c}"/></apex:outputText></td>    
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSeviceLocation.PMO_Cost_Per_FTE__c}"/></apex:outputText></td>  
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSeviceLocation.Total_Cost_per_FTE__c}"/></apex:outputText></td>  
+     
+  
+</tr>
+</apex:repeat>
+</apex:outputPanel>
+</table>
+</apex:outputPanel> 
+</apex:page>

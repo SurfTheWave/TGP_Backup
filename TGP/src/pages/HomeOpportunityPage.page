@@ -1,0 +1,138 @@
+<apex:page controller="HomeOpportunityPageController" sidebar="false" showHeader="false" tabStyle="Opportunity_TGP__c">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
+        <script>
+  jQuery.noConflict();
+    window.onload = function(){
+      
+        jQuery('j_id0:j_id2:block1').focus();
+    };
+    
+    
+</script>
+            
+      <apex:form >
+      <apex:pageMessages id="errors" />
+     
+      <apex:pageBlock id="block1"> 
+      <table width="100%" border="0">
+      <tr>   
+    
+
+        <td valign="top">
+     
+        <apex:pageBlock id="results">
+            <apex:outputPanel id="myPanel">
+            <apex:pageBlockTable value="{!ListOpportunity}" var="oppty"  align="center" id="block2">
+                
+                <apex:column >
+                    <apex:facet name="header">
+                        <apex:commandLink value="SAP OM ID" action="{!toggleSort}" rerender="results,debug">
+                            <apex:param name="sortField" value="Activity__c" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:outputField value="{!oppty.objOpportunity.SAP_OM_Opportunity__c}"/>
+                </apex:column>
+                
+                
+                <apex:column width="200">
+                    <apex:facet name="header">
+                        <apex:commandLink value="Opportunity Name" action="{!toggleSort}" rerender="results,debug">
+                            <apex:param name="sortField" value="Name" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <a href="/{!oppty.objOpportunity.Id}" target="_top">{!oppty.objOpportunity.Name}</a>
+                   <!-- <apex:outputLink value="/{!oppty.Opportunity_TGP__r.Id}" target="_blank">{!oppty.Opportunity_TGP__r.Name}</apex:outputLink>-->
+                    <!--<apex:outputField value="{!oppty.Name}"/>-->
+                </apex:column>
+                
+                <apex:column width="200" >
+                    <apex:facet name="header">
+                        <apex:commandLink value="Client Name" action="{!toggleSort}" rerender="results,debug">
+                            <apex:param name="sortField" value="Client_Name__r.Name" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <a>{!oppty.objOpportunity.Client_Name__r.name}</a>
+    
+                  <!--  <apex:outputField value="{!oppty.Opportunity_TGP__r.Client_Name__c}"/>-->
+                </apex:column>
+                
+                <apex:column width="150" >
+                    <apex:facet name="header">
+                        <apex:commandLink value="Solution Lead" action="{!toggleSort}" rerender="results,debug">
+                            <apex:param name="sortField" value="Name" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    
+                    <a>{!oppty.objOpportunity.Enterprise_Solution_Architect_New__r.name}</a><br/>
+                   
+                    
+                    
+                </apex:column>            
+                
+                 <apex:column width="100">
+                    <apex:facet name="header">
+                        <apex:commandLink value="Staffing Status" action="{!toggleSort}" rerender="results,debug">
+                            <apex:param name="sortField" value="Staffing_Status__c" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:outputField value="{!oppty.objOpportunity.Staffing_Status__c}"/>
+                </apex:column>
+                
+                <apex:column width="150" >
+                    <apex:facet name="header">
+                        <apex:commandLink value="Offering Name" action="{!toggleSort}" rerender="results,debug">
+                            <apex:param name="sortField" value="Offering Name" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:repeat value="{!oppty.lstOffering}" var="off">
+                   <a href="/{!off.Id}" target="_top">{!off.Offering_Master__r.Name}</a><br/>
+                    </apex:repeat>
+                 
+                </apex:column>
+                           
+                
+                
+                <apex:column >
+                    <apex:facet name="header">
+                        <apex:commandLink value="Reporting Status" action="{!toggleSort}" rerender="results,debug">
+                            <apex:param name="sortField" value="Activity__c" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:outputField value="{!oppty.objOpportunity.Activity__c}"/>
+                </apex:column>
+                
+                <apex:column width="250">
+                    <apex:facet name="header">
+                        <apex:commandLink value="Latest Comments" action="{!toggleSort}" rerender="results,debug">
+                            <apex:param name="sortField" value="Activity__c" assignTo="{!sortField}"/>
+                        </apex:commandLink>
+                    </apex:facet>
+                    <apex:outputField value="{!oppty.objOpportunity.Comments_Status__c}"/>
+                </apex:column>
+                <apex:facet name="footer">Showing Page # {!pageNumber} of {!totalPages}</apex:facet>
+            </apex:pageBlockTable>
+            </apex:outputPanel>
+            <apex:outputPanel id="myButtons">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            
+            <apex:commandButton action="{!Beginning}" title="Beginning" value="<<" disabled="{!disablePrevious}" reRender="myPanel,myButtons"/>
+            <apex:commandButton action="{!Previous}" title="Previous" value="<" disabled="{!disablePrevious}" reRender="myPanel,myButtons"/>        
+            <apex:commandButton action="{!Next}" title="Next" value=">" disabled="{!disableNext}" reRender="myPanel,myButtons"/>
+            <apex:commandButton action="{!End}" title="End" value=">>" disabled="{!disableNext}" reRender="myPanel,myButtons"/>        
+            </apex:outputPanel>
+        
+        </apex:pageBlock>
+     
+        </td>
+      </tr>
+      </table>
+      </apex:pageBlock>
+      
+      </apex:form>
+     
+    </apex:page>

@@ -1,0 +1,59 @@
+<!--
+   @Author         : Reena Thakre
+   @name           : VFP_UpdateSAPOnVisit
+   @CreateDate     : 23 November 2015
+   @Description    : VF Page for selecting and linking an opportunity with client visit request 
+   @Version        : 1.0
+  -->
+
+
+
+<apex:page controller="VFC_UpdateSAPOnVisitController" >
+  <apex:form id="searchForm">
+  <apex:actionFunction name="callSelectFunction" action="{!callSelect}" rerender="view"> 
+        <apex:param id="selectId" name="selectedId" value="" />
+  </apex:actionFunction>
+  <apex:pageBlock id="enterSearchText">
+         <apex:pageBlockSection columns="2" title="Search">
+             <apex:pageBlockSectionItem >
+                 <apex:outputLabel >Enter Sap Om ID</apex:outputLabel>
+                 <apex:inputText id="searchTextId" value="{!searchTextId}" /> 
+                  </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                 <apex:outputLabel >Enter Opportunity Name</apex:outputLabel>
+                 <apex:inputText id="searchTextId1" value="{!searchTextId1}" />                                
+             </apex:pageBlockSectionItem>
+             <apex:pageBlockSectionItem >
+                 <apex:commandButton value="Search" id="searchSAPOMId" action="{!getSapOmRecord}" />
+                  
+             </apex:pageBlockSectionItem>
+         </apex:pageBlockSection> 
+       </apex:pageBlock>
+       <apex:pageBlock id="sapOmTable">
+        <apex:pageBlockTable value="{!opprecList}" var="sapOMValue" >
+           <apex:column headerValue="Select" width="10%">                            
+                 <a href='#' name="hrefSel" id="{!sapOMValue.ID}">Update</a>
+            </apex:column>
+            <apex:column headerValue="MMS ID" width="20%">
+                       <apex:outputField value="{!sapOMValue.SAP_OM_ID__c}" />    
+             </apex:column>
+                 <apex:column headerValue="Opportunity Name" width="20%">
+                            <apex:outputField value="{!sapOMValue.Name}" />
+                 </apex:column>
+        </apex:pageBlockTable>
+       </apex:pageBlock>
+       
+       <script>
+                jQuery(document).ready(function() {
+                    jQuery("a[name='hrefSel']").click(function(event){
+                        event.preventDefault();
+                        var currentId = jQuery(this).attr('id');
+                        callSelectFunction(currentId);
+                    });
+                });
+            </script>
+            
+            
+       
+  </apex:form>
+</apex:page>

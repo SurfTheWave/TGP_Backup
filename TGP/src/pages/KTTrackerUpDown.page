@@ -1,0 +1,511 @@
+<!--
+Author : Sushmanth Hasti
+Story  :   
+Description : 
+
+Updated by        Story no                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+-->
+
+<apex:page standardController="Wave_Planning__c" extensions="KTTrackerUpDowncontroller">
+<script>
+    function startRAID()
+    {
+        var urlName="/apex/RAIDLog_Inline?id={!waveId}&moduleName=KTTRACKER";
+        window.open(urlName);
+        return false;        
+    }
+</script>
+<script>
+ var newWin=null;
+ function openPopup()
+ {
+    var url="/resource/KTTrackerHelpImage";
+    newWin=window.open(url, "Popup","height=500,width=800,left=200,top=200,resizable=no,scrollbars=yes,toolbar=no,status=no");
+    newWin.focus();
+     
+    return false;
+ }
+                  
+                  
+  function closePopup()
+  {
+    if (null!=newWin)
+    {
+      newWin.close();
+    }  
+  }
+</script> 
+    <apex:form id="frm1">
+    <apex:pageMessages ></apex:pageMessages>
+   <!-- <apex:pageBlock id="imageLoading5">           
+        <apex:outputPanel rendered="{!flagImage}">
+            <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!flagImage}">
+            <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+        </apex:outputPanel>
+    </apex:pageBlock> -->
+              
+    <apex:pageBlock >           
+        <apex:pageBlockSection columns="2" title="File Download And Upload">
+        <apex:outputField value="{!strDealWave.Deal_Location__r.Wave_Plan_Version__r.Deal__c}"/>    
+        <apex:outputField value="{!strDealWave.Deal_Location__r.Wave_Plan_Version__c}"/>
+        <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Location Name"/>
+        <apex:outputLink value="/{!strDealWave.Deal_Location__r.id}">{!strDealWave.Location_Name__c}</apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Wave Name"/>
+        <apex:outputLink value="/{!strDealWave.id}">{!strDealWave.Wave_Label__c}</apex:outputLink>
+        </apex:pageBlockSectionItem>
+        <apex:outputField value="{!strDealWave.Deal_Location__r.Deployment_Lead_New__c}"/>
+        <apex:outputField value="{!strDealWave.Deal_Location__r.Location_Mobilization_Lead_Secondary_New__c}"/>
+        <apex:outputField value="{!strDealWave.KT_Lead_New__c}"/>
+        <apex:outputField value="{!strDealWave.Mobilization_KT_Lead_Secondary_New__c}"/>
+    </apex:pageBlockSection>
+    </apex:pageBlock>
+    
+    <apex:pageBlock > 
+        <apex:pageBlockSection title="Download File:" columns="1" id="section1">
+            <br/>
+            <font size="2"><b>Download File Name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>{!displayfileName}</font>
+            <br/>
+            <apex:outputPanel rendered="{!disableDownload}">
+                <font size="2"><b>Recently Downloaded By:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>{!downLoaderUserName}</font>
+            </apex:outputPanel>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockButtons location="Bottom" rendered="{!isVisibleDownload}">
+                <apex:commandButton value="Download"  action="{!DownloadFile}"  oncomplete="openFile();" disabled="{!disableDownload}" />
+                <apex:commandButton value="Log RAID" onclick="return startRAID();"/>
+                <apex:commandButton onclick="openPopup();" value="Help" />
+        </apex:pageBlockButtons>
+        
+        <apex:pageBlockSection columns="1" rendered="{!fileDownloadedConfirm}">
+            <br/>
+            <font color="blue">
+                <table border="0">
+                    <tr><td colspan="2" width="300">Have you downloaded file successfully?</td></tr>
+                    <tr><td>
+                        <apex:pageBlockSectionItem >
+                            <apex:commandButton value="Yes" action="{!actionYes}"/><apex:commandButton value=" No " action="{!actionNo}"/>
+                        </apex:pageBlockSectionItem>
+                    </td></tr>
+                </table>
+            </font>
+        </apex:pageBlockSection>
+        
+        <apex:inputHidden value="{!fileDownloadedConfirm}" id="fileDownloadedConfirm" />
+    
+    </apex:pageBlock>  
+    
+    <script>
+    function openFile()
+    {
+        window.open('/servlet/servlet.FileDownload?file={!fileId}','_blank','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes');
+        location.reload(true);
+    }
+    </script>
+    </apex:form>
+
+    
+    <!-- Below Code Added By Vinay Kumar Chada for Upload the file -->
+
+    <style>
+    #drop
+    {
+        border:2px dashed #000000;
+        -moz-border-radius:5px;
+        -webkit-border-radius:5px;
+        border-radius:5px;
+        padding:25px;
+        text-align:center;
+        font:20pt bold,"Vollkorn";color:#000000;
+        background-color:#66BDFF;
+    }
+    #b64data
+    {
+        width:100%;
+    }
+  
+     /* This is for the full screen DIV */
+    .popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+    
+        /* Dimensions */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        
+        /* Mouse */
+        cursor:wait;
+    }
+ 
+    /* This is for the message DIV */
+    .PopupPanel {
+        /* Background color */
+        border: solid 2px blue;
+        background-color: white;
+ 
+        /* Dimensions */
+        left: 50%;
+        width: 200px;
+        margin-left: -100px;
+        top: 50%;
+        height: 50px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+    }
+
+    </style>
+    <apex:form id="frm2" >
+    
+    <apex:actionStatus startText="File upload in progress..." id="myStatus" >
+    <apex:facet name="start">
+        <div>
+            <div class="popupBackground" />
+            <div class="PopupPanel">
+                <table border="0" width="100%" height="100%">
+                    <tr>
+                        <td align="center"><b>File upload in progress...</b></td>
+                    </tr>
+                    <tr>
+                        <td align="center"><img src="{!$Resource.Loading}"/></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </apex:facet>
+    </apex:actionStatus>
+    
+        <apex:pageBlock rendered="{!if(disableUpload,false,true)}" >    
+            <apex:pageBlockSection title="Upload File:" columns="1" />
+            <br/>
+            <div id="drop">Drag and Drop a KT Tracker here !!!! </div> <!-- to see data in CSV -->
+            <pre id="out"  style="width: 0%; height: 0px; overflow: auto;"></pre> 
+           <!-- <pre id="out"></pre> -->
+            <apex:includeScript value="{!$Resource.javascriptZip}"/>
+            <apex:includeScript value="{!$Resource.javaScriptXLSX}"/>
+            <!--  <apex:inputFile value="{!document.body}" filename="{!document.name}" id="file" onchange="check(this)"/> -->
+            <!--  <apex:pageBlockButtons location="Bottom">
+            <apex:commandButton value="Upload"  action="{!UploadFile}"  disabled="{!disableUpload}" onclick="sendData();"/>   
+            </apex:pageBlockButtons> -->
+        </apex:pageBlock> 
+    <apex:inputHidden value="{!fileFullData}" id="fileFullDataHidden" />
+    <apex:inputHidden value="{!fileFullDataSheet2}" id="fileFullDataSheet2Hidden" />
+    <apex:inputHidden value="{!dropFileName}" id="dropFileNameHidden" /> 
+    <apex:inputHidden value="{!uploadFileAtt}" id="uploadFileAtteHidden"/>
+    
+
+    <script>
+
+    var dtCh= "/";
+    var minYear=1900;
+    var maxYear=2100;
+
+    function isInteger(s){
+        var i;
+        for (i = 0; i < s.length; i++){   
+            // Check that current character is number.
+            var c = s.charAt(i);
+            if (((c < "0") || (c > "9"))) return false;
+        }
+        // All characters are numbers.
+        return true;
+    }
+
+    function stripCharsInBag(s, bag){
+        var i;
+        var returnString = "";
+        // Search through string's characters one by one.
+        // If character is not in bag, append to returnString.
+        for (i = 0; i < s.length; i++){   
+            var c = s.charAt(i);
+            if (bag.indexOf(c) == -1) returnString += c;
+        }
+        return returnString;
+    }
+
+    function daysInFebruary (year){
+        // February has 29 days in any year evenly divisible by four,
+        // EXCEPT for centurial years which are not also divisible by 400.
+        return (((year % 4 == 0) && ( (!(year % 100 == 0)) || (year % 400 == 0))) ? 29 : 28 );
+    }
+    function DaysArray(n) {
+        for (var i = 1; i <= n; i++) {
+            this[i] = 31
+            if (i==4 || i==6 || i==9 || i==11) {this[i] = 30}
+            if (i==2) {this[i] = 29}
+       } 
+       return this
+    }
+
+    function isDate(dtStr){
+        var daysInMonth = DaysArray(12)
+        var pos1=dtStr.indexOf(dtCh)
+        var pos2=dtStr.indexOf(dtCh,pos1+1)
+        var strMonth=dtStr.substring(0,pos1)
+        var strDay=dtStr.substring(pos1+1,pos2)
+        var strYear=dtStr.substring(pos2+1)
+        strYr=strYear
+        if (strDay.charAt(0)=="0" && strDay.length>1) strDay=strDay.substring(1)
+        if (strMonth.charAt(0)=="0" && strMonth.length>1) strMonth=strMonth.substring(1)
+        for (var i = 1; i <= 3; i++) {
+            if (strYr.charAt(0)=="0" && strYr.length>1) strYr=strYr.substring(1)
+        }
+        month=parseInt(strMonth)
+        day=parseInt(strDay)
+        year=parseInt(strYr)
+        if (pos1==-1 || pos2==-1){
+            alert("The date format should be : mm/dd/yyyy")
+            return false
+        }
+        if (strMonth.length<1 || month<1 || month>12){
+            alert("Please enter a valid month")
+            return false
+        }
+        if (strDay.length<1 || day<1 || day>31 || (month==2 && day>daysInFebruary(year)) || day > daysInMonth[month]){
+            alert("Please enter a valid day")
+            return false
+        }
+        if (strYear.length != 4 || year==0 || year<minYear || year>maxYear){
+            alert("Please enter a valid 4 digit year between "+minYear+" and "+maxYear)
+            return false
+        }
+        if (dtStr.indexOf(dtCh,pos2+1)!=-1 || isInteger(stripCharsInBag(dtStr, dtCh))==false){
+            alert("Please enter a valid date")
+            return false
+        }
+    return true
+    }
+
+    function ValidateForm(){
+        var dt=document.frmSample.txtDate
+        if (isDate(dt.value)==false){
+            dt.focus()
+            return false
+        }
+        return true
+     }
+     
+    function openFile()
+    {
+        window.open('/servlet/servlet.FileDownload?file={!fileId}','_blank','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes');
+        location.reload(true);
+    }
+
+    function check(obj_inpf)
+        {
+            var FileNameArr = obj_inpf.value.split("\\");
+            //alert("FileNameArr --"+FileNameArr);
+            var exten=FileNameArr[2];
+            //alert("exten--"+exten);
+            document.getElementById('{!$Component.fileNameHidden}').value = exten;           
+        }
+           
+    function get_radio_value( radioName ) {
+        var radios = document.getElementsByName( radioName );
+        for( var i = 0; i < radios.length; i++ ) {
+            if( radios[i].checked ) {
+                return radios[i].value;
+            }
+        }
+    }
+
+    //Row object array form:
+    //Each row is an object with column headers as keys
+    function to_json(workbook) {
+        var result = {};
+        workbook.SheetNames.forEach(function(sheetName) {
+            var rObjArr = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+            if(rObjArr.length > 0){
+                result[sheetName] = rObjArr;
+            }
+        });
+        return result;
+    }
+
+    function to_csv(workbook) {
+        var result = [];
+        workbook.SheetNames.forEach(function(sheetName) {
+            var rObjArr = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName]);
+            if(rObjArr.length > 0){
+                result.push("SHEET: " + sheetName);
+                result.push("");
+                result.push(rObjArr);
+            }
+        });
+        return result.join("\n");
+    }
+
+    var tarea = document.getElementById('b64data');
+    function b64it() {
+        var xlsx = XLSX.read(tarea.value, {type: 'base64'});
+        process_xlsx(xlsx);
+    }
+
+    function process_xlsx(xlsx) {
+        var output = "";
+        if(get_radio_value("format") === "json"){
+            output = JSON.stringify(to_json(xlsx), 2, 2);
+        } else {
+            output = to_csv(xlsx);
+        }
+        if(out.innerText === undefined) out.textContent = output;
+        else out.innerText = output;
+       
+        var StringData=output.substring(output.lastIndexOf("SHEET: KT Tracker"),output.lastIndexOf("SHEET: DTP Tracker"));  
+         var textUploadData= StringData.replace(/<br>/g, "\n");
+        var fileAllData= textUploadData.replace(/"/g, "");     
+        
+        var StringDataSheet2=output.substring(output.lastIndexOf("SHEET: DTP Tracker"),output.lastIndexOf("SHEET: Master Data"));
+        var textUploadData1= StringDataSheet2.replace(/<br>/g, "\n");
+        var fileAllData1= textUploadData1.replace(/"/g, "");
+        //var fileDataAll=  document.getElementById("{!$Component.fileFullDataHidden}").value=fileAllData; 
+        document.getElementById("{!$Component.fileFullDataHidden}").value=fileAllData; 
+        //alert("fileAllData-------->>"+fileDataAll);
+        
+         
+        //var fileDataAllSheet2 =document.getElementById("{!$Component.fileFullDataSheet2Hidden}").value=fileAllData1; 
+        document.getElementById("{!$Component.fileFullDataSheet2Hidden}").value=fileAllData1;
+       // alert("fileDataAllSheet2 -------->>"+fileDataAllSheet2 );
+
+        
+        //UploadFile(fileDataAll);
+
+  
+    }
+
+    var drop = document.getElementById('drop');
+    function handleDrop(e) {
+    var x;
+    var r=confirm("Do you want to process this file");
+//alert('r------>>>>'+r);
+    if (r==true)
+      {
+
+        e.stopPropagation();
+        e.preventDefault();
+        var files = e.dataTransfer.files;
+        var i,f;
+        for (i = 0, f = files[i]; i != files.length; ++i) {
+            var reader = new FileReader();
+            var name = f.name;
+            var dropFileName = f.name;
+            //var dropFName=  document.getElementById("{!$Component.dropFileNameHidden}").value=dropFileName; 
+            document.getElementById("{!$Component.dropFileNameHidden}").value=dropFileName;
+            //UploadFile(dropFName);
+            
+            reader.onload = function(e, index) {
+                var data = e.target.result;
+                //var xlsx = XLSX.read(data, {type: 'binary'});
+                var arr = String.fromCharCode.apply(null, new Uint8Array(data));
+                var xlsx = XLSX.read(btoa(arr), {type: 'base64'});
+                process_xlsx(xlsx);
+            };
+            //reader.readAsBinaryString(f);
+           reader.readAsArrayBuffer(f);
+        }
+      }
+    else
+      {
+        exit;
+      }
+       
+    }
+
+
+    function handleDrop1(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        // FileList object of File objects
+        var files = e.dataTransfer.files;
+        var output = [];
+        for (var i = 0, f; f = files[i]; i++) {
+            var reader = new FileReader();
+            // closure to capture file info
+            reader.onload = (function(file, index) {
+                return function(e) {
+                    var dataUri = e.target.result,
+                        base64 = dataUri.substr(dataUri.indexOf(',') + 1),
+                        textarea, image, figcaption;
+                    textarea = ['<textarea onfocus="this.select()">', base64, '</textarea>'].join('');          
+                    var base64EncodeData = [ base64].join('');
+                    //var encodeData=  document.getElementById("{!$Component.uploadFileAtteHidden}").value=base64EncodeData ; 
+                    document.getElementById("{!$Component.uploadFileAtteHidden}").value=base64EncodeData ;
+                  //   alert("encodeData----->>>"+encodeData);
+                   // UploadFile(encodeData);
+                    UploadFile();
+                   
+                    if (file.type.match('image.*')) {
+                        if (dataUri.length > 32768) {
+                            figcaption = '<figcaption>In IE8, data URIs cannot be larger than 32,768 characters.</figcaption>';
+                        }
+                        image = ['<figure><img class="thumb" src="', dataUri, '" title="', file.name, '"/>',
+                            figcaption, '</figure>'].join('');                  
+                    }
+                    document.getElementById(['file_', index + 1].join('')).innerHTML += [image, textarea].join('');
+                    var testvinay=document.getElementById(['file_', index + 1].join('')).innerHTML += [image, textarea].join('');
+                   
+                };
+            })(f, i);
+        
+            // read file as data URI
+            reader.readAsDataURL(f);
+        
+            var data = ['<li id="file_', i + 1, '"><h3>', f.name, '</h3><dl>',
+                '<dt>Type</dt><dd>', f.type || 'n/a', '</dd>',
+                '<dt>Size</dt><dd>', f.size, ' bytes</dd>',
+                '<dt>Last Modified</dt><dd>', f.lastModifiedDate ? f.lastModifiedDate.toDateString() : 'n/a', '</dd>',
+                '</dl></li>'].join('');
+        
+            output.push(data);
+            
+        }
+        
+        if (files.length) {
+            document.getElementById('list').innerHTML = '<ol>' + output.join('') + '</ol>';
+        }
+    }
+
+
+    function handleDragover(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+             // starting();
+    }
+
+    if(drop.addEventListener) {
+        drop.addEventListener('dragenter', handleDragover, false);
+        drop.addEventListener('dragover', handleDragover, false);
+        drop.addEventListener('drop', handleDrop, false);
+        drop.addEventListener('drop', handleDrop1, false);
+    }
+
+    function starting(){
+          loadingImageStart();
+       }
+       function ending(){
+          loadingImageEnd();
+       }
+
+    </script>
+
+    <apex:actionFunction name="UploadFile" action="{!UploadFile}" rerender="frm1,frm2" status="myStatus">
+    </apex:actionFunction>
+    
+    </apex:form>
+</apex:page>

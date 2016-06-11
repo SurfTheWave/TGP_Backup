@@ -1,0 +1,866 @@
+<!--
+Author : Shridhar Patankar
+Story  :   Release 2
+Description :Under BPO Opportunity detail page
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Varsha Chougule Story-0089/SOL_034         6/5/2013            Tab for Review
+Mayank Tayal    Sol_148                    5/15/2013           Sol UAM-Release 2
+Mayank Tayal    Sol_123/Sol_147            5/14/2013           Tab Layouts
+
+-->
+<apex:page standardController="Opportunity_TGP__c" extensions="BPO_Opportunity_tabController" showHeader="true" sidebar="true" ID="bpoOppPage" >
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script>
+function removeSelNone(){
+    jQuery('[id$=inputSerGr]').find('[value=""]').remove();
+}
+</script>
+
+
+<style>
+.activeTab { background-color:#8FBC8F; color:black;
+         background-image:none; height:35px; valign:middle;}
+      .inactiveTab { background-color: lightgrey; color:black; 
+         background-image:none;height: 35px; valign:middle;}
+         .inactiveTabInside { background-color: lightgrey; color:black; 
+         background-image:none;}
+.rich-tab-header {
+padding: 2px 10px 2px 10px;
+text-align: left;revenue
+cursor:pointer;
+}
+ .rich-tabpanel-content {cursor:default};       
+</style>
+
+<script>
+
+  jQuery.noConflict();
+   window.onload = function(){
+      
+        jQuery('[id$=block1]').focus();
+    };
+
+    
+</script>
+
+<!-- Style Panel Satrts--->   
+    <style type="text/css">   
+        .imgclass:hover{   
+            background-image: url(/img/help/helpOrbs.gif);   
+            background-repeat: no-repeat;   
+            width: 16px;   
+            height: 15px;      
+            background-position: right;   
+          
+        }   
+        .imgclass{   
+            background-image: url(/img/help/helpOrbs.gif);   
+            background-repeat: no-repeat;   
+            width: 16px;   
+            height: 15px;   
+        } 
+        .blue{
+            color :blue;
+        }  
+    </style>   
+<!-- Style Panel Ends--->   
+<script>
+   
+   function hideSAPID(newval)
+    {   
+          
+        if(newval=='No')
+        {   
+            NoFunc();    
+        }
+        else
+        {            
+            YesFunc();
+        }
+    }
+    
+   function OfferingsOnGeneralInfo(){
+       window.onload=getOfferingsOnGeneralInfo();
+      
+   }
+   
+   function ending(){
+   if({!Count}==1){
+                window.onload=getOfferings();
+      } 
+      
+      
+   }  
+   /*function startRefresh(){
+      window.onload=getScheduling(); 
+   } */
+   
+</script>
+  <script language="JavaScript"> 
+    function openConga() { 
+    window.open('{!URLFOR($Action.Opportunity_TGP__c.Conga_Composer_temp,Opportunity_TGP__c.Id)}', '','scrollbars=yes,menubar=no,height=600,width=800,resizable=yes, toolbar=no,location=no,status=yes'); } 
+    
+    function openBPOOPPConga() { 
+    window.open('{!URLFOR($Action.Opportunity_TGP__c.BPO_OPP_Conga_Button,Opportunity_TGP__c.Id)}', '','scrollbars=yes,menubar=no,height=600,width=800,resizable=yes, toolbar=no,location=no,status=yes'); } 
+</script>
+<apex:variable value="{!Opportunity_TGP__c}" var="o"/>
+<apex:form >
+    <apex:actionFunction name="saverecord" action="{!saverecordOtherCharacteristics}" reRender="form1"/>  
+ <apex:pageBlock >
+
+    
+     <apex:pageBlockSection columns="1">
+         <table>
+             <tr>
+                 <td width="350"><b>SAP OM ID</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!o.SAP_OM_Opportunity__r.name}</td>
+                 <td width="500"><b>Opportunity Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!o.Name}</td>
+                 <td width="500"><b>Client Name</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!o.Client_Name__r.name}</td>
+             </tr>
+         </table>
+      <apex:commandButton value="Generate Solution Plan" onclick="return openBPOOPPConga();"/>
+     </apex:pageBlockSection>  
+   
+ </apex:pageBlock>
+
+
+
+</apex:form>
+      <apex:variable value="{!Option}" var="op"/>
+
+     <apex:tabPanel switchType="server" value="{!tabFocus}" id="theTabPanel" activeTabClass="activeTab" inactiveTabClass="inactiveTab"   styleClass="rich-tab-header">
+         
+           <apex:tab label="General Information" switchType="ajax" style="width:100%; height:130px;font-weight: bold" name="tab0" id="tabZero" oncomplete="OfferingsOnGeneralInfo();">
+               <br/>
+               <apex:form onsubmit="return enableBeforeUnload()">
+               
+            
+         <apex:actionFunction name="getOfferingsOnGeneralInfo" action="{!getOfferingsOnGeneralInfo}"/>
+               </apex:form>
+               <apex:form id="imageLoading11">
+                   <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="imageLoading11" immediate="true" />
+                   <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="imageLoading11"  immediate="true"/>
+                   <apex:outputPanel rendered="{!flagImage }">
+                       <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+                   </apex:outputPanel>                 
+               </apex:form>
+               
+               <br/>
+             <!--<apex:include pageName="insertNewopportunity" rendered="{!flagEdit}"/>-->
+             
+               <apex:form id="form1">
+               <apex:outputText >
+            Fields in <apex:outputText value=" blue" styleClass="blue"></apex:outputText> are overwritten with SAP data when a SAP OM ID is provided
+            </apex:outputText>
+            <apex:outputtext ></apex:outputtext>
+                   <apex:pageBlock id="block1" rendered="{!flag}">
+                       <apex:pageBlockButtons location="top" >
+                           <apex:commandButton value="Edit" action="{!edit1}" reRender="form1,comments,oppTeam"  rendered="{!saveEditButtonRender }" id="button" onComplete="removeSelNone();"  />
+                       </apex:pageBlockButtons>
+                       <apex:pageBlockSection title="Opportunity Details" collapsible="false">
+                             
+                             <apex:pageBlockSectionItem >
+                             <apex:outputlabel styleclass="blue">SAP OM ID</apex:outputlabel> 
+                            <apex:outputField value="{!o.SAP_OM_Opportunity__c}">
+                            
+                           </apex:outputField>
+                           </apex:pageBlockSectionItem>
+                           <apex:pageBlockSectionItem >
+                           <apex:outputlabel styleclass="blue">Reporting Status</apex:outputlabel>
+                           <apex:outputField value="{!o.Activity__c}" styleclass="blue">                  
+                            </apex:outputField>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue">Client Name</apex:outputlabel>                                              
+                            <apex:outputField value="{!o.Client_Name__c}" styleclass="blue">
+                              </apex:outputField> 
+                              </apex:pageBlockSectionItem>
+                              
+                              <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue">Stage</apex:outputlabel>  
+                            <apex:outputField value="{!o.Stage__c}">
+                            </apex:outputField>  
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem >
+                         <apex:outputlabel styleclass="blue">Opportunity Name</apex:outputlabel>
+                        <apex:outputField value="{!o.Name}">
+                           </apex:outputField>
+                            </apex:pageBlockSectionItem>
+                            
+                           <apex:outputField value="{!o.Staffing_Status__c}">     
+                            </apex:outputField>
+                            
+                            <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel styleclass="blue">Geo Region</apex:outputlabel> 
+                            <apex:outputField value="{!o.Client_Geo_Area__r.name}">                
+                            </apex:outputField>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:outputField value="{!o.On_Hold__c}">                 
+                            </apex:outputField>
+                            
+                            <apex:pageBlockSectionItem >                                                        
+                                <apex:outputlabel styleclass="blue">Geo Unit</apex:outputlabel> 
+                                <apex:outputField value="{!o.Client_Geo_Unit__r.name}" >                
+                            </apex:outputField>
+                            </apex:pageBlockSectionItem>
+                           
+                             <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Risk Level" style="font-weight:bold;">
+                            &nbsp;
+                            <img src="/s.gif" Class="imgclass" title="As defined in the SD Guideline."/>   
+                            
+                            </apex:outputLabel>
+                            <apex:outputField value="{!o.Risk_Level__c}" > 
+                            </apex:outputField>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem >
+                             <apex:outputlabel styleclass="blue">Operating Group</apex:outputlabel> 
+                            <apex:outputField value="{!o.Operating_Group__r.name}">                
+                            </apex:outputField>
+                             </apex:pageBlockSectionItem>
+                             
+                             <apex:pageBlockSectionItem >
+                              <apex:outputlabel styleclass="blue">Win Probability</apex:outputlabel> 
+                              <apex:outputField value="{!o.Win_Probability__c}" /> 
+                              </apex:pageBlockSectionItem>
+                              
+                              <apex:pageBlockSectionItem >
+                              <apex:outputlabel >Offering Scope (SWB)</apex:outputlabel> 
+                              <apex:outputfield value="{!o.Offerings__c}">  
+                              </apex:outputField> 
+                              </apex:pageBlockSectionItem>
+                              
+                             <apex:pageBlockSectionItem >                                                        
+                                <apex:outputlabel styleclass="blue">Expected Contract Sign (Quarter)</apex:outputlabel> 
+                            <apex:outputField value="{!o.Expected_contract_sign_qtr__c}">
+                            </apex:outputField>
+                            </apex:pageBlockSectionItem> 
+                            <apex:pageBlockSectionItem >                                                        
+                                <apex:outputlabel styleclass="blue" >Pricing Structure</apex:outputlabel>
+                                <apex:outputField value="{!o.Pricing_Type__c}"/>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue">Competitive / Sole Source</apex:outputlabel>                     
+                                <apex:outputField value="{!o.Competitive_Sole_Source__c}"/>
+                                </apex:pageBlockSectionItem>
+                            
+                            <apex:pageblockSectionItem ><apex:outputlabel styleclass="blue" >Service Group</apex:outputlabel>
+                           <apex:outputField value="{!o.Service_Group__c}"/>  </apex:pageblockSectionItem>
+                            <apex:pageBlockSectionItem >                                                        
+                           <apex:outputlabel styleclass="blue" >Competitor</apex:outputlabel>
+                           <apex:outputField value="{!o.Competitors__c}"/>           
+                            </apex:pageBlockSectionItem> 
+                 <apex:pageBlockSectionItem > &nbsp;</apex:pageBlockSectionItem> 
+                                  <apex:pageBlockSectionItem > &nbsp;</apex:pageBlockSectionItem> 
+                            <apex:pageBlockSectionItem >                                                        
+                            <apex:outputlabel styleclass="blue" >BPO Net Revenue (SAP OM)<br/>(Thousands)</apex:outputlabel>                     
+                            <apex:outputField value="{!o.TCV__c}"/>                          
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >                                                        
+                            <apex:outputlabel styleclass="blue" >IS Net Revenue (SAP OM) <BR/>(Thousands)</apex:outputlabel>                     
+                            <apex:outputField value="{!o.IS_Net_Revenue_SAP__c}"/>                          
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:outputText value="{0, date, MMMM d',' yyyy}" label="Last Modified Date">
+                                    <apex:param value="{!tcv_mod_date}" /> 
+                             </apex:outputText>
+                           <!-- <apex:variable value="{!Option}" var="op"/>  -->
+                            <apex:pageBlockSectionItem >&nbsp;</apex:pageBlockSectionItem>
+                             
+                               
+                              
+                           <apex:pageBlockSectionItem >                                                        
+                           <apex:outputlabel >BPO Net Revenue (Thousands)
+                           <img src="/s.gif" Class="imgclass" title="Field is populated with value from SAP OM unless overwritten.  If value changes in SAP OM, value is updated in SWB."/>
+                           </apex:outputlabel> 
+                           <apex:outputPanel >
+                             <apex:outputtext value="{0, number, ###,###,###,##0}" rendered="{!IF(op == 'No',true,false)}">
+                             <apex:param value="{!estimateTCV}"/>
+                             </apex:outputText>
+                             <apex:outputtext value="{0, number, ###,###,###,##0}" rendered="{!IF(op == 'Yes',true,false)}">
+                             <apex:param value="{!estimateTCVSAP}"/>
+                             </apex:outputText> 
+ 
+                           </apex:outputPanel>                                          
+                             </apex:pageBlockSectionItem>
+                             <apex:pageBlockSectionItem >                                                        
+                               <apex:outputlabel >IS Net Revenue (Thousands)</apex:outputlabel> 
+                               <apex:outputPanel >
+                                   <apex:outputtext value="{0, number, ###,###,###,##0}" rendered="{!IF(op == 'No',true,false)}">
+                                       <apex:param value="{!estimateISTCV}"/>
+                                   </apex:outputText>
+                                   <apex:outputtext value="{0, number, ###,###,###,##0}" rendered="{!IF(op == 'Yes',true,false)}">
+                                       <apex:param value="{!estimateISTCVSAP}"/>
+                                   </apex:outputText> 
+                               </apex:outputPanel>                                          
+                           </apex:pageBlockSectionItem>
+                            
+                           <apex:outputText value="{0, date, MMMM d',' yyyy}" label="Last Modified Date">
+                                    <apex:param value="{!estimated_tcv_mod_date}" /> 
+                                </apex:outputText>
+                                <apex:pageBlockSectionItem >&nbsp;</apex:pageBlockSectionItem>
+                            
+                           
+                        </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Procurement Details" collapsible="false" rendered="{!ShowPro}">
+
+                                <apex:outputField value="{!o.Procurement_Solution_Stage__c}">                
+                                </apex:outputField>
+                                
+                                <apex:outputField value="{!o.Prospect_Segmentation__c}">                
+                                </apex:outputField>                        
+                                                    
+                                <apex:outputField value="{!o.Addressable_Spend__c}">                
+                                </apex:outputField>                                
+                                
+                                <apex:outputField value="{!o.Year_1_Savings_Commitment__c}">                
+                                </apex:outputField>  
+                                
+                                <apex:outputField value="{!o.Number_of_Categories_in_Scope__c}">                
+                                </apex:outputField>                                                                                                                                                                                                                                 
+                                      
+                                </apex:pageBlockSection>                  
+            
+                         
+                    </apex:pageBlock>
+    
+                    
+                    <apex:variable value="{!Opportunity_TGP__c}" var="o"/>
+                    <apex:pageblock id="block2" rendered="{!flagEdit}">
+                        <apex:pageMessages id="msg"/> 
+                        <apex:actionFunction action="{!NoSAPID}" name="NoFunc"/>
+                        <apex:actionFunction action="{!YesSAPID}" name="YesFunc"/> 
+                        <apex:pageBlockSection columns="3" rendered="{!NOT(editValue)}">
+                             <apex:outputLabel value="SAP OM ID available?(Y/N)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <apex:selectList value="{!Option}" multiselect="false" size="1" onchange="hideSAPID(this.value);" id="selectList"> 
+                                    <apex:selectOptions value="{!SAPOMIDOptions}"/>
+                                </apex:selectList>
+                             </apex:outputLabel>
+                            <apex:inputField value="{!o.SAP_OM_Opportunity__c}" rendered="{!field1}"></apex:inputField>
+                <!--<apex:inputField value="{!o.SAP_OM_ID__c}" rendered="{!field2}" />-->
+                            <apex:commandButton action="{!NextSection}" value="Next" reRender="newPage,buttons,msg" rendered="{!displayButton}"></apex:commandButton>  
+                        </apex:pageBlockSection>
+
+                        <apex:pageBlockSection columns="3" rendered="{!editValue}">
+                             <apex:outputLabel value="SAP OM ID available?(Y/N)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                             <apex:outputLabel value="Yes" />
+                        </apex:outputLabel>
+                        <apex:inputField value="{!o.SAP_OM_Opportunity__c}" rendered="{!field1}"></apex:inputField>
+                
+                        <apex:commandButton action="{!NextSection}" value="Next" reRender="newPage,buttons,msg" rendered="{!displayButton}"></apex:commandButton>  
+                    
+                    </apex:pageBlockSection>
+                    <apex:outputPanel id="newPage">
+                        <apex:pageBlockSection title="General Information" rendered="{!NewValue1}" collapsible="false">
+                            
+                            <apex:outputlabel ></apex:outputlabel>
+                            
+                            <apex:pageBlockSectionItem >
+                           <apex:outputlabel styleclass="blue">Reporting Status</apex:outputlabel>
+                           <apex:outputField value="{!o.Activity__c}"/>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                           <apex:outputlabel styleclass="blue">Client Name</apex:outputlabel>
+                            <apex:outputField value="{!o.Client_Name__c}"/>
+                             </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                           <apex:outputlabel styleclass="blue">Stage</apex:outputlabel>
+                            <apex:outputField value="{!o.Stage__c}"/>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem >
+                           <apex:outputlabel styleclass="blue">Opportunity Name</apex:outputlabel>
+                            <apex:outputField value="{!o.Name}"/>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:inputField value="{!o.Staffing_Status__c}" id="myPicklist"/> 
+                            
+                            <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel styleclass="blue">Geo Region</apex:outputlabel>                           
+                                    <apex:outputField value="{!o.Client_Geo_Area__r.name}"/>                           
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:inputField value="{!o.On_Hold__c}"/> 
+                            
+                             <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel styleclass="blue">Geo Unit</apex:outputlabel>                           
+                                    <apex:outputField value="{!o.Client_Geo_Unit__r.name}"/>                           
+                            </apex:pageBlockSectionItem>
+                            
+                             <apex:pageBlockSectionItem >
+                            <apex:outputLabel styleclass="blue" value="Risk Level">
+                            
+                            </apex:outputLabel>
+                            <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                     <apex:outputPanel styleClass="requiredBlock"/>       
+                                     <apex:inputField value="{!o.Risk_Level__c}">
+                                     &nbsp;
+                                     <img src="/s.gif" Class="imgclass" title="As defined in the SD Guideline."/>
+                                     </apex:inputField> 
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                            
+                            
+                            <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel styleclass="blue" >Operating Group</apex:outputlabel>                           
+                                    <apex:outputField value="{!o.Operating_Group__r.name}"/>
+                         
+                            </apex:pageBlockSectionItem> 
+                            
+                             <apex:pageBlockSectionItem >
+                              <apex:outputlabel styleclass="blue">Win Probability</apex:outputlabel> 
+                              <apex:outputField value="{!o.Win_Probability__c}" /> 
+                              </apex:pageBlockSectionItem>
+                             
+
+                        <apex:pageBlockSectionItem >
+                              <apex:outputlabel >Offering Scope (SWB)</apex:outputlabel> 
+                              <apex:outputfield value="{!o.Offerings__c}">  
+                              </apex:outputField> 
+                              </apex:pageBlockSectionItem>
+                              
+                             <apex:pageBlockSectionItem >                                                        
+                                <apex:outputlabel styleclass="blue">Expected Contract Sign (Quarter)</apex:outputlabel> 
+                            <apex:outputField value="{!o.Expected_contract_sign_qtr__c}">
+                            </apex:outputField>
+                            </apex:pageBlockSectionItem> 
+                            <apex:pageBlockSectionItem >                                                        
+                                <apex:outputlabel styleclass="blue" >Pricing Structure</apex:outputlabel>
+                                <apex:outputField value="{!o.Pricing_Type__c}"/>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue">Competitive / Sole Source</apex:outputlabel>                     
+                                <apex:outputField value="{!o.Competitive_Sole_Source__c}"/>
+                                </apex:pageBlockSectionItem>
+                            
+                            <apex:pageblockSectionItem ><apex:outputlabel styleclass="blue" >Service Group</apex:outputlabel>
+                           <apex:outputField value="{!o.Service_Group__c}"/>  </apex:pageblockSectionItem>
+                            <apex:pageBlockSectionItem >                                                        
+                           <apex:outputlabel styleclass="blue" >Competitor</apex:outputlabel>
+                           <apex:outputField value="{!o.Competitors__c}"/>           
+                            </apex:pageBlockSectionItem> 
+                                              <apex:pageBlockSectionItem > &nbsp;</apex:pageBlockSectionItem> 
+                                  <apex:pageBlockSectionItem > &nbsp;</apex:pageBlockSectionItem> 
+                            <apex:pageBlockSectionItem >                                                        
+                            <apex:outputlabel styleclass="blue" >BPO Net Revenue (SAP OM)<br/>(Thousands)</apex:outputlabel>                     
+                            <apex:outputField value="{!o.TCV__c}"/>                          
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >                                                        
+                            <apex:outputlabel styleclass="blue" >IS Net Revenue (SAP OM) <BR/>(Thousands)</apex:outputlabel>                     
+                            <apex:outputField value="{!o.IS_Net_Revenue_SAP__c}"/>                          
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:outputText value="{0, date, MMMM d',' yyyy}" label="Last Modified Date">
+                                    <apex:param value="{!tcv_mod_date}" /> 
+                             </apex:outputText>
+                           <!-- <apex:variable value="{!Option}" var="op"/>  -->
+                            <apex:pageBlockSectionItem >&nbsp;</apex:pageBlockSectionItem>
+                             
+                               
+                              
+                        <!--   <apex:pageBlockSectionItem >                                                        
+                           <apex:outputlabel >BPO Net Revenue (Thousands)
+                           <img src="/s.gif" Class="imgclass" title="Field is populated with value from SAP OM unless overwritten.  If value changes in SAP OM, value is updated in SWB."/>
+                           </apex:outputlabel> 
+                           <apex:outputPanel >
+                             <apex:outputtext value="{0, number, ###,###,###,##0}" rendered="{!IF(op == 'No',true,false)}">
+                             <apex:param value="{!estimateTCV}"/>
+                             </apex:outputText>
+                             <apex:outputtext value="{0, number, ###,###,###,##0}" rendered="{!IF(op == 'Yes',true,false)}">
+                             <apex:param value="{!estimateTCVSAP}"/>
+                             </apex:outputText> 
+ 
+                           </apex:outputPanel>                                          
+                             </apex:pageBlockSectionItem> -->
+                             
+                             <apex:pageBlockSectionItem >
+                            <apex:outputlabel >BPO Net Revenue (Thousands)
+                            <img src="/s.gif" Class="imgclass" title="Field is populated with value from SAP OM unless overwritten.  If value changes in SAP OM, value is updated in SWB."/>
+                            </apex:outputlabel>
+                            <apex:inputtext value="{!estimateTCVSAP}">
+                            </apex:inputtext>                            
+                            </apex:pageBlockSectionItem> 
+                             
+                          <!--   <apex:pageBlockSectionItem >                                                        
+                               <apex:outputlabel >IS Net Revenue (Thousands)</apex:outputlabel> 
+                               <apex:outputPanel >
+                                   <apex:outputtext value="{0, number, ###,###,###,##0}" rendered="{!IF(op == 'No',true,false)}">
+                                       <apex:param value="{!estimateISTCV}"/>
+                                   </apex:outputText>
+                                   <apex:outputtext value="{0, number, ###,###,###,##0}" rendered="{!IF(op == 'Yes',true,false)}">
+                                       <apex:param value="{!estimateISTCVSAP}"/>
+                                   </apex:outputText> 
+                               </apex:outputPanel>                                          
+                           </apex:pageBlockSectionItem> -->
+                            
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel >IS Net Revenue (Thousands)</apex:outputlabel>
+                                <apex:inputtext value="{!estimateISTCVSAP}"></apex:inputtext>
+                            </apex:pageBlockSectionItem>
+                            
+                           <apex:outputText value="{0, date, MMMM d',' yyyy}" label="Last Modified Date">
+                                    <apex:param value="{!estimated_tcv_mod_date}" /> 
+                                </apex:outputText>
+                                <apex:pageBlockSectionItem >&nbsp;</apex:pageBlockSectionItem>
+                            
+                           
+                        </apex:pageBlockSection>
+                       
+                        <apex:pageBlockSection title="General Information" rendered="{!NewValue2}" collapsible="false">
+                          
+                          <apex:outputlabel ></apex:outputlabel>
+                          
+                          <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue" value="Reporting Status"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                     <apex:outputPanel styleClass="requiredBlock"/>       
+                                     <apex:inputField value="{!o.Activity__c}" />  
+                                </apex:outputPanel>
+                             </apex:pageBlockSectionItem> 
+                             
+                             <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue" value="Client Name"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block">
+                                     <apex:outputPanel styleClass="requiredBlock"/>    
+                                     <apex:inputField value="{!o.Client_Name__c}"  required="false" taborderhint="2"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue" value="Stage"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                     <apex:outputPanel styleClass="requiredBlock"/>       
+                                     <apex:inputField value="{!o.Stage__c}" />
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue" value="Opportunity Name"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                     <apex:outputPanel styleClass="requiredBlock"/>       
+                                     <apex:inputField value="{!o.Name}"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:inputField value="{!o.Staffing_Status__c}" id="myPicklist" />
+                            
+                            <apex:pageBlockSectionItem >
+                               <apex:outputlabel styleclass="blue" value="Geo Region"/>
+                               <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                     <apex:outputPanel styleClass="requiredBlock"/> 
+                                          <apex:selectList size="1" value="{!clientGeoAreaMaster}" required="true" >
+                                            <apex:selectOptions value="{!clientGeoArea}" ></apex:selectOptions>
+                                          </apex:selectList>      
+                                     <!--<apex:inputField value="{!o.Client_Geo_Area__c}" required="false"/>-->
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                            
+                            <apex:inputField value="{!o.On_Hold__c}"/>  
+                            
+                             <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue" value="Geo Unit"/>
+                                    <apex:selectList size="1" value="{!clientGeoUnitMaster}" required="true">
+                                            <apex:selectOptions value="{!clientGeoUnit}"></apex:selectOptions>
+                                          </apex:selectList>         
+                                     <!--<apex:inputField value="{!o.Client_Geo_Unit__c}" required="false"/>-->
+                          </apex:pageBlockSectionItem>
+                          
+                          
+                            
+                            
+                            
+                            <apex:pageBlockSectionItem >    
+                                     <apex:outputLabel value="Risk Level">
+                                     </apex:outputLabel>
+                                 <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                 <apex:outputPanel styleClass="requiredBlock"/>  
+                                    <apex:inputField value="{!o.Risk_Level__c}">
+                                    &nbsp;
+                                 <img src="/s.gif" Class="imgclass" title="As defined in the SD Guideline."/> 
+                                 </apex:inputfield>
+                                 </apex:outputPanel>
+                             </apex:pageBlockSectionItem>
+                             
+                             <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue" value="Operating Group"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                     <apex:outputPanel styleClass="requiredBlock"/> 
+                                          <apex:selectList size="1" value="{!operatingGroupMaster}" required="true">
+                                            <apex:selectOptions value="{!operatingGroup}"></apex:selectOptions>
+                                          </apex:selectList>         
+                                     <!--<apex:inputField value="{!o.Operating_Group__c}" required="false"/>-->
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                             
+                              
+                            
+                             <apex:pageBlockSectionItem >
+                              <apex:outputlabel styleclass="blue">Win Probability</apex:outputlabel> 
+                              <apex:outputField value="{!o.Win_Probability__c}" /> 
+                              </apex:pageBlockSectionItem>   
+                                                        
+                              <apex:pageBlockSectionItem >
+                              <apex:outputlabel >Offering Scope (SWB)</apex:outputlabel> 
+                              <apex:outputfield value="{!o.Offerings__c}">  
+                              </apex:outputField> 
+                              </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue" value="Expected Contract Sign (Quarter)"/>
+                                <!-- <apex:inputField value="{!o.Expected_contract_sign_qtr__c}" required="false"/> -->
+                                     <apex:selectList size="1" value="{!quarterName}">
+                                       <apex:selectOptions value="{!QuarterNames}"  ></apex:selectOptions>
+                                    </apex:selectList>
+                             </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue">Pricing Structure</apex:outputlabel>
+                             <apex:inputField value="{!o.Pricing_Type__c}"/>
+                             </apex:pageBlockSectionItem>
+                            
+                            <apex:inputField value="{!o.Competitive_Sole_Source__c}"/>
+                            
+                            <apex:pageBlockSectionItem >
+                             <apex:outputlabel styleclass="blue">Service Group</apex:outputlabel>
+                             <apex:inputField value="{!o.Service_Group__c}" id="inputSerGr"/><!--  Komal Change --> 
+                             </apex:pageBlockSectionItem>
+                             <apex:pageBlockSectionItem >
+                                <apex:outputlabel styleclass="blue">Competitor</apex:outputlabel>
+                            <apex:inputField value="{!o.Competitors__c}"/>
+                             </apex:pageBlockSectionItem>
+                            
+                            
+                             <apex:pageBlockSectionItem rendered="{!if(o.SAP_OM_Opportunity__c==null,true,false)}">
+                                <apex:outputlabel styleclass="blue">BPO Net Revenue (SAP OM)<br/>(Thousands)</apex:outputlabel>
+                                <apex:inputField value="{!o.TCV__c}" >
+                                </apex:inputField>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem rendered="{!if(o.SAP_OM_Opportunity__c!=null,true,false)}">
+                                <apex:outputlabel styleclass="blue">BPO Net Revenue (SAP OM)<br/>(Thousands)</apex:outputlabel>
+                                <apex:outputField value="{!o.TCV__c}" >
+                                </apex:outputField>
+                            </apex:pageBlockSectionItem> 
+                            
+                             <apex:pageBlockSectionItem rendered="{!if(o.SAP_OM_Opportunity__c==null,true,false)}">
+                                <apex:outputlabel styleclass="blue">IS Net Revenue (SAP OM) <BR/>(Thousands)</apex:outputlabel>
+                                <apex:inputField value="{!o.IS_Net_Revenue_SAP__c}" >
+                                </apex:inputField>
+                            </apex:pageBlockSectionItem>
+                            
+                             
+                             <apex:pageBlockSectionItem >
+                                <apex:outputlabel >BPO Net Revenue (Thousands)
+                                <img src="/s.gif" Class="imgclass" title="Field is populated with value from SAP OM unless overwritten.  If value changes in SAP OM, value is updated in SWB."/>
+                                </apex:outputlabel>
+                                <apex:inputtext value="{!estimateTCV}">
+                                </apex:inputtext>
+                            </apex:pageBlockSectionItem>
+                          
+                            
+                            
+                             
+                             
+                             
+                             
+                            
+                            <apex:pageBlockSectionItem rendered="{!if(o.SAP_OM_Opportunity__c!=null,true,false)}">
+                                <apex:outputlabel styleclass="blue">IS Net Revenue (SAP OM) <BR/>(Thousands)</apex:outputlabel>
+                                <apex:outputField value="{!o.IS_Net_Revenue_SAP__c}" >
+                                </apex:outputField>
+                            </apex:pageBlockSectionItem> 
+                            
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel >IS Net Revenue (Thousands)</apex:outputlabel>
+                                <apex:inputtext value="{!estimateISTCV}"></apex:inputtext>
+                            </apex:pageBlockSectionItem>
+                             
+                             <apex:inputField value="{!o.Horizon_Deal__c}"/>
+
+
+                            
+                        </apex:pageBlockSection>
+                        
+                                    <apex:pageBlockSection title="Procurement Details" collapsible="false" rendered="{!ShowPro}" >   
+   
+                                <apex:inputField value="{!o.Procurement_Solution_Stage__c}">                
+                                </apex:inputField>
+                                 
+                                <apex:inputField value="{!o.Prospect_Segmentation__c}">                
+                                </apex:inputField> 
+                                <apex:inputField value="{!o.Addressable_Spend__c}">                
+                                </apex:inputField>
+                                
+                                <apex:inputField value="{!o.Year_1_Savings_Commitment__c}">                
+                                </apex:inputField>  
+
+                                <apex:inputField value="{!o.Number_of_Categories_in_Scope__c}">
+                                </apex:inputField>                                   
+                                                                     
+                                </apex:pageBlockSection>                  
+
+                    </apex:outputPanel>
+                    <apex:pageBlockButtons location="top">
+                        <apex:outputPanel id="buttons">
+                        
+                           <apex:actionStatus id="Save_Btn">                 
+                             <apex:facet name="stop">                        
+                             <apex:commandButton value="Save" action="{!saverecord}" status="Save_Btn" rendered="{!NewValue4}" reRender="form1"/>
+                             </apex:facet>
+                            <apex:facet name="start">
+                        <apex:outputPanel >
+                           <apex:commandButton value="Saving..." action="{!saveComments}" id="saveButton1" disabled="true" status="Save_Btn" reRender="form3,frm,pageMsg1" />
+                          </apex:outputPanel>
+                             </apex:facet> 
+                        </apex:actionStatus>                             
+                             
+                             <apex:commandButton value="Cancel" action="{!Cancel}" reRender="form1"/> 
+                        </apex:outputPanel>
+                    </apex:pageblockButtons> 
+                 </apex:pageblock>       
+            </apex:form>
+            
+             
+       <apex:include pageName="VFP_Opp_Team" id="oppTeam" rendered="{!flag}"/>
+      <apex:include pageName="CommentsOnBpoOpp" id="comments" rendered="{!flag}"/>
+     </apex:tab>
+  
+    <apex:tab label="Opportunity Context" name="tab2" id="tabTwo" style="width:100%; height:130px;font-weight: bold" >
+               <apex:tabPanel switchType="server" selectedTab="tab1" id="theTabPanelOne" inactiveTabClass="inactiveTabInside" >
+                                                             
+                      <apex:tab label="Opportunity Timeline and Client Background" name="tab24" id="tabTwoFour" style="width:100%; height:130px;font-weight: bold"  >
+                          <br/>
+                           <apex:form id="imageLoading24">
+                           <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="imageLoading24" immediate="true" />
+                           <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="imageLoading24" immediate="true"/>
+                           <apex:outputPanel rendered="{!flagImage}">
+                                <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+                             </apex:outputPanel>
+                             
+                            </apex:form>
+                            <br/>
+                            <apex:include pageName="OppTimelineClientBackTab"/>
+                      </apex:tab>
+                      
+                      <apex:tab label="Key Buyer Values" name="tab22" id="tabTwoTwo" style="width:100%; height:130px;font-weight: bold"  >
+                          <br/>
+                      <apex:form id="imageLoading3">
+                      <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="imageLoading3" immediate="true" />
+                      <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="imageLoading3" immediate="true"/>
+                      <apex:outputPanel rendered="{!flagImage}">
+                            <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+                         </apex:outputPanel>
+                         
+                        </apex:form>
+                         <br/>
+                          <apex:include pageName="KeyBuyerValuesAdd_Inline"/>
+                      </apex:tab>
+                      
+               </apex:tabPanel>
+    </apex:tab>
+    <apex:tab label="Offering"  switchType="Server"  name="tab3" id="tabThree" style="width:100%; height:130px;font-weight: bold"   oncomplete="ending();">
+                 <br/>
+                 <apex:form id="imageLoading5">
+                 <apex:actionFunction name="getOfferings" action="{!getOfferings}"   immediate="true"  />
+                 <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="imageLoading5" immediate="true" />
+                 <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="imageLoading5" immediate="true"/>
+                 <apex:outputPanel rendered="{!flagImage}">
+                        <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+                     </apex:outputPanel>
+                     
+                    </apex:form>
+                 <br/>
+         <apex:include pageName="OfferingAdd_Inline" />
+    </apex:tab>
+    
+   
+
+         <apex:tab label="Other Characteristics" switchType="server"  name="tab5" id="tabFive" style="width:100%; height:130px;font-weight: bold"  >
+         <br/>
+         <apex:form id="imageLoading05">
+             <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="imageLoading05" immediate="true" />
+             <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="imageLoading05" immediate="true"/>
+             <apex:outputPanel rendered="{!flagImage}">
+                 <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+             </apex:outputPanel>
+             <br/>
+         </apex:form>
+         <apex:include pageName="OtherCharacteristicsTab" id="tab123"/>
+    </apex:tab>
+    
+    <apex:tab label="Cost Summary and Metrics" switchType="server" name="tab15" id="tabfif" style="width:100%; height:130px;font-weight: bold"  >
+       
+        
+         <apex:include pageName="Cost_Summary_Metrics_Old"  />      
+    </apex:tab>
+    <apex:tab label="Opportunity Documents" switchType="server" name="tab6" id="tabSix" style="width:100%; height:130px;font-weight: bold"  >
+       
+        
+         <apex:include pageName="Solution_Plan_Page"  />      
+    </apex:tab>
+    <!-- start Story-0089/SOL_034 --> 
+    <apex:tab label="Approvals"  name="tab4" switchType="server" id="tabFour" style="width:100%; height:130px;font-weight: bold" >
+                 <br/>
+                 <apex:form id="imageLoading6">
+                 <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="imageLoading6" immediate="true" />
+                 <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="imageLoading6" immediate="true"/>
+                 <apex:outputPanel rendered="{!flagImage}">
+                        <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+                     </apex:outputPanel>
+                     
+                    </apex:form>
+                 <br/>
+                 <apex:include pageName="ReviewAdd_Inline"/>
+    </apex:tab>
+    
+    <apex:tab label="Commercial"  name="tab7" switchType="server" id="tab7" style="width:100%; height:130px;font-weight: bold" rendered="{!hideCommercialTab}">
+                 <br/>
+                 <apex:form id="imageLoading7">
+                 <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="imageLoading7" immediate="true" />
+                 <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="imageLoading7" immediate="true"/>
+                 <apex:outputPanel rendered="{!flagImage}">
+                        <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+                     </apex:outputPanel>
+                     
+                    </apex:form>
+                 <br/>
+                 <apex:include pageName="CommercialTab"/>
+    </apex:tab>   
+    
+    <apex:tab label="Solution LIVE"  name="tab8" switchType="server" id="tab8" style="width:100%; height:130px;font-weight: bold">
+                 <br/>
+                 <!--<apex:form id="imageLoading7">
+                 <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="imageLoading7" immediate="true" />
+                 <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="imageLoading7" immediate="true"/>
+                 <apex:outputPanel rendered="{!flagImage}">
+                        <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+                     </apex:outputPanel>
+                     
+                    </apex:form>-->
+                 <br/>
+                 <apex:include pageName="VFP_Solution_LIVE"/>
+    </apex:tab> 
+         
+         <apex:tab switchType="ajax" label="Governance" name="tab9" id="tab9" style="width:100%; height:130px;font-weight: bold" rendered="{!isGovernanceTabVisible}" oncomplete="callGovData();"> <!--   oncomplete="callGovData();"  -->
+            <apex:form id="govForm">  
+                 <apex:actionFunction name="callGovData" action="{!governanceDataTab}" reRender="govForm" immediate="true" />              
+                 
+                 <!--  <apex:actionFunction name="loadingImageStart" action="{!starting}" reRender="govForm" immediate="true" />
+                 <apex:actionFunction name="loadingImageEnd" action="{!ending}" reRender="govForm" immediate="true"/>
+                 <apex:outputPanel rendered="{!flagImage}">
+                        <center><apex:image url="{!URLFOR($Resource.Loading)}" /></center>
+                     </apex:outputPanel>
+                   Click here to add the <apex:commandLink action="{!governanceDataTab}" value="Governance"/>  Data. -->   
+             </apex:form>  
+         </apex:tab> 
+     
+    </apex:tabPanel>  
+     
+                  
+</apex:page>

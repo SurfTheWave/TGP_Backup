@@ -1,0 +1,2 @@
+<apex:page standardController="Mail_Summary__c" extensions="SObjectNewActionOverrideController" action="{!onLoadPage}">
+</apex:page>

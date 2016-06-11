@@ -1,0 +1,73 @@
+<!--
+Author : Mayank tayal
+Story  : Story-0167/SOL_070  
+Description : Client As Is Operation to upload single file.Can overwrite file.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Shridhar Patankar Story-0167/SOL_070       28/02/2013      Added code to rendered docExist to enable Download link.
+
+-->
+<apex:page standardController="Opportunity_Offering__c" extensions="UploadOfferImageController" sidebar="false" showHeader="false">
+  <script>
+   var url = location.href;
+         var match = url.match(/inline=1/);
+            if (match != null) { 
+            var newUrl = url.replace(/inline=1/, '');
+            window.top.location=newUrl;
+    }
+    </script>
+
+  <apex:pageMessages id="pgM" />
+  
+  <apex:form >
+    <apex:outputPanel id="refresh1" rendered="{!refreshPage}">
+     <apex:inputHidden value="{!fileExten}" id="hiddenValue" /> 
+        </apex:outputPanel>
+  <apex:pageBlock >
+      <apex:pageBlockSection showHeader="false" columns="2" id="block1">
+          <apex:outputLabel value="Insufficient Privileges: New File Cannot be Uploaded" rendered="{!NOT(addButtonRender)}"></apex:outputLabel>
+          <apex:outputLabel value="Upload File: " for="file" rendered="{!addButtonRender}">
+              <apex:inputFile value="{!document.body}" filename="{!document.name}" id="file" onchange="check(this)"/>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;             
+              <apex:commandButton action="{!upload}" value="Upload" onclick="return alertFile();"/>
+             
+         </apex:outputLabel>            
+        <!--<apex:image url="/servlet/servlet.FileDownload?file={!imgid}" height="150" width="150"></apex:image>-->
+        <apex:outputPanel id="linkFile">
+      <!--  <input type = "button" onclick = "window.open('/servlet/servlet.FileDownload?file={!imgid}','Name','scrollbars=yes,width=500,height=500,Menu Bar = yes,Toolbars =yes')" value = "Open File"  disabled = "{!docExist}"/  >-->
+      <!-- <apex:outputLink onclick="return window.open('/servlet/servlet.FileDownload?file={!imgid}','Name','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes');" rendered="{!docExist}"> {!fileName} </apex:outputLink> -->
+      <apex:commandLink onclick="return window.open('/servlet/servlet.FileDownload?file={!imgid}','Name','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes');" rendered="{!docExist}"> {!fileName} </apex:commandLink>
+            <!--<apex:outputLink value="/servlet/servlet.FileDownload?file={!imgid}"  >Download File</apex:outputLink>--> 
+      <!--<apex:commandButton onclick="window.open('/servlet/servlet.FileDownload?file={!imgid}','Name','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes')" value="Open File" rendered="{!docExist}" />-->
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         <apex:commandButton action="{!del}" value="Delete" onclick="return confirm('Are you sure you want to delete?');" rendered="{!delButton}" />
+        </apex:outputPanel>
+          
+       
+      </apex:pageBlockSection>                 
+    </apex:pageBlock>
+  </apex:form>
+  <script>
+        function check(obj_inpf)
+        {
+        var FileNameArr = obj_inpf.value.split("\\");
+        var exten=FileNameArr[2];
+        document.getElementById('{!$Component.hiddenValue}').value = exten;           
+        }
+        function alertFile()
+        {
+            if({!docExist}==true)
+            {
+                var r=confirm("Already file has been uploaded. Do you want to overwrite it?");
+                return r;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    </script>
+
+</apex:page>

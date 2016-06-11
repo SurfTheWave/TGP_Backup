@@ -1,0 +1,12 @@
+<apex:page controller="ExportProcTrackerController_VFC" action="{!exportToCSV}" cache="true" contentType="application/vnd.ms-excel#{!fileName}_{!dealNameVaule}.csv" language="en-US">
+   <apex:repeat value="{!flds}" var="field">{!field}{!coma}</apex:repeat>
+    <apex:repeat value="{!objLst}" var="object">{!newLine}
+        <apex:repeat value="{!flds}" var="field"><apex:outputText rendered="{!NOT((CONTAINS(field,'Date')))}">"{!object[field]}"{!coma}</apex:outputText>
+         <!-- <apex:outputText rendered="{!(CONTAINS(field,'Date'))}" value="{0,date,MM/dd/yyyy}">
+             <apex:param value="{!object[field]}"/>{!coma} -->
+         <apex:outputText rendered="{!(CONTAINS(field,'Date'))}" value="{!object[field]}{!coma}">
+        </apex:outputText>
+        </apex:repeat> 
+             
+    </apex:repeat>  
+ </apex:page>

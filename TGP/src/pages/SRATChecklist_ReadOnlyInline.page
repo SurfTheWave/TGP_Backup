@@ -1,0 +1,620 @@
+<!--
+Author : Mayank Tayal
+Story  :   Story_0094/MOB__019 and Story_0100/MOB_022
+Description : As KT Lead, I should able to initiate & complete SRAT as planned in High level mobilization plan 
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    MOB_029/030/031/032        4 March 2013        Added Log RAID Button and functionality
+
+-->
+<apex:page standardController="SRAT__c" extensions="SRATChecklist_ReadOnlyInlineController" sidebar="true" showHeader="true">
+<style>
+.activeTab {background-color: #236FBD; color:white; 
+         background-image:none}
+      .inactiveTab { background-color: lightgrey; color:black; 
+         background-image:none}
+</style>
+<script>
+    function startRAID(RAIDAccess)
+    {    
+        if(RAIDAccess == 'true')
+        {
+            var urlName="/apex/RAIDLog_Inline?id={!sratId}&moduleName=SRAT";
+            window.open(urlName);
+        }
+        else 
+        { 
+            alert('Insufficient Privilege.'); 
+        }        
+    }
+</script>
+    <apex:form id="formMsg">
+        <apex:pageMessages rendered="{!showMainMsg}"></apex:pageMessages>
+    </apex:form>
+    <apex:form id="form1" rendered="{!showForm}">
+        <apex:pageBlock title="SRAT Checklist">
+        <apex:pageBlockSection columns="2">
+            <apex:outputLabel value="Deal Details" style="font-weight: bold; font-size:10pt; text-decoration : underline;"/>
+            <apex:outputLabel value=""/>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Deal Name"/>
+                <apex:outputLink value="/{!waveVersionRecord.Deal__r.id}" target="_blank">
+                    <apex:outputField value="{!waveVersionRecord.Deal__r.name}" label="Deal Name" style="font-family:arial;color:blue;font-size:15px;"/>
+                </apex:outputLink>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="High Level Mobilization Plan"/>
+                <apex:outputLink value="/{!waveVersionRecord.id}" target="_blank">
+                    <apex:outputField value="{!waveVersionRecord.name}" label="High Level Mobilization Plan" style="font-family:arial;color:blue;font-size:15px;"/>
+                </apex:outputLink>
+            </apex:pageBlockSectionItem>
+            <apex:outputText value="{!sratVersion[0].SRAT_Name__c}" label="SRAT Version"/>                       
+        </apex:pageBlockSection>
+        <apex:pageBlockSection columns="2">
+            <apex:outputLabel value="SRAT Plan Details" style="font-weight: bold; font-size:10pt; text-decoration : underline;"/>
+            <apex:outputLabel value=""/>                     
+            <apex:outputField value="{!sratRecord.Item__c}" label="Item" style="font-family:arial;color:blue;font-size:15px;" />
+
+             <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Location"/>
+                <apex:outputLink value="/{!sratRecord.Deal_Location_lk__r.id}" target="_blank">
+                <apex:outputField value="{!sratRecord.Deal_Location_lk__r.Deal_Home_Location__r.Delivery_Location_Master__r.name}" label="Location" style="font-family:arial;color:blue;font-size:15px;"/>
+                </apex:outputLink>
+            </apex:pageBlockSectionItem> 
+            
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Wave Dependency"/>
+                <apex:outputLink value="/{!sratRecord.Wave_Plan_lk__r.id}" target="_blank">
+                <apex:outputField value="{!sratRecord.Wave_Plan_lk__r.Wave_Label__c}" label="Wave Dependency" style="font-family:arial;color:blue;font-size:15px;"/>      
+                </apex:outputLink>
+            </apex:pageBlockSectionItem>
+            
+          <!--  <apex:outputField value="{!sratRecord.Planned_Date__c}" label="Planned Date" style="font-family:arial;color:blue;font-size:15px;"/>             
+            <apex:outputField value="{!sratRecord.Deal_Location_lk__r.Deployment_Lead_New__c}" label="Location Mobilization Lead Primary" style="font-family:arial;color:blue;font-size:15px;"/>
+            <apex:outputField value="{!sratRecord.Wave_Plan_lk__r.KT_Lead_New__c}" label="Mobilization KT Lead Primary" style="font-family:arial;color:blue;font-size:15px;"/>             
+            <apex:outputField value="{!sratRecord.Deal_Location_lk__r.Location_Mobilization_Lead_Secondary_New__c}" label="Location Mobilization Lead Secondary" style="font-family:arial;color:blue;font-size:15px;"/>
+            <apex:outputField value="{!sratRecord.Wave_Plan_lk__r.Mobilization_KT_Lead_Secondary_New__c}" label="Mobilization KT Lead Secondary" style="font-family:arial;color:blue;font-size:15px;"/>             -->
+             <apex:outputField value="{!sratRecord.Planned_Date__c}" label="Planned Date" style="font-family:arial;color:blue;font-size:15px;"/>
+            <apex:outputField value="{!sratRecord.Deal_Location_lk__r.Deployment_Lead_New__c}" label="Location Mobilization Lead Primary" style="font-family:arial;color:blue;font-size:15px;"/>
+            <apex:outputField value="{!sratRecord.Wave_Plan_lk__r.KT_Lead_New__c}" label="KT Lead Primary" style="font-family:arial;color:blue;font-size:15px;"/>
+            <apex:outputField value="{!sratRecord.Deal_Location_lk__r.Location_Mobilization_Lead_Secondary_New__c}" label="Location Mobilization Lead Secondary 1" style="font-family:arial;color:blue;font-size:15px;"/>
+            <apex:outputField value="{!sratRecord.Deal_Location_lk__r.Location_Mobilization_Lead_Secondary_2__c}" label="Location Mobilization Lead Secondary 2" style="font-family:arial;color:blue;font-size:15px;"/>
+            <apex:outputField value="{!sratRecord.Wave_Plan_lk__r.Mobilization_KT_Lead_Secondary_New__c}" label="KT Lead Secondary 1" style="font-family:arial;color:blue;font-size:15px;"/>             
+            <apex:outputField value="{!sratRecord.Wave_Plan_lk__r.Mobilization_KT_Lead_Secondary_2__c}" label="KT Lead Secondary 2" style="font-family:arial;color:blue;font-size:15px;"/>
+        </apex:pageBlockSection>
+        <apex:pageBlockButtons >
+            <apex:commandButton value="Log RAID" action="{!callisRAIDAccessible}" oncomplete="startRAID('{!isRAIDAccess}');"/>
+        </apex:pageBlockButtons>
+            <apex:tabPanel switchType="client" selectedTab="tab1" id="theTabPanel" inactiveTabClass="inactiveTab">
+                <apex:tab label="Manage Mobilization Program" name="tab1" id="tabOne">
+                    <apex:pageMessages rendered="{!showMsg1}"></apex:pageMessages>  
+                    <apex:pageBlock >
+                        <apex:pageBlockSection columns="1" title="Manage Mobilization Program">
+                            <apex:repeat value="{!Questionnaire}" var="ques">
+                                <apex:pageBlockTable value="{!ques.secQuestion}" var="secQues">
+                                    <!-- <apex:column headerValue="Title" style="font-family:arial;color:blue;">
+                                        <apex:outputField value="{!secQues.Title__c}"/>
+                                    </apex:column> -->
+                                    <apex:column headerValue="Question Description" width="930">
+                                        <apex:outputField value="{!secQues.Question_Description__c}"/>
+                                    </apex:column>
+                                    <!-- <apex:column headerValue="Category" >
+                                        <apex:outputField value="{!secQues.Category__c}"/>
+                                    </apex:column> -->
+                                    <apex:column headerValue="Overall RAG Status" >
+                                        <apex:outputText value="{!secQues.Overall_RAG_Status__c}" style="background-color:{!ques.RAGColor};"/>
+                                        <br/>
+                                        <apex:outputText value="{!secQues.Default_RAG_Status__c}" style="font-family:arial;background-color:{!ques.color};font-size:15px;"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Comments" width="110">
+                                        <apex:outputField value="{!secQues.Comments__c}"/>
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                                <apex:repeat value="{!ques.subSec}" var="subSec">
+                                <apex:pageBlockTable value="{!subSec.subSection}" var="subSec1">
+                                    <apex:column headerValue="Section Name" style="font-family:arial;color:white;font-size:20px;background-color:#C0C0C0;">
+                                        <apex:outputField value="{!subSec1.SRAT_Sub_Section_Name__c}"/>
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                                
+                                <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                    <apex:column headerValue="Title" width="300" style="font-family:arial;color:blue;">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Title__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Question Description" width="500">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Category" >
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Category__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Previous SRAT Value, RAG Status , Commnets" width="300" style="font-family:arial;color:blue;"  rendered="{!isPreviousSRATExist}">
+                                        <apex:repeat value="{!subSecQues.prvSubSec}" var="preSec">
+                                            <apex:panelGrid columns="3" border="1" cellpadding="5" cellspacing="5" style="width:100%">
+                                               <apex:outputText value="{!preSec.item}" style="width:33%;text-align: center"/> 
+                                               <apex:outputText value="{!preSec.preSubSecQuestion.RAG_Status__c}" rendered="{!if(preSec.isApproved,true,false)}" style="width:33%;background-color:{!preSec.RAGStatusColor};text-align: center"/>
+                                               <apex:outputText value="Not Applicable" rendered="{!if(preSec.isApproved,false,true)}" style="width:33%;text-align: center"/>
+                                               <apex:outputText value="{!preSec.preSubSecQuestion.Comments__c}" rendered="{!preSec.isApproved}" style="width:33%;text-align: center"/>
+                                               <apex:outputText value=" " rendered="{!if(preSec.isApproved,false,true)}" style="width:33%;text-align: center"/>
+                                            </apex:panelGrid>
+                                        </apex:repeat>
+                                    </apex:column> 
+                                    <apex:column headerValue="RAG Status" >
+                                        <apex:outputText value="{!subSecQues.subSecQuestion.RAG_Status__c}" style="background-color:{!subSecQues.RAGStatusColor};"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Comments">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Comments__c}"/>
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                               </apex:repeat>
+                            </apex:repeat>                        
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>                                  
+                </apex:tab>
+                 
+                <apex:tab label="BPO Mobilization Controls" name="tabNew" id="tabNeww">
+                <apex:pageMessages rendered="{!showMsgNew}"></apex:pageMessages>
+                <apex:pageBlock >   
+                <apex:pageBlockSection columns="1" title="BPO Mobilization Controls">
+                <apex:repeat value="{!BPOMobCtrlQuestionnaire}" var="ques">
+                               <!--  <apex:pageBlockTable value="{!ques.secQuestion}" var="secQues">
+                                    <apex:column headerValue="Question Description" width="885">
+                                        <apex:outputField value="{!secQues.Question_Description__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Overall RAG Status" >
+                                        <apex:outputText value="{!secQues.Overall_RAG_Status__c}" style="background-color:{!ques.RAGColor};"/>
+                                        <br/>
+                                        <apex:outputText value="{!secQues.Default_RAG_Status__c}" style="font-family:arial;background-color:{!ques.color};font-size:15px;"/>
+                                    </apex:column>                                    
+                                    <apex:column headerValue="Comments" width="140">
+                                        <apex:outputField value="{!secQues.Comments__c}"/>
+                                    </apex:column>
+                                </apex:pageBlockTable>  -->
+                                <apex:repeat value="{!ques.subSec}" var="subSec">
+                                <apex:pageBlockTable value="{!subSec.subSection}" var="subSec1">
+                                    <apex:column headerValue="Section Name" style="font-family:arial;color:white;font-size:20px;background-color:#C0C0C0;">
+                                        <apex:outputField value="{!subSec1.SRAT_Sub_Section_Name__c}"/>
+                                    </apex:column>
+                                </apex:pageBlockTable>    
+                                
+                                <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                    <apex:column headerValue="Title" width="300" style="font-family:arial;color:blue;">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Title__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Question Description" width="500">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                    </apex:column>
+                                    
+                                  <apex:column headerValue="Measurement" width="400">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Measurement__c}"/>
+                                    </apex:column>  
+                                    <apex:column headerValue="Handover to Service Delivery" width="400">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Handover_to_Service_Delivery__c}"/>
+                                    </apex:column>                                                                
+                                    
+                                    <apex:column headerValue="Previous SRAT Value, RAG Status , Comments" width="300" style="font-family:arial;color:blue;" rendered="{!isPreviousSRATExist}" >
+                                        <apex:repeat value="{!subSecQues.prvSubSec}" var="preSec">
+                                            <apex:panelGrid columns="3" border="1" cellpadding="5" cellspacing="5" style="width:100%">
+                                               <apex:outputText value="{!preSec.item}" style="width:33%;"/> 
+                                               <apex:outputText value="{!preSec.preSubSecQuestion.RAG_Status__c}" rendered="{!if(preSec.isApproved,true,false)}" style="width:33%;background-color:{!preSec.RAGStatusColor};"/>
+                                               <apex:outputText value="Not Applicable" rendered="{!if(preSec.isApproved,false,true)}" style="width:33%;"/>
+                                               <apex:outputText value="{!preSec.preSubSecQuestion.Comments__c}" rendered="{!preSec.isApproved}" style="width:33%;"/>
+                                               <apex:outputText value=" " rendered="{!if(preSec.isApproved,false,true)}" style="width:33%;"/>
+                                            </apex:panelGrid>
+                                        </apex:repeat>
+                                    </apex:column> 
+                                    <!--
+                                    <apex:repeat value="{!subSecQues.prvSubSec}" var="preSec">
+                                        
+                                       <apex:column headerValue="RAG Status">
+
+                                           <apex:outputText value="{!preSec.preSubSecQuestion.RAG_Status__c}" rendered="{!if(preSec.isApproved,true,false)}"/>
+                                           <apex:outputText value="NA" rendered="{!if(preSec.isApproved,false,true)}"/>
+                                       </apex:column>  
+                                       <apex:column headerValue="Comments">
+                                           <apex:outputText value="{!preSec.preSubSecQuestion.Comments__c}" rendered="{!preSec.isApproved}"/>
+                                           <apex:outputText value="NA" rendered="{!if(preSec.isApproved,false,true)}"/>
+                                       </apex:column>  
+                                   </apex:repeat> -->
+                                    <apex:column headerValue="RAG Status" >
+                                        <apex:outputText value="{!subSecQues.subSecQuestion.RAG_Status__c}" style="background-color:{!subSecQues.RAGStatusColor};"/>
+                                    </apex:column> 
+                                    <!--  Mob  R1.5 15
+                                    <apex:column headerValue="Previous Rag Status" >
+                                        <apex:outputText value="{!subSecQues.recentlySubmittedSubSecQuestion.RAG_Status__c}" style="font-family:arial;color:{!subSecQues.PreviousRagStatusColor};font-size:12px;" />
+                                    </apex:column>
+                                    -->
+                                   <apex:column headerValue="Comments">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Comments__c}"/>
+                                    </apex:column>
+                                    
+                               </apex:pageBlockTable>
+                               </apex:repeat>
+                            </apex:repeat>                        
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>                                  
+                </apex:tab>                    
+                
+                <apex:tab label="OM Readiness Summary" name="tab2" id="tabTwo" rendered="{!isOmReadinessTabVisible}">
+                    <apex:pageMessages rendered="{!showMsg2}"></apex:pageMessages>  
+                    <apex:pageBlock >
+                        <apex:pageBlockSection columns="1" title="OM Readiness Summary">  
+                            <apex:repeat value="{!OMReadinessSummaryQuestionnaire}" var="ques">
+                                <apex:pageBlockTable value="{!ques.secQuestion}" var="secQues">
+                                    <!-- <apex:column headerValue="Title" style="font-family:arial;color:blue;">
+                                        <apex:outputField value="{!secQues.Title__c}"/>
+                                    </apex:column> -->
+                                    <apex:column headerValue="Question Description" width="930">
+                                        <apex:outputField value="{!secQues.Question_Description__c}"/>
+                                    </apex:column>
+                                    <!-- <apex:column headerValue="Category" >
+                                        <apex:outputField value="{!secQues.Category__c}"/>
+                                    </apex:column> -->
+                                    <apex:column headerValue="Overall RAG Status" >
+                                        <apex:outputText value="{!secQues.Overall_RAG_Status__c}" style="background-color:{!ques.RAGColor};"/>
+                                        <br/>
+                                        <apex:outputText value="{!secQues.Default_RAG_Status__c}" style="font-family:arial;background-color:{!ques.color};font-size:15px;"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Comments" width="110">
+                                        <apex:outputField value="{!secQues.Comments__c}"/>
+                                    </apex:column>
+                                </apex:pageBlockTable>                           
+                                <apex:repeat value="{!BPOMobQuestionnaire}" var="subSec">
+                                <apex:pageBlockTable value="{!subSec.subSection}" var="subSec1">
+                                    <apex:column headerValue="Section Name" style="font-family:arial;color:white;font-size:20px;background-color:#C0C0C0;">
+                                        <apex:outputField value="{!subSec1.SRAT_Sub_Section_Name__c}"/>
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                                
+                                <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                    <apex:column headerValue="Reference #" style="font-family:arial;color:blue;">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Reference__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Title" width="250" style="font-family:arial;color:blue;">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Title__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Question Description" width="400">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Measurement" width="300">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Measurement__c}"/>
+                                    </apex:column>
+                                    <!-- <apex:column headerValue="Category" >
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Category__c}"/>
+                                    </apex:column> -->
+                                     <apex:column headerValue="Previous SRAT Value, RAG Status , Commnets" width="300" style="font-family:arial;color:blue;" rendered="{!isPreviousSRATExist}" >
+                                        <apex:repeat value="{!subSecQues.prvSubSec}" var="preSec">
+                                            <apex:panelGrid columns="3" border="1" cellpadding="5" cellspacing="5" style="width:100%">
+                                               <apex:outputText value="{!preSec.item}" style="width:33%;text-align: center"/> 
+                                               <apex:outputText value="{!preSec.preSubSecQuestion.RAG_Status__c}" rendered="{!if(preSec.isApproved,true,false)}" style="width:33%;background-color:{!preSec.RAGStatusColor};text-align: center"/>
+                                               <apex:outputText value="Not Applicable" rendered="{!if(preSec.isApproved,false,true)}" style="width:33%;text-align: center"/>
+                                               <apex:outputText value="{!preSec.preSubSecQuestion.Comments__c}" rendered="{!preSec.isApproved}" style="width:33%;text-align: center"/>
+                                               <apex:outputText value=" " rendered="{!if(preSec.isApproved,false,true)}" style="width:33%;text-align: center"/>
+                                            </apex:panelGrid>
+                                        </apex:repeat>
+                                    </apex:column> 
+                                    <apex:column headerValue="RAG Status">
+                                        <apex:outputText value="{!subSecQues.subSecQuestion.RAG_Status__c}" style="background-color:{!subSecQues.RAGStatusColor};"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Comments">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Comments__c}" style="width:120px;height:100px"/>
+                                    </apex:column>                                    
+                                </apex:pageBlockTable>
+                               </apex:repeat>
+                            </apex:repeat>                           
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </apex:tab>
+                    
+                <apex:tab label="Establish Business Ops" name="tab3" id="tabThree">
+                    <apex:pageMessages rendered="{!showMsg3}"></apex:pageMessages>  
+                    <apex:pageBlock >
+                        <apex:pageBlockSection columns="1" title="Establish Business Operations">
+                            <apex:repeat value="{!BusOpsQuestionnaire}" var="ques">
+                                <apex:pageBlockTable value="{!ques.secQuestion}" var="secQues">
+                                    <apex:column headerValue="Title" style="font-family:arial;color:blue;" width="300">
+                                        <apex:outputField value="{!secQues.Title__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Question Description" width="620">
+                                        <apex:outputField value="{!secQues.Question_Description__c}"/>
+                                    </apex:column>
+                                    <!-- <apex:column headerValue="Category" >
+                                        <apex:outputField value="{!secQues.Category__c}"/>
+                                    </apex:column> -->
+                                    <apex:column headerValue="Overall RAG Status">
+                                        <apex:outputText value="{!secQues.Overall_RAG_Status__c}" style="background-color:{!ques.RAGColor};"/>
+                                        <br/>
+                                        <apex:outputText value="{!secQues.Default_RAG_Status__c}" style="font-family:arial;background-color:{!ques.color};font-size:15px;"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Comments" width="110">
+                                        <apex:outputField value="{!secQues.Comments__c}"/>
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                                <apex:repeat value="{!ques.subSec}" var="subSec">
+                                    <apex:pageBlockTable value="{!subSec.subSection}" var="subSec1">
+                                        <apex:column headerValue="Section Name" style="font-family:arial;color:white;font-size:20px;background-color:#C0C0C0;">
+                                            <apex:outputField value="{!subSec1.SRAT_Sub_Section_Name__c}"/>
+                                        </apex:column>
+                                    </apex:pageBlockTable>                                                                    
+                                        <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                            <apex:column headerValue="Title" width="300" style="font-family:arial;color:blue;">
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Title__c}"/>
+                                            </apex:column>
+                                            <apex:column headerValue="Question Description" width="500">
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                            </apex:column>
+                                            <apex:column headerValue="Category" >
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Category__c}"/>
+                                            </apex:column>
+                                             <apex:column headerValue="Previous SRAT Value, RAG Status , Commnets" width="300" style="font-family:arial;color:blue;"  rendered="{!isPreviousSRATExist}">
+                                                <apex:repeat value="{!subSecQues.prvSubSec}" var="preSec">
+                                                    <apex:panelGrid columns="3" border="1" cellpadding="5" cellspacing="5" style="width:100%">
+                                                       <apex:outputText value="{!preSec.item}" style="width:33%;text-align: center"/> 
+                                                       <apex:outputText value="{!preSec.preSubSecQuestion.RAG_Status__c}" rendered="{!if(preSec.isApproved,true,false)}" style="width:33%;background-color:{!preSec.RAGStatusColor};text-align: center"/>
+                                                       <apex:outputText value="Not Applicable" rendered="{!if(preSec.isApproved,false,true)}" style="width:33%;text-align: center"/>
+                                                       <apex:outputText value="{!preSec.preSubSecQuestion.Comments__c}" rendered="{!preSec.isApproved}" style="width:33%;text-align: center"/>
+                                                       <apex:outputText value=" " rendered="{!if(preSec.isApproved,false,true)}" style="width:33%;text-align: center"/>
+                                                    </apex:panelGrid>
+                                                </apex:repeat>
+                                            </apex:column> 
+                                            <apex:column headerValue="RAG Status">
+                                                <apex:outputText value="{!subSecQues.subSecQuestion.RAG_Status__c}" style="background-color:{!subSecQues.RAGStatusColor};"/>
+                                            </apex:column>
+                                            <apex:column headerValue="Comments">
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Comments__c}"/>
+                                            </apex:column>
+                                        </apex:pageBlockTable>                               
+                               </apex:repeat>
+                            </apex:repeat>                        
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </apex:tab>
+                
+                <apex:tab label="Implement Del Cap" name="tab4" id="tabFour">
+                    <apex:pageMessages rendered="{!showMsg4}"></apex:pageMessages>  
+                    <apex:pageBlock >
+                        <apex:pageBlockSection columns="1" title="Implement Delivery Capability">
+                            <apex:repeat value="{!DelCapQuestionnaire}" var="ques">
+                                <apex:pageBlockTable value="{!ques.secQuestion}" var="secQues">
+                                    <!-- <apex:column headerValue="Title" style="font-family:arial;color:blue;">
+                                        <apex:outputField value="{!secQues.Title__c}"/>
+                                    </apex:column> -->
+                                    <apex:column headerValue="Question Description" width="920">
+                                        <apex:outputField value="{!secQues.Question_Description__c}"/>
+                                    </apex:column>
+                                    <!-- <apex:column headerValue="Category" >
+                                        <apex:outputField value="{!secQues.Category__c}"/>
+                                    </apex:column> -->
+                                    <apex:column headerValue="Overall RAG Status">
+                                        <apex:outputText value="{!secQues.Overall_RAG_Status__c}" style="background-color:{!ques.RAGColor};"/>
+                                        <br/>
+                                        <apex:outputText value="{!secQues.Default_RAG_Status__c}" style="font-family:arial;background-color:{!ques.color};font-size:15px;"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Comments" width="115">
+                                        <apex:outputField value="{!secQues.Comments__c}"/>
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                                <apex:repeat value="{!ques.subSec}" var="subSec">
+                                    <apex:pageBlockTable value="{!subSec.subSection}" var="subSec1">
+                                        <apex:column headerValue="Section Name" style="font-family:arial;color:white;font-size:20px;background-color:#C0C0C0;">
+                                            <apex:outputField value="{!subSec1.SRAT_Sub_Section_Name__c}"/>
+                                        </apex:column>
+                                    </apex:pageBlockTable>                                                                    
+                                        <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                            <apex:column headerValue="Title" width="300" style="font-family:arial;color:blue;">
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Title__c}"/>
+                                            </apex:column>
+                                            <apex:column headerValue="Question Description" width="500">
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                            </apex:column>
+                                            <apex:column headerValue="Category" >
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Category__c}"/>
+                                            </apex:column>
+                                             <apex:column headerValue="Previous SRAT Value, RAG Status , Commnets" width="300" style="font-family:arial;color:blue;" rendered="{!isPreviousSRATExist}">
+                                                <apex:repeat value="{!subSecQues.prvSubSec}" var="preSec">
+                                                    <apex:panelGrid columns="3" border="1" cellpadding="5" cellspacing="5" style="width:100%">
+                                                       <apex:outputText value="{!preSec.item}" style="width:33%;text-align: center"/> 
+                                                       <apex:outputText value="{!preSec.preSubSecQuestion.RAG_Status__c}" rendered="{!if(preSec.isApproved,true,false)}" style="width:33%;background-color:{!preSec.RAGStatusColor};text-align: center"/>
+                                                       <apex:outputText value="Not Applicable" rendered="{!if(preSec.isApproved,false,true)}" style="width:33%;text-align: center"/>
+                                                       <apex:outputText value="{!preSec.preSubSecQuestion.Comments__c}" rendered="{!preSec.isApproved}" style="width:33%;text-align: center"/>
+                                                       <apex:outputText value=" " rendered="{!if(preSec.isApproved,false,true)}" style="width:33%;text-align: center"/>
+                                                    </apex:panelGrid>
+                                                </apex:repeat>
+                                            </apex:column> 
+                                            <apex:column headerValue="RAG Status">
+                                                <apex:outputText value="{!subSecQues.subSecQuestion.RAG_Status__c}" style="background-color:{!subSecQues.RAGStatusColor};"/>
+                                            </apex:column>
+                                            <apex:column headerValue="Comments">
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Comments__c}"/>
+                                            </apex:column>
+                                        </apex:pageBlockTable>                               
+                               </apex:repeat>
+                            </apex:repeat>                        
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </apex:tab>
+                <apex:tab label="Journey Management" name="tab5" id="tabFive">
+                    <apex:pageMessages rendered="{!showMsg5}"></apex:pageMessages>  
+                    <apex:pageBlock >
+                        <apex:pageBlockSection columns="1" title="Journey Management">
+                            <apex:repeat value="{!ClientChgQuestionnaire}" var="ques">
+                                <apex:pageBlockTable value="{!ques.secQuestion}" var="secQues">
+                                    <apex:column headerValue="Title" style="font-family:arial;color:blue;" width="300">
+                                        <apex:outputField value="{!secQues.Title__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Question Description" width="620">
+                                        <apex:outputField value="{!secQues.Question_Description__c}"/>
+                                    </apex:column>
+                                    <!-- <apex:column headerValue="Category" >
+                                        <apex:outputField value="{!secQues.Category__c}"/>
+                                    </apex:column> -->
+                                    <apex:column headerValue="Overall RAG Status">
+                                        <apex:outputText value="{!secQues.Overall_RAG_Status__c}" style="background-color:{!ques.RAGColor};"/>
+                                        <br/>
+                                        <apex:outputText value="{!secQues.Default_RAG_Status__c}" style="font-family:arial;background-color:{!ques.color};font-size:15px;"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Comments" width="110">
+                                        <apex:outputField value="{!secQues.Comments__c}"/>
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                                <apex:repeat value="{!ques.subSec}" var="subSec">
+                                    <apex:pageBlockTable value="{!subSec.subSection}" var="subSec1">
+                                        <apex:column headerValue="Section Name" style="font-family:arial;color:white;font-size:20px;background-color:#C0C0C0;">
+                                            <apex:outputField value="{!subSec1.SRAT_Sub_Section_Name__c}"/>
+                                        </apex:column>
+                                    </apex:pageBlockTable>                                                                    
+                                        <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                            <apex:column headerValue="Title" width="300" style="font-family:arial;color:blue;">
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Title__c}"/>
+                                            </apex:column>
+                                            <apex:column headerValue="Question Description" width="500">
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                            </apex:column>
+                                            <apex:column headerValue="Category" >
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Category__c}"/>
+                                            </apex:column>
+                                             <apex:column headerValue="Previous SRAT Value, RAG Status , Commnets" width="300" style="font-family:arial;color:blue;"  rendered="{!isPreviousSRATExist}">
+                                                <apex:repeat value="{!subSecQues.prvSubSec}" var="preSec">
+                                                    <apex:panelGrid columns="3" border="1" cellpadding="5" cellspacing="5" style="width:100%">
+                                                       <apex:outputText value="{!preSec.item}" style="width:33%;text-align: center"/> 
+                                                       <apex:outputText value="{!preSec.preSubSecQuestion.RAG_Status__c}" rendered="{!if(preSec.isApproved,true,false)}" style="width:33%;background-color:{!preSec.RAGStatusColor};text-align: center"/>
+                                                       <apex:outputText value="Not Applicable" rendered="{!if(preSec.isApproved,false,true)}" style="width:33%;text-align: center"/>
+                                                       <apex:outputText value="{!preSec.preSubSecQuestion.Comments__c}" rendered="{!preSec.isApproved}" style="width:33%;text-align: center"/>
+                                                       <apex:outputText value=" " rendered="{!if(preSec.isApproved,false,true)}" style="width:33%;text-align: center"/>
+                                                    </apex:panelGrid>
+                                                </apex:repeat>
+                                            </apex:column> 
+                                            <apex:column headerValue="RAG Status">
+                                                <apex:outputText value="{!subSecQues.subSecQuestion.RAG_Status__c}" style="background-color:{!subSecQues.RAGStatusColor};"/>
+                                            </apex:column>
+                                            <apex:column headerValue="Comments">
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Comments__c}"/>
+                                            </apex:column>
+                                        </apex:pageBlockTable>                               
+                               </apex:repeat>
+                            </apex:repeat>                        
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </apex:tab>
+                
+                <apex:tab label="Factory Engagement Specific" name="tab6" id="tabSix">
+                    <apex:pageMessages rendered="{!showMsg6}"></apex:pageMessages>              
+                    <apex:pageBlock >
+                        <apex:pageBlockSection columns="1" title="Factory Engagement Specific" collapsible="false">                        
+                            <apex:repeat value="{!FacEngSpecTabQues}" var="ques">
+                                <apex:pageBlockTable value="{!ques.secQuestion}" var="secQues">
+                                    <apex:column headerValue="Title" style="font-family:arial;color:blue;">
+                                        <apex:outputField value="{!secQues.Title__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Question Description" width="880">
+                                        <apex:outputField value="{!secQues.Question_Description__c}"/>
+                                    </apex:column>
+                                    <!-- <apex:column headerValue="Category" >
+                                        <apex:outputField value="{!secQues.Category__c}"/>
+                                    </apex:column> -->
+                                    <apex:column headerValue="Overall RAG Status">
+                                        <apex:outputText value="{!secQues.Overall_RAG_Status__c}" style="background-color:{!ques.RAGColor};"/>
+                                        <br/>
+                                        <apex:outputText value="{!secQues.Default_RAG_Status__c}" style="font-family:arial;background-color:{!ques.color};font-size:15px;"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Comments" width="140">
+                                        <apex:outputField value="{!secQues.Comments__c}"/>
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                                <apex:repeat value="{!ques.subSec}" var="subSec">
+                                    <apex:pageBlockTable value="{!subSec.subSection}" var="subSec1">
+                                        <apex:column headerValue="Section Name" style="font-family:arial;color:white;font-size:20px;background-color:#C0C0C0;">
+                                            <apex:outputField value="{!subSec1.SRAT_Sub_Section_Name__c}"/>
+                                        </apex:column>
+                                    </apex:pageBlockTable>                                                                    
+                                        <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                            <apex:column headerValue="Question No" width="100" style="font-family:arial;color:blue;">
+                                                <apex:outputText value="{0, Number, #0.00}">
+                                                    <apex:param value="{!subSecQues.questionNo}" />
+                                                </apex:outputText>
+                                                <!-- <apex:outputText value="{!subSecQues.questionNo}"/> -->
+                                            </apex:column>
+                                            <apex:column headerValue="Title" width="300" style="font-family:arial;color:blue;">
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Title__c}"/>
+                                            </apex:column>
+                                            <apex:column headerValue="Question Description" width="500">
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                            </apex:column>
+                                            <apex:column headerValue="Category" >
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Category__c}"/>
+                                            </apex:column>
+                                            
+                                            <apex:column headerValue="RAG Status">
+                                                <apex:outputText value="{!subSecQues.subSecQuestion.RAG_Status__c}" style="background-color:{!subSecQues.RAGStatusColor};"/>
+                                            </apex:column>
+                                            <apex:column headerValue="Comments">
+                                                <apex:outputField value="{!subSecQues.subSecQuestion.Comments__c}"/>
+                                            </apex:column>
+                                        </apex:pageBlockTable>                               
+                               </apex:repeat>
+                            </apex:repeat>                        
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </apex:tab>
+                
+                <apex:tab label="Factory Specific Technology" name="tab7" id="tabSeven">                     
+                    <apex:pageBlock id="facblock2">                                    
+                        <apex:pageBlockSection title="Service Delivery Application Details" columns="1">
+                            <apex:pageBlockTable value="{!ServiceDelApp}" var="profDetail" styleClass="inlineEditTbl">                
+                                <apex:column headerValue="Application Name">
+                                    <apex:outputField value="{!profDetail.facSpecTech.Application_Name__c}"/>
+                                </apex:column>
+                                <apex:column headerValue="Application Description">
+                                       <apex:outputField value="{!profDetail.facSpecTech.Application_Description__c}" />
+                                </apex:column>
+                                <apex:column headerValue="No of Users">
+                                       <apex:outputField value="{!profDetail.facSpecTech.No_of_Users__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Volume of Transactions">
+                                       <apex:outputField value="{!profDetail.facSpecTech.Volume_of_Transactions__c}" />
+                                </apex:column>
+                                <apex:column headerValue="RAG Status" style="background-color:{!profDetail.facSpecColor};">
+                                       <apex:outputField value="{!profDetail.facSpecTech.RAG_Status__c}" />
+                                </apex:column>                                
+                                <!-- <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/> -->
+                            </apex:pageBlockTable>
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>                    
+                    
+                    <apex:pageBlock id="facblock4">                                    
+                        <apex:pageBlockSection title="Service Management Application Details" columns="1">
+                            <apex:pageBlockTable value="{!ServiceManageApp}" var="profDetail" styleClass="inlineEditTbl">                
+                                <apex:column headerValue="Application Name">
+                                    <apex:outputField value="{!profDetail.facSpecTech.Application_Name__c}"/>
+                                </apex:column>
+                                <apex:column headerValue="Application Description">
+                                       <apex:outputField value="{!profDetail.facSpecTech.Application_Description__c}" />
+                                </apex:column>
+                                <apex:column headerValue="No of Users">
+                                       <apex:outputField value="{!profDetail.facSpecTech.No_of_Users__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Volume of Transactions">
+                                       <apex:outputField value="{!profDetail.facSpecTech.Volume_of_Transactions__c}" />
+                                </apex:column>
+                                <apex:column headerValue="RAG Status" style="background-color:{!profDetail.facSpecColor};">
+                                       <apex:outputField value="{!profDetail.facSpecTech.RAG_Status__c}" />
+                                </apex:column>                                
+                                <!-- <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/> -->
+                            </apex:pageBlockTable>
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </apex:tab>
+            </apex:tabPanel>
+        </apex:pageBlock>
+      </apex:form>  
+        <!-- This section is displayed if Deployment Lead has submitted RAG Status -->            
+        <apex:pageBlock rendered="{!showNotesBlock}">
+           <apex:pageBlockSection columns="1" >
+              <apex:pageBlockSectionItem >
+                  <apex:relatedList subject="{!SRAT__c }" list="NotesAndAttachments" />
+              </apex:pageBlockSectionItem>
+           </apex:pageBlockSection>
+        </apex:pageBlock>
+   
+        
+</apex:page>

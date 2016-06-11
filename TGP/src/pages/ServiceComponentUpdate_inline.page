@@ -1,0 +1,214 @@
+<!--
+Author : Shridhar Patankar
+Story  : Story-0169/SOL_072  
+Description : Under Opp Offering detail page to add Services.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    Sol_148                    5/15/2013        Sol UAM-Release 2
+
+-->
+<apex:page standardController="Opportunity_Offering__c" title="addnewRecord"  extensions="Solution_tabController" id="pg">
+
+
+<style>
+.reqSelect {
+}
+
+table.inlineEditTbl td{
+    height: 26px !important; 
+}
+table.inlineEditTbl input[type="text"] {
+    width: 80px;
+}
+body {
+    font-size: 75% important;
+}
+table.inlineEditTbl2 td{
+    height: 50px !important; 
+}
+
+</style>
+
+<script>
+
+  function OpenDeliveryLocationPopup(serviceId,serviceName,offId)
+    {
+        var w = 500;
+        var h = 400;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/3)-(h/2));
+        var url = '/apex/Delivery_Location_MultiSelect_PopUp?serviceName='+serviceName+'&serviceId='+serviceId+'&offId='+offId;
+        var myWindow = window.open(url,'ServiceComponentUpdate_inline','scrollbars=no,width=750,height=500, resizable=no, chrome=yes, minimizable=no, z-index: 9999,location=no, left=' + left + ',top='+ top );
+        myWindow.focus();
+        return false;        
+    }        
+ 
+</script>
+
+<!--<apex:pageMessages id="pageMsg1"/>
+  <apex:outputPanel id="refresh" rendered="true">
+ <apex:outputPanel id="refresh1" rendered="{!refreshPage}">
+  <script>
+   window.top.location='/{!Opportunity_Offering__c.id}';
+  </script>
+ </apex:outputPanel>
+</apex:outputPanel> -->
+ <apex:pageMessages id="Pagemsg12"/>   
+ 
+    <apex:form id="form3">
+        <apex:pageBlock >
+            <apex:pageBlockButtons rendered="{!saveEditButtonRender}" location="top">
+                
+                 <apex:actionStatus id="save_Btn">                 
+                            <apex:facet name="stop">
+                            <apex:commandButton value="Save" action="{!saveAccProfileDetailsForServiceComponent}" reRender="form3,Pagemsg12" id="saveButton" status="save_Btn"  />
+<!--                                <apex:commandButton action="{!saveNow}" value="Save" id="saveButton" reRender="formMsg,frm,form3"  />-->
+                                 
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                  <apex:commandButton value="Saving..." action="{!saveAccProfileDetailsForServiceComponent}" reRender="form3,Pagemsg12" id="saveButton1" disabled="true" status="save_Btn"  />
+                                </apex:outputPanel>
+                             </apex:facet> 
+              </apex:actionStatus> 
+                <apex:actionSupport event="onclick" rerender="table1,counter,table2" />
+                <apex:commandButton action="{!cancelNowForServiceComponent}" id="cancelButton" value="Cancel" />
+                <apex:actionSupport event="onclick" rerender="table1,counter,table2" />
+            </apex:pageBlockButtons>            
+            <apex:pageBlockSection title="Services Details" columns="1" collapsible="false" rendered="{!if(readOnlyMode,false,true)}" >
+                <apex:outputPanel id="table1">
+                    <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                        <apex:pageBlockTable value="{!listProfileDetailsActual}" var="profDetail" styleClass="inlineEditTbl" id="NewPage">
+                            <apex:column headerValue="Services">
+                                <apex:outputField value="{!profDetail.Name}"/>
+                          <!--<apex:selectList size="1" value="{!profDetail.Service_Text_Name__c}">
+                                <apex:selectOptions value="{!Services}"></apex:selectOptions>
+                            </apex:selectList>-->
+                            </apex:column>
+                            <apex:column headerValue="Service Component">
+                                <apex:outputField value="{!profDetail.Service_Component__c}"/>                        
+                            </apex:column>
+                            <apex:column headerValue="Status">
+                                <apex:inputField value="{!profDetail.Status__c}">                            
+                                </apex:inputField>
+                            </apex:column>                        
+                            <apex:column rendered="{!deleteButtonRender}" >                
+                                <apex:commandLink action="{!deleteFileForServiceComponent}" value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" >
+                                    <apex:param name="fileIdDelete" value="{!profDetail.id}" assignTo="{!fileIdDelete}"/>
+                                </apex:commandLink>
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+        <!--Read Only Mode Detail List-->
+            <apex:pageBlockSection title="Services Details" columns="1" collapsible="false" rendered="{!readOnlyMode}">
+                <apex:outputPanel id="tableRead">
+                    <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                        <apex:pageBlockTable value="{!listProfileDetailsActual}" var="profDetail" styleClass="inlineEditTbl" id="NewPage">
+                            <apex:column headerValue="Services">
+                                <apex:outputField value="{!profDetail.Name}"/>                          
+                            </apex:column>
+                            <apex:column headerValue="Service Component">
+                                <apex:outputField value="{!profDetail.Service_Component__c}"/>                        
+                            </apex:column>
+                            <apex:column headerValue="Status">
+                                <apex:outputField value="{!profDetail.Status__c}">                            
+                                </apex:outputField>
+                            </apex:column>                        
+                            <apex:column rendered="{!deleteButtonRender}" >                
+                                <apex:commandLink action="{!deleteFileForServiceComponent}" value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" >
+                                    <apex:param name="fileIdDelete" value="{!profDetail.id}" assignTo="{!fileIdDelete}"/>
+                                </apex:commandLink>
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form> 
+
+    <apex:form id="serviceDelLoc">
+        <apex:pageBlock >
+            <apex:pageBlockSection title="Services Delivery Locations" columns="1" collapsible="false" rendered="{!if(readOnlyMode,false,true)}" >
+                <apex:outputPanel id="table2">
+                    <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                        <apex:pageBlockTable value="{!listServiceDeliveryModel}" var="profDetail" styleClass="inlineEditTbl" id="NewPage">
+                           
+                            <apex:column headerValue="Services" width="15%">
+                                <apex:outputLabel value="{!profDetail.Name}"/>
+                            </apex:column>
+                           
+                            <apex:column headerValue="Location" width="15%">
+                                <apex:commandLink value="Click here to add location" onclick="return OpenDeliveryLocationPopup('{!profDetail.Id}','{!profDetail.Name}','{!offId}');"/>                        
+                            </apex:column>
+                            
+                            <apex:column headerValue="Selected Locations" width="70%">
+                                <apex:outputLabel value="{!profDetail.Service_Del_Location__c}"/>
+                            </apex:column>  
+                        </apex:pageBlockTable>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:pageBlockSection> 
+            <!--Read Only Mode Detail List-->
+            <apex:pageBlockSection title="Services Delivery Locations" columns="1" collapsible="false" rendered="{!readOnlyMode}">
+                <apex:outputPanel id="table2Read">
+                    <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                         <apex:pageBlockTable value="{!listServiceDeliveryModel}" var="profDetail" styleClass="inlineEditTbl" id="NewPage">
+                           
+                            <apex:column headerValue="Services" width="25%">
+                                <apex:outputLabel value="{!profDetail.Name}"/>
+                            </apex:column>
+                           
+                            <apex:column headerValue="Location" width="20%" rendered="{!if(readOnlyMode,false,true)}" >
+                                <apex:commandLink value="Click here to add location" onclick="return OpenDeliveryLocationPopup('{!profDetail.Id}','{!profDetail.Name}','{!offId}');"/>                        
+                            </apex:column>
+                            
+                            <apex:column headerValue="Selected Locations" width="55%">
+                                <apex:outputLabel value="{!profDetail.Service_Del_Location__c}"/>
+                            </apex:column>  
+                        </apex:pageBlockTable>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    
+    <apex:form rendered="{!addButtonRender}" id="Add_Services">               
+        <apex:outputpanel id="counter">
+            <apex:pageBlock >     
+                <apex:pageBlockSection title="Add Services" columns="1" collapsible="false">
+                    <apex:pageBlockTable value="{!newOppOffer}" var="newOppOffer" styleClass="inlineEditTbl">
+                        <apex:column headerValue="Service Name">
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                                <apex:outputPanel styleClass="requiredBlock"/>    
+                                <apex:selectList size="1" value="{!oppServices}" required="true">
+                                    <apex:selectOptions value="{!ServicesForServiceComponent}"></apex:selectOptions>
+                                </apex:selectList>
+                            </apex:outputPanel>
+                            <!-- <apex:inputField value="{!newOppOffer.Service_Master__c}" required="true"/>-->
+                        </apex:column>                    
+                        <apex:column >
+                            <!--<apex:commandButton action="{!addNewOppOfferForServiceComponent}" value="Add" />-->
+                            <!-- <apex:actionSupport event="onclick" rerender="counter" />-->
+                            
+                             <apex:actionStatus id="add_Btn">                 
+                            <apex:facet name="stop">
+                             <apex:commandButton action="{!addNewOppOfferForServiceComponent}" value="Add" reRender="Add_Services,form3,serviceDelLoc" status="add_Btn"/>
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                  <apex:commandButton action="{!addNewOppOfferForServiceComponent}" value="Adding..." reRender="Add_Services,form3,serviceDelLoc" disabled="true" status="add_Btn"/>  
+                                </apex:outputPanel>
+                             </apex:facet> 
+              </apex:actionStatus>  
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:outputpanel>
+    </apex:form>
+                      
+</apex:page>

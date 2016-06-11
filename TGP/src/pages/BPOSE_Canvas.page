@@ -1,0 +1,32 @@
+<apex:page >
+  <!--  parameters="{!parameterJSONCanvas}"
+  <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockSection rendered="{!showselectBPOSE}" >
+                <apex:selectList value="{!selectedVersion}" multiselect="false"  size="1">
+                    <apex:selectOptions value="{!versionList}"/>
+                </apex:selectList>
+                <apex:selectList value="{!selctedTab}" multiselect="false" size="1">
+                    <apex:selectOptions value="{!tabList}"/>
+                </apex:selectList>
+                <apex:commandButton value="ShowCanvas" action="{!showCanvas}" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock >
+            <apex:pageBlockSection rendered="{!showselectCanvas}" >-->
+             <apex:canvasApp applicationName="BPOSE_QA" height="600" width="900" scrolling="yes"  onCanvasAppError="errorOccoured" onCanvasAppLoad="loadComplete"/>
+     <!--</apex:pageBlockSection>
+        </apex:pageBlock> -->
+        
+        <script type='text/Javascript'>
+        function errorOccoured(){
+            alert('Error Occoured');
+        }
+        function loadComplete(){
+            alert('Load Complete');
+        }
+        </script>
+  <!--      
+</apex:form> -->
+
+</apex:page>

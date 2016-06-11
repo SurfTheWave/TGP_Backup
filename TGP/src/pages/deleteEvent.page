@@ -1,0 +1,65 @@
+<apex:page standardController="Event" extensions="deleteEventController"  showHeader="false" sidebar="false" >
+<script>
+      function redirect(strUrl)
+      {
+          //var strUrl= document.getElementById("{!$Component.form1.strUrlHidden}").value;
+          window.top.location=strUrl + '/apex/ApprovalProcessPage?tabValue=tab1';                                
+      }
+      window.onload=function()
+      {
+          chkOperations();                                          
+      }
+      function prevPage(strUrl)
+      {
+          //var strUrl= document.getElementById("{!$Component.formMsg.strUrlPrev}").value;
+          window.top.location=strUrl + '/apex/ApprovalProcessPage?tabValue=tab1';                                
+      }
+      function chkOperationsUsr(status, strUrl)
+      {          
+          if(status=='true')
+          {
+              var r=confirm('Are you sure you want to delete!');
+              if(r==true)
+                  deleteEve();
+              else
+              {
+                  //var strUrl= document.getElementById("{!$Component.form1.strUrlHidden}").value;                              
+                  document.location=strUrl + '/{!calendarEventId}?isdtp=mn';
+              }
+          }  
+          else
+          {
+              refreshMsg();
+          }        
+      }
+</script>
+<apex:form id="form2">
+    &nbsp;
+    <apex:pageMessages ></apex:pageMessages>  
+    <apex:outputPanel rendered="{!showFormMsg}">
+        <br/>
+        <h1>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            Click &nbsp;<apex:outputLink onclick="prevPage('{!strUrl}');">Here</apex:outputLink> to Return to Previous Page!
+        </h1>    
+    </apex:outputPanel>
+</apex:form>
+<apex:form id="form0">
+    <apex:pageMessages ></apex:pageMessages> 
+    <apex:inputHidden id="strUrlPrev" value="{!strUrl}"/>
+    <apex:outputPanel rendered="{!showFormMsg}">
+        <br/>
+        <h1>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            Click &nbsp;<apex:outputLink onclick="prevPage();">Here</apex:outputLink> to Return to Previous Page!
+        </h1>    
+    </apex:outputPanel>
+    <apex:actionFunction action="{!checkOperations}" name="chkOperations" oncomplete="chkOperationsUsr('{!chkOperationUser}','{!strUrl}');"/>
+    <apex:actionFunction action="{!refreshMsg}" name="refreshMsg" reRender="form0,form2" />     
+    <apex:actionFunction action="{!deleteEvent}" name="deleteEve" oncomplete="redirect('{!strUrl}');"/>
+    <apex:inputHidden id="strUrlHidden" value="{!strUrl}"/>
+    <apex:outputPanel rendered="{!showForm}">
+        <h1>Deleting Events...</h1>
+    </apex:outputPanel>
+</apex:form>
+</apex:page>

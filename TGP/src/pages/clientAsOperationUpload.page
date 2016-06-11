@@ -1,0 +1,122 @@
+<!--
+Author : Mayank tayal
+Story  : Story-0167/SOL_070  
+Description : Client As Is Operation to upload single file.Can overwrite file.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Shridhar Patankar Story-0167/SOL_070       28/02/2013      Added code to rendered docExist to enable Download link.
+Mayank Tayal    Sol_148                    5/15/2013        Sol UAM-Release 2
+
+-->
+<apex:page standardController="Opportunity_Offering__c" extensions="clientAsOperationUploadController">
+  <style>
+.reqSelect {
+}
+
+table.inlineEditTbl td{
+    height: 26px !important; 
+}
+table.inlineEditTbl input[type="text"] {
+    width: 80px;
+}
+body {
+    font-size: 75% important;
+}
+</style>
+<apex:form id="frm1">
+    <apex:outputPanel id="refresh1" rendered="{!refreshPage}">
+        <apex:inputHidden value="{!fileExten}" id="hiddenValue" /> 
+        <script>
+            function check(obj_inpf)
+            {
+                var FileNameArr = obj_inpf.value.split("\\");
+                var exten=FileNameArr[2];
+                document.getElementById('{!$Component.hiddenValue}').value = exten;           
+            }
+            
+        </script>
+    </apex:outputPanel>
+</apex:form>
+
+
+  
+<apex:form id="form3">
+<apex:pageMessages id="pageMsg1"/> 
+    <apex:pageBlock >
+         <apex:pageBlockButtons rendered="{!saveEditButtonRender}" location="top">
+            
+            <apex:actionStatus id="save_Btn">                 
+                            <apex:facet name="stop">
+                               <apex:outputPanel >
+                                    <apex:commandButton action="{!saveNow}" value="Save" id="saveButton" reRender="form3"  status="save_Btn" />
+                                </apex:outputPanel> 
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                    <apex:commandButton action="{!saveNow}" value="Saving..." id="saveButton1" reRender="form3" disabled="true" status="save_Btn" />
+                                </apex:outputPanel>
+                             </apex:facet> 
+                           </apex:actionStatus> 
+            
+            <apex:commandButton value="Cancel" action="{!cancelNow}"  immediate="true" id="cancelButton" reRender="frm,form3"/>
+         </apex:pageBlockButtons>
+        <apex:pageBlockSection title="File List" columns="1" collapsible="false" rendered="{!if(readOnlyMode,false,true)}"> 
+           <apex:outputPanel layout="block" style="overflow:auto;height:250px">     
+                <apex:pageBlockTable value="{!listAssessmentDetailsActual}" var="f"><!-- styleClass="inlineEditTbl"> -->
+                    <apex:column headerValue="File Name">
+                        <apex:commandLink onclick="window.open('/servlet/servlet.FileDownload?file={!f.Picture_ID__c}','Name','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes')" value="{!f.File_Name__c}"/>           
+                    </apex:column>
+                    <apex:column headerValue="Comments">                
+                        <apex:inputField value="{!f.Comments__c}" style="width: 500px; height: 90px"></apex:inputField>
+                    </apex:column>                              
+                    <apex:column headerValue="Delete File" rendered="{!deleteButtonRender}">                
+                        <apex:commandLink action="{!deleteFile}" value="Delete" onclick="return confirm('Are you sure you want to delete this file?');" >
+                            <apex:param name="fileIdDelete" value="{!f.Picture_ID__c}" assignTo="{!fileIdDelete}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                    <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                </apex:pageBlockTable>
+            </apex:outputPanel>        
+        </apex:pageBlockSection>
+        <!--Read Only Mode Detail List-->
+        <apex:pageBlockSection title="File List" columns="1" collapsible="false" rendered="{!readOnlyMode}"> 
+           <apex:outputPanel layout="block" style="overflow:auto;height:250px">     
+                <apex:pageBlockTable value="{!listAssessmentDetailsActual}" var="f"><!-- styleClass="inlineEditTbl"> -->
+                    <apex:column headerValue="File Name">
+                        <apex:commandLink onclick="window.open('/servlet/servlet.FileDownload?file={!f.Picture_ID__c}','Name','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes')" value="{!f.File_Name__c}"/>           
+                    </apex:column>
+                    <apex:column headerValue="Comments">                
+                        <apex:outputField value="{!f.Comments__c}" style="width: 500px; height: 90px"></apex:outputField>
+                    </apex:column>                              
+                    <apex:column headerValue="Delete File" rendered="{!deleteButtonRender}">                
+                        <apex:commandLink action="{!deleteFile}" value="Delete" onclick="return confirm('Are you sure you want to delete this file?');" >
+                            <apex:param name="fileIdDelete" value="{!f.Picture_ID__c}" assignTo="{!fileIdDelete}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                    <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                </apex:pageBlockTable>
+            </apex:outputPanel>        
+        </apex:pageBlockSection>                
+    </apex:pageBlock>    
+</apex:form>
+
+<apex:form enctype="multipart/form-data" rendered="{!addButtonRender}" id="frm">
+    
+    <apex:variable value="{!Opportunity_Offering__c}" var="ccb"/>     
+    <apex:pageBlock >
+        <apex:outputPanel id="out">
+            <apex:pageBlockSection showHeader="false" columns="3" id="block1">          
+                <apex:outputLabel value="File Upload: " for="file">
+                    <apex:inputFile value="{!doc1.body}" filename="{!doc1.name}" id="file" onchange="check(this)"/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              
+                </apex:outputLabel> 
+                 <apex:inputField value="{!ccb.Comments__c}" style="width: 500px; height: 90px"/>                       
+                <apex:outputLabel ></apex:outputLabel>
+            </apex:pageBlockSection>
+        </apex:outputPanel>       
+        &nbsp;&nbsp;&nbsp;&nbsp;<apex:commandButton action="{!upload}" value="Upload File" id="uploadButton"   />
+    </apex:pageBlock>
+</apex:form> 
+</apex:page>

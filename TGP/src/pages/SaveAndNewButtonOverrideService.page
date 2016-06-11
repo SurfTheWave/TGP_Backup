@@ -1,0 +1,2 @@
+<apex:page standardController="Service__c" extensions="SObjectNewActionOverrideController" action="{!onLoadPage}">
+</apex:page>

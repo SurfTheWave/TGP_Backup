@@ -1,0 +1,10 @@
+<apex:page >
+  <div id="componentxinvisible">My DIV</div>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
+<p id= "print"></p> 
+<script type="text/javascript">
+$.noConflict();
+  $("#componentxinvisible").parent().css({"background-color":"red","border":"2px solid red"});
+  $('#bodyCell', window.parent.document).html().css({"background-color":"red","border":"2px solid red"});
+</script>
+</apex:page>

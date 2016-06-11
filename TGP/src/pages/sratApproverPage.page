@@ -1,0 +1,5 @@
+<apex:page standardController="SRAT_Tracker__c">
+  <!-- Begin Default Content REMOVE THIS -->
+  <h4 style="color:red;height:125px;width:75px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please select reviewer from the list of deal team members</h4>
+  
+</apex:page>

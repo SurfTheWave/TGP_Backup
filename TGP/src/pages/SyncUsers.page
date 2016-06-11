@@ -1,0 +1,14 @@
+<apex:page Controller="syncUsersController" action="{!syncUsers}">
+  <apex:pageMessages id="msg"/>
+  <apex:form >
+  <apex:pageBlock >
+  <apex:pageBlockTable value="{!userListtoDisplay}" var="A" width="10%">
+  <apex:column headerValue="User Name" value="{!A.Name}" width="30%">
+  </apex:column>
+  <apex:column headerValue="Active/Inactive" value="{!A.isActive}" width="30%">
+  </apex:column>
+  <apex:column headerValue="User Type" value="{!A.User_Type__c}" width="30%">
+  </apex:column>
+  </apex:pageBlockTable></apex:pageBlock>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,128 @@
+<apex:page controller="VFC_Benchmark" contenttype="application/vnd.ms-excel#Service Export.xls">
+
+<style type="text/css">
+    .tftable {font-size:12px;color:#333333;font-size:12px;width:100%;border-color: black;border-collapse: collapse;}
+    .tftable th {font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;}
+    .tftable tr {background-color:White; border-style: solid;border-color: #E8E8E8 ;;}
+    .tftable td {font-size:12px;padding: 8px;border-style: solid;border-color: #E8E8E8;}
+    .tftable tr:hover {background-color:#ffffff;}     
+    .tdwidth {width:100px;}
+</style>
+        
+<apex:pageMessages />
+        <div style="width:1600px;overflow:auto;" id = "results">
+        <table  class="tftable" border="1">
+        <tr>        
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">SAP OM Id </th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">Opportunity Name </th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">Client </th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">Sub Service Offering</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">Service</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">DCN Location</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">Language Premium</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">CPR</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">Sum of Total FTE/Year</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">Total Payroll Cost(less Mob)</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">Payroll Cost Per FTE</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">Tools Cost Per FTE</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">DVE Cost Per FTE</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">Support Center Cost Per FTE</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">SM Cost Per FTE</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">EDM Cost Per FTE</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">CC Cost Per FTE</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">Mob Cost Per FTE</th> 
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">PMO Cost Per FTE</th>
+             <th style="font-size:12px; color:White; background-color:#0099CC;border-width: 1px;padding: 8px;border-style: solid;border-color: White; border-top-left-radius:9px; border-top-right-radius:9px;text-align:left;">Total Cost per FTE</th>                    
+         </tr>
+         <apex:repeat value="{!bnchServLocToExport}" var="record">
+         <tr>
+            <td> 
+                <apex:outputText value="{!record.BenchMark_Offering_Service__r.BenchMark_Offering__r.BenchMark__r.Opportunity__r.SAP_OM_ID__c}" />
+            </td>
+            <td> 
+                <apex:outputText value="{!record.BenchMark_Offering_Service__r.BenchMark_Offering__r.BenchMark__r.Opportunity__r.Name}" />
+            </td>
+            <td> 
+                <apex:outputText value="{!record.BenchMark_Offering_Service__r.BenchMark_Offering__r.BenchMark__r.Opportunity__r.Account.Name}" />
+            </td>
+            <td> 
+                <apex:outputText value="{!record.BenchMark_Offering_Service__r.BenchMark_Offering__r.Name}" />
+            </td>
+            <td> 
+                <apex:outputText value="{!record.BenchMark_Offering_Service__r.Name}" />
+            </td>
+            <td> 
+               <apex:outputText value="{!record.DCN_Location__c}" />
+            </td>
+            <td> 
+                <apex:outputText value="{!record.Language_Premium__c}" />
+            </td>
+            <td>
+                <apex:outputText value="{!record.CPR__c}" /> 
+            </td>
+            <td> 
+                <apex:outputText value="{0, number, ####.#}"  rendered="{!record.Sum_of_Total_FTE_Year__c!=null}">
+                    <apex:param value="{!record.Sum_of_Total_FTE_Year__c}" />
+                </apex:outputText>
+            </td>
+            <td>
+                <apex:outputText value="${0, number, #,###,###}" rendered="{!record.Total_SDO_Cost_less_Mob__c!=null}"> 
+                   <apex:param value="{!record.Total_SDO_Cost_less_Mob__c}" />
+                </apex:outputText>
+            </td>
+            <td> 
+                <apex:outputText value="${0, number, #,###,###}" rendered="{!record.SDO_Cost_Per_FTE__c!=null}"> 
+                   <apex:param value="{!record.SDO_Cost_Per_FTE__c}" />
+                </apex:outputText>
+            </td>
+            <td> 
+                <apex:outputText value="${0, number, #,###,###}" rendered="{!record.Total_Cost_per_FTE__c!=null}"> 
+                   <apex:param value="{!record.Tools_Cost_Per_FTE__c}" />
+                </apex:outputText>
+            </td>
+            <td> 
+               <apex:outputText value="${0, number, #,###,###}" rendered="{!record.DVE_Cost_Per_FTE__c!=null}"> 
+                   <apex:param value="{!record.DVE_Cost_Per_FTE__c}" />
+                </apex:outputText>
+            </td>
+            <td> 
+                <apex:outputText value="${0, number, #,###,###}" rendered="{!record.Support_Center_Cost_Per_FTE__c!=null}"> 
+                   <apex:param value="{!record.Support_Center_Cost_Per_FTE__c}" />
+                </apex:outputText>
+            </td>
+            <td> 
+                <apex:outputText value="${0, number, #,###,###}" rendered="{!record.SM_Cost_Per_FTE__c!=null}"> 
+                   <apex:param value="{!record.SM_Cost_Per_FTE__c}" />
+                </apex:outputText>
+            </td>
+            <td> 
+               <apex:outputText value="${0, number, #,###,###}" rendered="{!record.EDM_Cost_Per_FTE__c!=null}"> 
+                   <apex:param value="{!record.EDM_Cost_Per_FTE__c}" />
+                </apex:outputText>
+            </td>
+            <td> 
+                <apex:outputText value="${0, number, #,###,###}" rendered="{!record.CC_Cost_Per_FTE__c!=null}"> 
+                   <apex:param value="{!record.CC_Cost_Per_FTE__c}" />
+                </apex:outputText>
+            </td>
+            <td> 
+                <apex:outputText value="${0, number, #,###,###}" rendered="{!record.Mob_Cost_Per_FTE__c!=null}"> 
+                   <apex:param value="{!record.Mob_Cost_Per_FTE__c}" />
+                </apex:outputText>
+            </td>
+            <td> 
+                <apex:outputText value="${0, number, #,###,###}" rendered="{!record.PMO_Cost_Per_FTE__c!=null}"> 
+                   <apex:param value="{!record.PMO_Cost_Per_FTE__c}" />
+                </apex:outputText>
+            </td>
+            <td> 
+                <apex:outputText value="${0, number, #,###,###}" rendered="{!record.Total_Cost_per_FTE__c!=null}"> 
+                   <apex:param value="{!record.Total_Cost_per_FTE__c}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        </apex:repeat>
+    </table>
+    </div>
+    
+</apex:page>

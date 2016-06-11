@@ -1,0 +1,29 @@
+<apex:page controller="ExportOpexChecklistController" action="{!exportToCSV}" cache="true" contentType="application/vnd.ms-excel#OpexLevel1Export.csv" language="en-US">
+  
+    
+    <apex:outputText escape="false" value="{!HTMLENCODE("Record ID")}"/> {!coma}
+    <apex:outputText escape="false" value="{!HTMLENCODE("Title")}"/> {!coma} 
+    <apex:outputText escape="false" value="{!HTMLENCODE("OPEX Level 1 Tracking Type")}"/> {!coma}
+    <apex:outputText escape="false" value="{!HTMLENCODE("OPEX Tracker")}"/> {!newLine}
+    
+        <apex:repeat value="{!OpexLevel1List}" var="opexlevel1">
+                 
+        <apex:outputText value="{!opexlevel1.Id}{!coma}">
+        </apex:outputText>
+        <apex:outputText value="{!opexlevel1.Name}{!coma}">
+        </apex:outputText> 
+        <apex:outputText value="{!opexlevel1.OPEX_Level_1_Tracking_Type__c}{!coma}">
+        </apex:outputText>
+        
+        <apex:repeat value="{!OpexTracker}" var="opextrack">
+        
+        <apex:outputText value="{!opextrack.Name}{!coma}">
+        </apex:outputText> {!newLine}
+        
+        </apex:repeat>
+        
+        
+        </apex:repeat> 
+             
+    
+ </apex:page>

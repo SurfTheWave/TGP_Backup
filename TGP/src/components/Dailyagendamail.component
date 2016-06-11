@@ -1,0 +1,164 @@
+<apex:component controller="App_Meeting_DailyAgendaController" access="global" >
+ <style>
+ .headerclass{
+ width:400px;
+ background-color: #4169E1;
+ padding:3.75pt 3.75pt 3.75pt 3.75pt;
+ height:15.0pt;
+ font-size:11pt;
+ font-family:"Calibri";
+ font-weight: bold;
+ text-align:center;
+ color:white;
+ vertical-align:top;
+ }
+ .columnsclasscustom{
+padding:3.75pt 3.75pt 3.75pt 3.75pt;
+ height:15.0pt;
+ font-family:"Calibri";
+ font-size: 11pt;
+ background-color: #BCD2EE;
+ }
+ .columnsclass{
+ padding:3.75pt 3.75pt 3.75pt 3.75pt;
+ height:15.0pt;
+ font-family:"Calibri";
+ font-size: 11pt;
+ 
+ }
+ .fontclass{
+  font-family : "Calibri";
+  font-size: 11pt;
+  }
+  .linkclass{
+  font-family : "Calibri";
+  font-size: 11pt;
+  color: ##0000FF;
+  font-weight: bold;
+  }
+  table{
+ border:2px solid #BCD2EE;
+ border-collapse: collapse; 
+ font-family : "Calibri";
+ font-size: 11pt;
+  }
+  </style>
+<apex:outputPanel rendered="{!noevents}">
+ <apex:outputText styleClass="fontclass">{!$Label.Daily_Agenda_No_calls_message}  {!month_Day}</apex:outputText>&nbsp;&nbsp;<!--<strong><sup>{!supScriptVal}</sup></strong>-->
+</apex:outputPanel>
+<apex:outputPanel rendered="{!hasevents}"> 
+<apex:outputText value="{!$Label.App_meeting_dailymail_para1} {!month}" styleClass="fontclass" style="font-style: Normal;font-size:11pt;"></apex:outputText>&nbsp;&nbsp;<!--<strong><sup>{!supScriptVal}</sup></strong>-->
+<apex:outputText value="{!$Label.App_meeting_dailymail_para1_continue}" styleClass="fontclass" style="font-style: Normal;font-size:11pt;"></apex:outputText>
+ <apex:dataTable value="{!all_scheduledmeeetings}" var="app_meet" headerClass="headerclass"  cellspacing="2" border="1">
+  <apex:column headerValue="Start Time" styleClass="columnsclasscustom">
+   <apex:outputText style="font-weight: bold" value="{!app_meet.Schedule_Time_Dev__c}" /><br/>
+   <!--<apex:outputLabel value=" ( " rendered="{!IF(app_meet.Scheduled_Meeting_Time__c='Non Standard Call Time', false, true)}"/>-->
+  <c:TimeZoneComponent date_Timevalue="{!app_meet.Scheduled_Start__c}" whatyou_want="apactime" user_locale="IST" rendered="{! IF(app_meet.Scheduled_Meeting_Time__c='APAC (2:30 AM CST)', true, false)}"/>  
+    <c:TimeZoneComponent date_Timevalue="{!app_meet.Scheduled_Start__c}"  whatyou_want="emeatime" user_locale="CET" rendered="{! IF(app_meet.Scheduled_Meeting_Time__c='EMEA (7am CST)', true, false)}"/>
+   <c:TimeZoneComponent date_Timevalue="{!app_meet.Scheduled_Start__c}" whatyou_want="latamtime" user_locale="America/Sao_Paulo" rendered="{! IF(app_meet.Scheduled_Meeting_Time__c='LATAM (8 am CST)', true, false)}"/>  
+  <c:TimeZoneComponent date_Timevalue="{!app_meet.Scheduled_Start__c}" whatyou_want="apactime" user_locale="IST" rendered="{! IF(AND(app_meet.Scheduled_Meeting_Time__c='Non Standard Call Time',app_meet.Geo_Region__c 
+    ='APAC'),true, false)}"/> 
+   <c:TimeZoneComponent date_Timevalue="{!app_meet.Scheduled_Start__c}" whatyou_want="emeatime" user_locale="CET" rendered="{! IF(AND(app_meet.Scheduled_Meeting_Time__c='Non Standard Call Time',app_meet.Geo_Region__c 
+    ='EMEA'),true, false)}"/> 
+   <c:TimeZoneComponent date_Timevalue="{!app_meet.Scheduled_Start__c}" whatyou_want="latamtime" user_locale="America/Sao_Paulo" rendered="{! IF(AND(app_meet.Scheduled_Meeting_Time__c='Non Standard Call Time',app_meet.Geo_Region__c 
+    ='LATAM'),true, false)}"/> 
+   <apex:outputLabel value=" / " rendered="{!!OR(app_meet.Scheduled_Meeting_Time__c='Non Standard Call Time',app_meet.Scheduled_Meeting_Time__c='North America (10am CST)')}">
+   </apex:outputLabel>
+   <apex:outputText value="{!app_meet.Scheduled_start_time_dev__c}" rendered="{! IF(app_meet.Scheduled_Meeting_Time__c='North America (10am CST)', false, true)}" style="font-style:bold;font-size:11pt"></apex:outputText>
+   <apex:outputText value="{!app_meet.Scheduled_start_time_dev__c}" rendered="{! IF(app_meet.Scheduled_Meeting_Time__c='North America (10am CST)', true, false)}"></apex:outputText>
+   <apex:outputLabel value=" " rendered="{!IF(app_meet.Scheduled_Meeting_Time__c='Non Standard Call Time', false, true)}"/>
+    <apex:outputPanel rendered="{! IF(app_meet.Scheduled_Meeting_Time__c='Non Standard Call Time', true, false)}">
+        <c:TimeZoneComponent date_Timevalue="{!app_meet.Scheduled_Start__c}" whatyou_want="time"/> CST
+   </apex:outputPanel>
+  </apex:column>
+  <apex:column headerValue="Conference Details" style="text-align:center;font-size:11pt">
+<!--{!lyncMap}-->
+    <span><a href="{!lyncMap[app_meet.Service_Group__c+'-'+app_meet.Schedule_Time_Dev__c].lync__c}" target="_blank">
+    <img  src="https://accentureopsworkbench--r3qa--c.cs42.content.force.com/servlet/servlet.ImageServer?id=015560000004wYK&oid=00D560000008nH1&lastMod=1452788854000"   width="45" height="40"></img></a></span><br/>
+    <center><span style="color:light-blue;font-size:12px;">ID: {!lyncMap[app_meet.Service_Group__c+'-'+app_meet.Schedule_Time_Dev__c].Conference_ID__c}</span></center>
+  </apex:column>
+  <apex:column styleClass="columnsclass" headerValue="Solution Development Approver" >
+   <center><apex:outputField value="{!app_meet.Meeting_Approver__r.name}"/></center>
+  </apex:column>
+  <apex:column styleClass="columnsclass" headerValue="Service Group" >
+   <center><apex:outputField value="{!app_meet.Service_Group__c}"/></center>
+  </apex:column>
+ <apex:column styleClass="columnsclass" headerValue="Review Type" >
+    <apex:outputText value="{!app_meet.Approval_Stage__r.approval_stage_type__c}" />
+  </apex:column> 
+ 
+  <apex:column styleClass="columnsclass" headerValue="Region" >
+  <center><apex:outputField value="{!app_meet.Geo_Region__c}"/></center>
+  </apex:column>
+  <apex:column styleClass="columnsclass" headerValue="Client Local Geo" >
+   <div style="margin-left:3%;margin-right:2%;"><apex:outputField value="{!app_meet.Geo_Unit__c}"/></div>
+  </apex:column>
+  <apex:column styleClass="columnsclass" headerValue="Client Name" >
+    <div style="margin-left:3%;margin-right:2%;">{!IF((app_meet.Approval_Stage__r.Opportunity__r.Confidential_Opp__c == true),'Confidential',app_meet.Client_Name__c)}</div>
+  </apex:column>
+  <apex:column styleClass="columnsclass" headerValue="Opportunity Name" >
+  <div style="margin-left:3%;margin-right:2%;"><apex:outputlink styleclass="linkclass" value="{!LEFT($Api.Partner_Server_URL_140,FIND('.com',$Api.Partner_Server_URL_140)+4)}{!app_meet.Approval_Stage__r.Opportunity__c}" target="_blank"><apex:outputField value="{!app_meet.Opportunity__c}"/></apex:outputLink></div>
+  </apex:column>
+  <apex:column styleClass="columnsclass" headerValue="Net Revenue
+  (Thousands)">
+ <center><apex:outputField value="{!app_meet.NRTNew__c}"/></center>
+  </apex:column>
+  <apex:column styleClass="columnsclass" headerValue="Offerings" >
+  <div style="margin-left:3%;margin-right:2%;">{!IF((app_meet.Service_Group__c =='IO' || app_meet.Service_Group__c =='Bundled (IO)'),app_meet.Approval_stage__r.Opportunity__r.Offerings_IO__c,app_meet.Approval_stage__r.Opportunity__r.Off__c)}</div>
+   <!--<apex:outputField value="{!app_meet.Approval_stage__r.Opportunity__r.Off__c}"/>-->
+  </apex:column>
+  <apex:column styleClass="columnsclass" headerValue="Prime Delivery Lead">
+    <div style="margin-left:3%;margin-right:2%;"><apex:outputField value="{!app_meet.Approval_Stage__r.Opportunity__r.Prime_SDO_Lead_dev__c}"/> {!IF(app_meet.Approval_Stage__r.Opportunity__r.Prime_SDO_Lead_IO_dev__c != Null,app_meet.Approval_Stage__r.Opportunity__r.Prime_SDO_Lead_IO_dev__c+';','' )}
+     <!--<apex:outputfield value="{!app_meet.Approval_Stage__r.Opportunity__r.Prime_SDO_Lead_IO_dev__c}"/>--></div>
+  </apex:column>
+  <apex:column styleClass="columnsclass" headerValue="Lead Solution Architect" >
+  <center><apex:outputField value="{!app_meet.Solution_A_New__c }"/></center>
+  </apex:column>
+  <apex:column headerValue="Opportunity Documents" width="175px" style="text-align:center">
+ <!-- <apex:outputlink styleclass="linkclass" value="{!app_meet.Approval_stage__r.Opportunity__r.Link_to_SharePoint_Documents__c}" target="_blank">{!app_meet.Approval_stage__r.Opportunity__r.Link_to_SharePoint_Documents__c}</apex:outputlink>
+  -->
+  <a href="{!app_meet.document_link__c}" target="_blank">
+  <img width="37" height="35" src="https://accentureopsworkbench--r3qa--c.cs42.content.force.com/servlet/servlet.ImageServer?id=015560000004wYF&oid=00D560000008nH1&lastMod=1452787980000" ></img></a>
+  <!--apex:outputField value="{!app_meet.document_link__c}"/>-->
+  </apex:column>
+ </apex:dataTable>
+ <apex:outputText value="{!$Label.App_meeting_dailymail_last_para}" styleClass="fontclass"></apex:outputText>
+ <apex:outputLink value="{!LEFT($Api.Partner_Server_URL_140,FIND('.com',$Api.Partner_Server_URL_140)+4)}apex/Approval_Meeting_Calendar_Page"  target="_blank" styleClass="linkclass"> Approval Calendar </apex:outputLink>&nbsp;
+  <apex:outputText value="{!$Label.App_meeting_dailymail_last_para2}" styleClass="fontclass"></apex:outputText>
+   <apex:outputLink styleClass="linkclass" value="https://kxsites.accenture.com/groups/BPOSA/Adverts/Integrate%20Approval%20Calendar%20with%20Outlook%20Instructions.docx" target="_blank"> Integrated to Outlook </apex:outputLink>&nbsp;
+   <apex:outputText value="{!$Label.App_meeting_dailymail_last_para3}" styleClass="fontclass"></apex:outputText><br></br>
+    <!--<strong><p class="fontclass">Meeting Details: </p></strong>
+    <!--<p class="fontclass">Join Online Meeting (Lync Conferencing details)</p>
+   <apex:repeat value="{!list_meetingdetails}" var="lync" >
+    <apex:panelGrid columns="1" styleClass="fontclass" cellpadding="10"> 
+  <apex:outputPanel > 
+      <apex:outputText value="{!lync.Slot_Name_Dev__c}" /><br/>
+      <apex:outputLabel value="Lync : " /><apex:outputLink value="{!lync.lync__c}" styleClass="linkclass" target="_blank">{!lync.lync__c} </apex:outputLink><br/>
+      <apex:outputLabel value="Conference ID :" /> <apex:outputField value="{!lync.Conference_ID__c}"/>
+  </apex:outputPanel>
+       </apex:panelGrid>     
+   </apex:repeat>--><br></br>
+   <span style="font-size:11pt; font-family:Calibri">
+Find a local numbers:<br></br>
+Lync: <a href="https://Lync.accenture.com/dialin" target="_blank" class="fontclass">https://Lync.accenture.com/dialin</a><br></br>
+Join by Phone<br></br>
++1 703 948 0488 (Sterling, United States)<br></br>
++91 80 6160 7676 (Bangalore, India)<br></br>
++63 2 720 7300 (Manila, Philippines)<br></br>
++44 20 3335 5555 (London, United Kingdom)<br></br>
++39 0236005680 (Milan, Italy)<br></br>
++91 22 6160 7676 (Mumbai, India)<br></br>
++34 91 114 3650 (Madrid, Spain)<br></br>
++55 11 3130 0000 (Sao Paulo, Brazil)<br></br>
++54 114318 8600 (Buenos Aires, Argentina)<br></br>
++81 3 3588 4460 (Tokyo, Japan)<br></br>
++49 9281 925 3543 (Hof, Germany)<br></br>
++33 1 5323 3939 (Paris, France)<br></br>
++31 20 343 2734 (Amsterdam, Netherlands)<br></br>
++86 21 61577600 (Shanghai, China)<br></br>
++65 6603 2222 (Singapore, Singapore)<br></br>
+<br></br>
+<apex:outputLabel value="{!$Label.App_meeting_dailymail_last_line}" styleClass="fontclass"></apex:outputLabel>
+</span>
+</apex:outputPanel>
+</apex:component>

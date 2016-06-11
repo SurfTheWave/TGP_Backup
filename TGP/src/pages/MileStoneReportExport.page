@@ -1,0 +1,59 @@
+<apex:page standardController="Wave_Plan_Version__c" extensions="MilestoneReportPageController"  contentType="application/vnd.ms-excel#MileStoneReport.xls"  cache="true">
+    
+        <apex:pageBlock >
+                <apex:pageBlockTable value="{!mileStoneList}" var="rec" id="NewPage1" border="1">
+                    <apex:column >
+                        <apex:facet name="header">Deals</apex:facet> 
+                        <apex:outputText value="{!rec.deal}"/>
+                    </apex:column>
+                    <apex:column >  
+                        <apex:facet name="header">Location</apex:facet> 
+                        <apex:outputText value="{!rec.location}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">Waves</apex:facet> 
+                        <apex:outputText value="{!rec.Waves}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">Planning Modules</apex:facet> 
+                        <apex:outputText value="{!rec.planingModules}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">Activity List</apex:facet> 
+                        <apex:outputText value="{!rec.activityList}"/>
+                    </apex:column>
+                    
+                    <apex:column >      
+                        <apex:facet name="header">Planned Start Date</apex:facet> 
+                        <apex:outputText value="{!rec.plannedStartDate}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">Planned End Date</apex:facet> 
+                        <apex:outputText value="{!rec.plannedEndDate}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">Actual Start Date</apex:facet> 
+                        <apex:outputText value="{!rec.actualStartDate}"/>
+                    </apex:column>
+                    <apex:column >  
+                        <apex:facet name="header">Actual End Date</apex:facet> 
+                        <apex:outputText value="{!rec.actualEndDate}"/>
+                    </apex:column>  
+                    <!--
+                    <apex:column >      
+                        <apex:facet name="header">RAG Status</apex:facet> 
+                        <apex:outputText value="{!rec.ragStatus}"/>
+                    </apex:column>
+                    -->
+                    <apex:column >      
+                        <apex:facet name="header">Status</apex:facet> 
+                        <apex:outputText value="{!rec.status}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">% Completed</apex:facet> 
+                        <apex:outputText value="{!rec.completed}"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+        </apex:pageBlock>
+    
+</apex:page>

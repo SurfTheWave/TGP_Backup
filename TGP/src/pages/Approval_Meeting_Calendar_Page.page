@@ -1,0 +1,6 @@
+<apex:page id="page" showHeader="false" sidebar="true" tabStyle="Approval_Meeting__c" controller="ApprovalMeetingCalendarController">
+
+<script type="text/javascript"> 
+window.location="/00U/c?cType=1&cal_lkid={!$Label.Public_calendar_id}&cal_lspf=1&md0={!currentYear}&md1={!currentmonth }"
+</script>
+</apex:page>

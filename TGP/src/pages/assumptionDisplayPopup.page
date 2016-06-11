@@ -1,0 +1,20 @@
+<!--
+Author : Shridhar Patankar
+Story :  Story-0043/SOL_010    
+Description :  Display logic for Assumption.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Assumption_Master__c" showHeader="false" sidebar="false" extensions="PopupAssumption">
+  <apex:form >
+  
+     
+         {!message }
+      
+  </apex:form>
+  
+</apex:page>

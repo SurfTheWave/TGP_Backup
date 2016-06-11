@@ -1,0 +1,10 @@
+<apex:page standardController="Wave_Plan_Version__c" extensions="Trackingonmessagepagecontroller"  >
+  <!--<apex:pageBlock rendered="{!messageDisplay}">
+       "Deal tracking is ON. User will not be able to edit any information in the wave plan version. To update, please clone the existing plan or create new version
+   </apex:pageBlock> -->
+   
+   
+<apex:outputLabel value="Deal tracking is ON. User will only be able to edit Wave Name, Wave Status and Number of Projected FTEs in Deal Summary of the High Level Mobilization Plan. To update any other section, please clone the existing plan or create new version" style="color:green" styleclass="bold"  rendered="{!messageDisplay}" /> 
+       
+    
+</apex:page>

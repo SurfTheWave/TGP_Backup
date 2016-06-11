@@ -1,0 +1,3 @@
+<apex:page standardcontroller="Issues__c"  extensions="CheckDeleteMWB" action="{!CheckDeleteMWB}">
+<apex:messages />
+</apex:page>

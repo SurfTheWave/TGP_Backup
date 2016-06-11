@@ -1,0 +1,4 @@
+<apex:page standardController="Mobilization_Plan__c" extensions="BudgetCostExport" action="{!getExcel}">
+<!--<apex:page controller="BudgetCostExport" action="{!getExcel}"> -->
+  
+</apex:page>

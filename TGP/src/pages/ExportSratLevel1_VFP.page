@@ -1,0 +1,33 @@
+<apex:page controller="ExportOpexChecklistController" action="{!exportSratLevel1Level2}" cache="true" contentType="application/vnd.ms-excel#SratLevel1Export.csv" language="en-US">
+  
+    
+    <apex:outputText escape="false" value="{!HTMLENCODE("Record ID")}"/> {!coma}
+    <apex:outputText escape="false" value="{!HTMLENCODE("Title")}"/> {!coma} 
+     
+    <apex:outputText escape="false" value="{!HTMLENCODE("Srat Level1 Tracking Type")}"/> {!coma} 
+ <!--   <apex:outputText escape="false" value="{!HTMLENCODE("Question")}"/> {!coma}  -->
+    <apex:outputText escape="false" value="{!HTMLENCODE("Overall RAG status")}"/> {!coma} 
+    <apex:outputText escape="false" value="{!HTMLENCODE("Comments")}"/> {!newLine}
+              
+        <apex:repeat value="{!SratLevel1List}" var="sratlevel1">
+                 
+        <apex:outputText value="{!sratlevel1.Id}{!coma}">
+        </apex:outputText>
+        <apex:outputText >"{!sratlevel1.Name}"{!coma}
+        </apex:outputText> 
+        
+              
+                
+        <apex:outputText value="{!sratlevel1.SRAT_Level_1_Tracking_Type__c}{!coma}">
+        </apex:outputText>
+ <!--       <apex:outputText >"{!sratlevel1.Question__c}"{!coma}
+        </apex:outputText>   -->
+        <apex:outputText >"{!sratlevel1.Overall_RAG_Status__c}"{!coma}
+        </apex:outputText>
+        <apex:outputText >"{!sratlevel1.Comments__c}"{!coma}
+        </apex:outputText> {!newLine}
+        
+        </apex:repeat> 
+             
+    
+ </apex:page>

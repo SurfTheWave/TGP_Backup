@@ -1,0 +1,134 @@
+<!--
+Author : Shashank Shastri.
+Description : 'KT Planning' screen 
+-->
+<apex:page standardController="Deal_Track__c" extensions="VFC_Deal_Track_Controller" action="{!kT_Construtor}" sidebar="false" showHeader="false">
+<script>
+
+  function OpenHistoryPopup(RecordID,ObjName,Field1, Field2,Field3, Field4,Field5)
+    {
+        var w = 500;
+        var h = 400;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/3)-(h/2));
+        var url = '/apex/MaintainHistory?ID='+RecordID+'&ObjName='+ObjName+'&Field1='+Field1+'&Field2='+Field2+'&Field3='+Field3+'&Field4='+Field4+'&Field5='+Field5;
+        var myWindow = window.open(url,'Mob_Deal_Track','scrollbars=no,width=650,height=500, resizable=no, chrome=yes, minimizable=no, z-index: 9999,location=no, left=' + left + ',top='+ top );
+        myWindow.focus();
+        return false;        
+    }
+</script>    
+<apex:pageMessages ></apex:pageMessages>
+       <apex:form >
+        <apex:pageBlock > 
+        <apex:pageBlockButtons location="top" rendered="{!isEditVisible}" >
+                      <apex:commandButton value="Save" id="saveButton" action="{!SaveKTPlan}"/>
+                      <apex:commandButton value="Cancel" action="{!Cancel}" />
+                  </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="7">
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==true}">
+                      <apex:outputLabel value="Overall Completion Status (%)"/>
+                      <apex:inputField value="{!wpv.KT_Plan_Overall_Completion_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==false}">
+                      <apex:outputLabel value="Overall Completion Status (%)"/>
+                      <apex:outputField value="{!wpv.KT_Plan_Overall_Completion_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==true}">
+                      <apex:outputLabel value="Overall RAG Status"/>
+                      <apex:inputField value="{!wpv.KT_Plan_Overall_RAG_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==false}">
+                      <apex:outputLabel value="Overall RAG Status"/>
+                      <apex:outputField value="{!wpv.KT_Plan_Overall_RAG_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==true}">
+                      <apex:outputLabel value="Comments(Max Limit on character:32768)"/>
+                      <apex:inputField value="{!wpv.KT_Plan_Comments__c}" style="background-color:#FFFFFF;"/>   
+                  </apex:pageBlockSectionItem> 
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==false}">
+                      <apex:outputLabel value="Comments(Max Limit on character:32768)"/>
+                      <apex:outputField value="{!wpv.KT_Plan_Comments__c}" style="background-color:#FFFFFF;"/>   
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem >
+                      <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!wpv.Id}','Wave_Plan_Version__c','KT_Plan_Overall_Completion_Status__c','KT_Plan_Overall_RAG_Status__c','','','');"/>                                                
+                  </apex:pageBlockSectionItem>
+              </apex:pageBlockSection>
+              
+                  <apex:pageBlockSection columns="1">
+                  <apex:outputLabel value="KT Plans" style="font-size:10pt; text-decoration : underline;"/>
+                  <apex:outputLabel value="Wave Status" style="font-weight: bold; font-size:9pt;"/>
+                  <apex:pageBlockTable value="{!ListOfKTPlanWave}" var="Wave">
+                      <apex:column headerValue="Location" style="background-color:#EBEBFA ;">
+                          <apex:outputField value="{!Wave.NewKTPlanWave.Deal_Location_lk__r.Deal_Home_Location__r.Delivery_Location_Master__r.name}"/>
+                      </apex:column>
+                      <apex:column headerValue="Wave Name" style="background-color:#EBEBFA ;">
+                          <apex:outputField value="{!Wave.NewKTPlanWave.Wave_Plan_lk__r.Wave_Label__c}"/>
+                      </apex:column>
+                      <apex:column headerValue="RAG Status" style="background-color:{!Wave.color};">
+                           <apex:outputField value="{!Wave.NewKTPlanWave.Overall_RAG_status_for_Wave__c}">
+                           <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!Wave.isDisabled}"/>
+                           </apex:outputField>
+                        </apex:column>
+                        <apex:column headerValue="Comments" style="background-color:{!Wave.backgroundcolor};">
+                           <apex:outputField value="{!Wave.NewKTPlanWave.Comments_for_Wave__c}">
+                           <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!Wave.isDisabled}"/>
+                           </apex:outputField>
+                        </apex:column>
+                        <!-- <apex:column headerValue="Milestone" style="background-color:#EBEBFA ;">
+                          <apex:outputField value="{!Wave.NewKTPlanWave.Milestone__c}"/>
+                      </apex:column> -->
+                        <apex:column headerValue="Maintain History" style="background-color:#EBEBFA ;">
+                            <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!Wave.newKTPlanWave.Id}','KT_Planning__c','Overall_RAG_status_for_Wave__c','','','','');"/>                                                
+                        </apex:column>
+        
+                  </apex:pageBlockTable>
+                  
+                  
+                  <apex:outputLabel value="Activity Status" style="font-weight: bold; font-size:9pt;"/>
+                  <apex:pageBlockTable value="{!ListOfKTPlan}" var="KTPlanningList">
+                      <apex:column headerValue="Activity" style="background-color:#EBEBFA ;">
+                            <apex:outputField value="{!KTPlanningList.newKTPlan.Activity__c}" />
+                        </apex:column>
+                        <apex:column headerValue="Planned Start Date" style="background-color:#EBEBFA ;">
+                            <apex:outputField value="{!KTPlanningList.newKTPlan.Planned_Start_Date__c}" />
+                        </apex:column>
+                        <apex:column headerValue="Planned End Date" style="background-color:#EBEBFA ;">
+                            <apex:outputField value="{!KTPlanningList.newKTPlan.Planned_End_Date__c}" />
+                        </apex:column>     
+                        <apex:column headerValue="Location" style="background-color:#EBEBFA ;">
+                           <apex:outputField value="{!KTPlanningList.newKTPlan.Deal_Location_lk__r.Deal_Home_Location__r.Delivery_Location_Master__r.name}"/>
+                        </apex:column>
+                        <apex:column headerValue="Wave Dependency" style="background-color:#EBEBFA ;">
+                           <apex:outputField value="{!KTPlanningList.newKTPlan.Wave_Plan_lk__r.Wave_Label__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="% Completed" style="background-color:{!KTPlanningList.backgroundcolor};">
+                           <apex:outputField value="{!KTPlanningList.newKTPlan.Completed__c}">
+                           <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!KTPlanningList.isDisabled}"/>
+                           </apex:outputField>
+                        </apex:column>
+                        <apex:column headerValue="Actual Start Date" style="background-color:{!KTPlanningList.backgroundcolor};">
+                           <apex:outputField value="{!KTPlanningList.newKTPlan.Actual_Start_Date__c}">
+                           <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!KTPlanningList.isDisabled}"/>
+                           </apex:outputField>
+                        </apex:column>
+                        <apex:column headerValue="Actual End Date" style="background-color:{!KTPlanningList.backgroundcolor};">
+                           <apex:outputField value="{!KTPlanningList.newKTPlan.Actual_End_Date__c }">
+                           <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!KTPlanningList.isDisabled}"/>
+                           </apex:outputField>
+                        </apex:column>
+                        <apex:column headerValue="Tracking Comments" style="background-color:{!KTPlanningList.backgroundcolor};">
+                           <apex:outputField value="{!KTPlanningList.newKTPlan.Tracking_Comments__c}">
+                           <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!KTPlanningList.isDisabled}"/>
+                           </apex:outputField>
+                        </apex:column>
+                        <apex:column headerValue="Milestone" style="background-color:#EBEBFA ;">
+                           <apex:outputField value="{!KTPlanningList.newKTPlan.Milestone__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="Maintain History"  style="background-color:#EBEBFA ;">
+                            <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!KTPlanningList.newKTPlan.Id}','KT_Planning__c','Completed__c','Actual_Start_Date__c','Actual_End_Date__c','','');"/>                                                
+                        </apex:column>
+                  </apex:pageBlockTable>
+              </apex:pageBlockSection>
+        </apex:pageBlock>    
+    </apex:form>
+</apex:page>

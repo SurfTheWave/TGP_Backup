@@ -1,0 +1,18 @@
+<!--
+Author :Malkeet Singh
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page standardController="Deal_TGP__c" recordSetVar="Deals"
+tabStyle="Deal_TGP__c">
+<apex:form >
+<apex:pageBlock >
+<apex:pageBlockButtons location="top">
+<apex:commandButton id="SIT" onclick="return confirm ('WARNING: Do you want to continue?');" action="{!Save}" value="Save" style="width:80px" /> 
+</apex:pageBlockButtons>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

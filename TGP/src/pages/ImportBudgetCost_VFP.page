@@ -1,0 +1,381 @@
+<apex:page standardController="Mobilization_Plan__c" extensions="ImportBudgetCost_VFC" showHeader="false" sidebar="false">
+    <apex:includeScript value="{!$Resource.jszip}"/>
+    <apex:includeScript value="{!$Resource.Shim}"/>
+    <apex:includeScript value="{!$Resource.xlsx}"/>
+    <apex:includeScript value="{!$Resource.xlsxworker}"/>
+    <apex:includeScript value="{!$Resource.xlsxworker1}"/>
+    <apex:includeScript value="{!$Resource.xlsxworker2}"/>
+    <style>
+        #drop{
+            border:0px;
+            -moz-border-radius:0px;
+            -webkit-border-radius:0px;
+            border-radius:0px;
+            padding:0px;
+            text-align:center;
+            font:20pt bold,"Vollkorn";color:#bbb
+        }
+        #b64data{
+            width:100%;
+        }
+        a:hover{
+            background-color:#DCDCDC;
+        }
+    </style>
+   <!--
+    <script>
+        window.$Label = window.$Label || {};
+        $Label.ReportId = '{!JSENCODE($Label.ReportId)}';
+        function open_win()
+        {
+            var hlmpid = document.getElementById("{!$Component.frm2.hlmpid}").value.substring(0,15);
+            window.open("/"+$Label.ReportId+"?pv0="+hlmpid,true) // pass report id and hlmpid
+        }
+    </script>
+    
+    
+    
+    <apex:form id="form1" >
+        <div id="showReportButton" align="center">
+            <apex:commandButton action="{!generateReport}" onclick="open_win()" title="Generate Budget Cost Summary Report" value="Generate Budget Cost Summary Report"/>
+        </div>
+        <apex:pageBlock >
+            <apex:pageBlockSection title="Upload Budget Cost Summary" collapsible="false">
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    -->
+    <script>
+        function ConfirmCancel(){
+         var isCancel = confirm("Are you sure you wish to cancel?")
+            if (isCancel) return true;
+            return false;
+        } 
+        window.onunload = refreshParent;
+        function refreshParent() {
+        window.opener.location.reload();
+    }
+        function CloseAndRefresh(){
+           //window.opener.location.href="/{!$CurrentPage.parameters.id}";
+           
+           window.top.close();
+          
+        }  
+    </script>
+    
+    <apex:pageMessages ></apex:pageMessages>
+    <apex:outputPanel >
+        <apex:sectionHeader title="" subtitle="Choose your Excel File" id="next2" />
+    <apex:pageBlock >
+        <head>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        </head>
+        <body>
+            <apex:form id="frm2">
+
+                <div id="drop"></div>
+                <b>File Upload :</b><br />
+                <table border="0px" style="width:100%">
+                    <tr>
+                        <td style="width:30%">
+                            <apex:inputFile value="{!fileBody}" id="xlf"/>
+                        </td>
+                        <!--
+                        <td align="right" style="width:30%">
+                            Comments
+                        </td>
+                        <td align="left" style="width:40%">
+                         <apex:inputTextarea value="{!Description}" label="Comments" style="width:60%;height:150%"/>
+                        </td>
+                        -->
+                    </tr>
+                </table>        
+                <input type="checkbox" name="useworker" style="width: 0%; height: 0px; overflow: auto; display:none;"/>
+                <input type="checkbox" name="xferable" style="width: 0%; height: 0px; overflow: auto; display:none;"/>
+                <input type="checkbox" name="userabs"  style="width: 0%; height: 0px; overflow: auto; display:none;" />
+                <apex:inputhidden id="fileFullDataHidden" value="{!fileFullData}" />
+                <apex:inputhidden value="{!dropFileName}" id="dropFileNameHidden" />
+                <apex:inputhidden value="{!uploadFileAtt}" id="uploadFileAtteHidden"/>
+                <apex:inputhidden id="Opportunity" value="{!allLines_Cost_Summary_MWB}"  />
+                <apex:inputhidden id="hlmpid" value="{!hlmpid}"  />
+                <center>
+                <div id="showUpload" style="display:none">
+                    <apex:commandButton action="{!UploadFile}" value="Upload File"/>
+                </div>
+                <div id="disableUpload" >
+                    <apex:commandButton action="{!UploadFile}" value="Upload File" />
+                </div>
+                
+                <apex:commandButton value="Close" onClick="CloseAndRefresh();" immediate="true" style="width:20%" />
+                 </center>
+
+            </apex:form>
+        <br />
+    <script>
+        var rABS = typeof FileReader !== "undefined" && typeof FileReader.prototype !== "undefined" && typeof FileReader.prototype.readAsBinaryString !== "undefined";
+        if(!rABS) {
+                        document.getElementsByName("userabs")[0].disabled = true;
+                        document.getElementsByName("userabs")[0].checked = false;
+        }
+         
+        var use_worker = typeof Worker !== 'undefined';
+        if(!use_worker) {
+                        document.getElementsByName("useworker")[0].disabled = true;
+                        document.getElementsByName("useworker")[0].checked = false;
+        }
+         
+        var transferable = use_worker;
+        if(!transferable) {
+                        document.getElementsByName("xferable")[0].disabled = true;
+                        document.getElementsByName("xferable")[0].checked = false;
+        }
+         
+        var wtf_mode = false;
+         
+        function fixdata(data) {
+                        var o = "", l = 0, w = 10240;
+                        for(; l<data.byteLength/w; ++l) o+=String.fromCharCode.apply(null,new Uint8Array(data.slice(l*w,l*w+w)));
+                        o+=String.fromCharCode.apply(null, new Uint8Array(data.slice(l*w)));
+                        return o;
+        }
+         
+        function ab2str(data) {
+                        var o = "", l = 0, w = 10240;
+                        for(; l<data.byteLength/w; ++l) o+=String.fromCharCode.apply(null,new Uint16Array(data.slice(l*w,l*w+w)));
+                        o+=String.fromCharCode.apply(null, new Uint16Array(data.slice(l*w)));
+                        return o;
+        }
+         
+        function s2ab(s) {
+                        var b = new ArrayBuffer(s.length*2), v = new Uint16Array(b);
+                        for (var i=0; i != s.length; ++i) v[i] = s.charCodeAt(i);
+                        return [v, b];
+        }
+         
+        function xlsxworker_noxfer(data, cb) {
+                        var worker = new Worker('./xlsxworker.js');
+                        worker.onmessage = function(e) {
+                                        switch(e.data.t) {
+                                                        case 'ready': break;
+                                                        case 'e': console.error(e.data.d); break;
+                                                        case 'xlsx': cb(JSON.parse(e.data.d)); break;
+                                        }
+                        };
+                        var arr = rABS ? data : btoa(fixdata(data));
+                        worker.postMessage({d:arr,b:rABS});
+        }
+         
+        function xlsxworker_xfer(data, cb) {
+                        var worker = new Worker(rABS ? './xlsxworker2.js' : './xlsxworker1.js');
+                        worker.onmessage = function(e) {
+                                        switch(e.data.t) {
+                                                        case 'ready': break;
+                                                        case 'e': console.error(e.data.d); break;
+                                                        default: xx=ab2str(e.data).replace(/\n/g,"\\n").replace(/\r/g,"\\r"); console.log("done"); cb(JSON.parse(xx)); break;
+                                        }
+                        };
+                        if(rABS) {
+                                        var val = s2ab(data);
+                                        worker.postMessage(val[1], [val[1]]);
+                        } else {
+                                        worker.postMessage(data, [data]);
+                        }
+        }
+         
+        function xlsxworker(data, cb) {
+                        transferable = document.getElementsByName("xferable")[0].checked;
+                        if(transferable) xlsxworker_xfer(data, cb);
+                        else xlsxworker_noxfer(data, cb);
+        }
+         
+        function get_radio_value( radioName ) {
+                        var radios = document.getElementsByName( radioName );
+                        for( var i = 0; i < radios.length; i++ ) {
+                                        if( radios[i].checked || radios.length === 1 ) {
+                                                        return radios[i].value;
+                                        }
+                        }
+        }
+         
+        function to_json(workbook) {
+                        var result = {};
+                        workbook.SheetNames.forEach(function(sheetName) {
+                                        var roa = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                                        if(roa.length > 0){
+                                                        result[sheetName] = roa;
+                                        }
+                        });
+                        return result;
+        }
+         
+        function to_csv(workbook) {
+                        var result = [];
+                        workbook.SheetNames.forEach(function(sheetName) {
+                                        var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName]);
+                                        if(csv.length > 0){
+                                                        result.push("SHEET: " + sheetName);
+                                                        result.push("");
+                                                        result.push(csv);
+                                        }
+                        });
+                        return result.join("\n");
+        }
+         
+        function to_formulae(workbook) {
+                        var result = [];
+                        workbook.SheetNames.forEach(function(sheetName) {
+                                        var formulae = XLSX.utils.get_formulae(workbook.Sheets[sheetName]);
+                                        if(formulae.length > 0){
+                                                        result.push("SHEET: " + sheetName);
+                                                        result.push("");
+                                                        result.push(formulae.join("\n"));
+                                        }
+                        });
+                        return result.join("\n");
+        }
+         
+        var tarea = document.getElementById('b64data');
+        function b64it() {
+                        if(typeof console !== 'undefined') console.log("onload", new Date());
+                        var wb = XLSX.read(tarea.value, {type: 'base64',WTF:wtf_mode});
+                        document.getElementById("{!$Component.frm2.uploadFileAtteHidden}").value=wb ;
+                        process_wb(wb);
+        }
+         
+        function process_wb(wb) {
+                        var output = "";
+                        switch(get_radio_value("format")) {
+                                        case "json":
+                                                        output = JSON.stringify(to_json(wb), 2, 2);
+                                                        break;
+                                        case "form":
+                                                        output = to_formulae(wb);
+                                                        break;
+                                        default:
+                                        output = to_csv(wb);
+                                        var fileAllData=output;
+                                        var allLines = output.split("SHEET: ");;
+                                          
+                                         for (i = 0; i < allLines.length; i++) {
+        
+                                            if(allLines[i] != null && allLines[i] != ""){
+                                            if(allLines[i].indexOf("Cost Summary - MWB")> -1){
+                                            document.getElementById("{!$Component.frm2.Opportunity}").value=allLines[i];
+        
+                                            }
+                                            
+                                            }
+                                       }
+                                    
+                                       
+                        }
+                        if(out.innerText === undefined) out.textContent = output;
+                        else out.innerText = output;
+                        if(typeof console !== 'undefined') console.log("output", new Date());
+        }
+         
+        var drop = document.getElementById('drop');
+        function handleDrop(e) {
+        
+                        e.stopPropagation();
+                        e.preventDefault();
+                        rABS = document.getElementsByName("userabs")[0].checked;
+                        use_worker = document.getElementsByName("useworker")[0].checked;
+                        var files = e.dataTransfer.files;
+                        var i,f;
+                        for (i = 0, f = files[i]; i != files.length; ++i) {
+                                        var reader = new FileReader();
+                                        var name = f.name;
+                                        var dropFileName = f.name;
+                                        document.getElementById("{!$Component.frm2.dropFileNameHidden}").value=dropFileName; 
+                                       
+                                        reader.onload = function(e) {
+                                                        if(typeof console !== 'undefined') console.log("onload", new Date(), rABS, use_worker);
+                                                        var data = e.target.result;
+                                                        if(use_worker) {
+                                                                        xlsxworker(data, process_wb);
+                                                        } else {
+                                                                        var wb;
+                                                                        if(rABS) {
+                                                                                        wb = XLSX.read(data, {type: 'binary'});
+                                                                        } else {
+                                                                        var arr = fixdata(data);
+                                                                                        wb = XLSX.read(btoa(arr), {type: 'base64'});
+                                                                        }
+                                                                        process_wb(wb);
+                                                        }
+                                        };
+                                        if(rABS) reader.readAsBinaryString(f);
+                                        else reader.readAsArrayBuffer(f);
+                        }
+        }
+         
+        function handleDragover(e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'copy';
+        }
+         
+        if(drop.addEventListener) {
+                        drop.addEventListener('dragenter', handleDragover, false);
+                        drop.addEventListener('dragover', handleDragover, false);
+                        drop.addEventListener('drop', handleDrop, false);
+        }
+         
+         
+        var xlf = document.getElementById("{!$Component.frm2.xlf}");
+        function handleFile(e) {
+        document.getElementById('showUpload').style.display = 'none';
+                        document.getElementById('disableUpload').style.display = 'block';
+                        
+                        rABS = document.getElementsByName("userabs")[0].checked;
+                        use_worker = document.getElementsByName("useworker")[0].checked;
+                        var files = e.target.files;
+                        var i,f;
+                        for (i = 0, f = files[i]; i != files.length; ++i) {
+                                        var reader = new FileReader();
+                                        var name = f.name;
+                                        var dropFileName = f.name;
+                                        document.getElementById("{!$Component.frm2.dropFileNameHidden}").value=dropFileName; 
+                                        
+                                        reader.onload = function(e) {
+                                                        if(typeof console !== 'undefined') console.log("onload", new Date(), rABS, use_worker);
+                                                        var data = e.target.result;
+                                                        if(use_worker) {
+                                                                        xlsxworker(data, process_wb);
+                                                        } else {
+                                                                        var wb;
+                                                                        if(rABS) {
+                                                                                        wb = XLSX.read(data, {type: 'binary'});
+                                                                        } else {
+                                                                        var arr = fixdata(data);
+                                                                                        wb = XLSX.read(btoa(arr), {type: 'base64'});
+                                                                        }
+                                                                        process_wb(wb);
+                                                        }
+                                        };
+                                        if(rABS) reader.readAsBinaryString(f);
+                                        else reader.readAsArrayBuffer(f);
+                        }
+                        document.getElementById('showUpload').style.display = 'block';
+                        document.getElementById('disableUpload').style.display = 'none';
+        }
+         
+        if(xlf.addEventListener) xlf.addEventListener('change', handleFile, false);
+    </script>
+            </body>
+          </apex:pageBlock>
+        </apex:outputPanel>
+       <!--
+        <apex:pageBlock id="documentList" >
+            <apex:outputLabel ><b>File List</b></apex:outputLabel>
+            <apex:pageBlockTable value="{!listoftrackersheets}" var="doc" columnsWidth="30%,55%,15%" >
+                  <apex:column headerValue="Document Name">
+                      <apex:outputLink value="/servlet/servlet.FileDownload?file={!Doc.Id}" target="_blank">{!Doc.name}</apex:outputLink>
+                  </apex:column>
+                  <apex:column headerValue="Comments" value="{!doc.Description}"></apex:column>
+                  <apex:column headerValue="Date Uploaded" value="{!doc.createddate}"></apex:column>
+            </apex:pageBlockTable> 
+        </apex:pageBlock>      
+        -->   
+</apex:page>

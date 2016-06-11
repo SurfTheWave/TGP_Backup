@@ -1,0 +1,40 @@
+<apex:page controller="Governance_Data_Controller"  docType="html-5.0" tabStyle="Opportunity_TGP__c" >
+   <apex:form >
+    <apex:pageBlock >
+    	<apex:pageBlockButtons location="top">
+            <apex:commandButton value="Send" action="{!sendMail}" /> 
+            <apex:commandButton value="Cancel" action="{!cancelMail}" /> 
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection >
+            <apex:OutputPanel id="Test1" > 
+                <apex:pageMessages id="pageMsg1" rendered="{!mailMsg}"/>
+            </apex:OutputPanel>
+        </apex:pageBlockSection>
+      <apex:variable value="{!governanceLookup}" var="g"/>
+       <table width="700">
+           <tr>
+               <td width="50">User 1 </td>
+                  
+               <td width="400">
+                <apex:inputField value="{!g.User_1__c}" />
+                  <!--  <apex:inputtext value="{!emailIds}" />    -->                  
+               </td>
+           </tr>
+           <tr>
+               <td width="50">User 2 </td>                  
+               <td width="400">
+                <apex:inputField value="{!g.User_2__c}" />                                
+               </td>
+           </tr>
+           
+           <tr>
+                <td width="90"> Mail Message</td>
+                <td width="610">
+                	<apex:inputField value="{!g.Mail_Message__c}" style="width: 75%; height: 65px;font-size:13px "/>
+                </td>
+           </tr>
+        </table>
+        
+     </apex:pageBlock> 
+   </apex:form>
+</apex:page>

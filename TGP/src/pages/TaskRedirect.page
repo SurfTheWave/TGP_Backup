@@ -1,0 +1,10 @@
+<apex:page standardController="Task">
+<script>
+function redirect(){
+window.location.href='https://accenturebpoworkbench--r2.cs14.my.salesforce.com/006c000000CPQkm';
+}
+</script>
+<apex:form >
+<apex:actionFunction name="Redirect"  oncomplete="redirect()"/>
+</apex:form>
+</apex:page>

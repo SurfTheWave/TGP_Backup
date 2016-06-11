@@ -1,0 +1,26 @@
+<apex:page standardController="Commercial_Data__c"  extensions="Commercial_InlineeController"  id="page1" doctype="html-5.0" >
+
+
+                <apex:pageBlock >
+                <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+              <apex:outputLabel value="Number of SDO FTEs per Tower/ Service"  styleClass="green"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:pageBlockTable value="{!listBenchmarkSummary}" var="b">
+                    <apex:column value="{!b.Opportunity_Offering__c}">
+                    <apex:facet name="header">Sub Service Offering</apex:facet>
+                    </apex:column>
+                    <apex:column value="{!b.Name}">
+                    <apex:facet name="header">Service</apex:facet>
+                    </apex:column>
+                    <apex:column value="{!b.Sum_of_Baseline_FTEs__c}">
+                    <apex:facet name="header">Sum of Baseline FTEs</apex:facet>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSectionItem> 
+               </apex:pageBlockSection>
+               </apex:pageBlock>
+
+
+</apex:page>

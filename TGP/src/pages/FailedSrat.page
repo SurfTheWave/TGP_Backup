@@ -1,0 +1,80 @@
+<apex:page controller="ImportSrat" contentType="application/vnd.ms-excel# Error_{!fileName}_{!dealName}.xls" cache="true">
+ <apex:outputText value="{!xlsHeader}"/>
+     <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+      xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:x="urn:schemas-microsoft-com:office:excel"
+      xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+      xmlns:html="http://www.w3.org/TR/REC-html40">
+      
+        <Styles>
+             <Style ss:ID="Default" ss:Name="Normal">
+                 <Alignment ss:Vertical="Bottom"/>
+                 <Borders/>
+                 <Font/>
+                 <Interior/>
+                 <NumberFormat/>
+                 <Protection/>
+             </Style>
+             <Style ss:ID="s23">
+                 <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                 <Borders>
+                     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                 </Borders>
+                 <Font ss:Bold="1"/>
+                    <Interior ss:Color="#CAE1FF" ss:Pattern="Solid"/>
+                 <NumberFormat/>
+                 <Protection/>
+             </Style>
+             <Style ss:ID="s24">
+                <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                 <Borders>
+                     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                 </Borders>
+                 <Interior />
+                 <NumberFormat/>
+                 <Protection/>
+             </Style>
+       </Styles>
+      <!-- Fetch data from classes and insert -->
+         <apex:repeat value="{!errorWorkbook}" var="model">
+            <Worksheet ss:Name="{!model.sheetName}">
+                  <!-- New Table created for the sheet -->
+                 <Table  x:FullColumns="1" x:FullRows="1">
+                    <Column ss:AutoFitWidth="1" ss:Width="154"/>
+                    <Column ss:AutoFitWidth="1" ss:Width="154"/>
+                    <Column ss:AutoFitWidth="1" ss:Width="154"/>
+                    <Column ss:Width="154"/>
+                    <Column ss:Width="154"/>
+                    <Column ss:Width="154"/>
+                    <Column ss:Width="154"/>
+                    <Column ss:Width="154"/>
+                     <Row >
+                         <apex:repeat value="{!model.headerList}" var="header">
+                            <Cell ss:StyleID="s23">
+                                <Data ss:Type="String">{!header}</Data>
+                            </Cell>
+                         </apex:repeat>
+                    </Row>
+                    
+                  <!-- Insert data, by mapping the headers as map key -->
+                  <!-- Repeat the loop for the number of records -->
+                    <apex:repeat value="{!model.data}" var="allrecord">
+                        <apex:repeat value="{!allrecord}" var="rows">
+                          <Row >
+                              <apex:repeat value="{!rows}" var="row">                       
+                                    <Cell ss:StyleID="s24"><Data ss:Type="String">{!row}</Data></Cell>                       
+                              </apex:repeat>
+                          </Row> 
+                        </apex:repeat>                   
+                    </apex:repeat>
+                  </Table>
+            </Worksheet>
+        </apex:repeat>
+    </Workbook>
+</apex:page>

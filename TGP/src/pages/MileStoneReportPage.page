@@ -1,0 +1,79 @@
+<apex:page standardController="Wave_Plan_Version__c" extensions="MilestoneReportPageController" sidebar="false">
+    <script>
+
+  function OpenHistoryPopup(RecordID)
+    {
+        var w = 500;
+        var h = 400;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/3)-(h/2));
+        var url = '/apex/MileStoneReportExport?ID='+RecordID;
+        var myWindow = window.open(url,'Mob_Deal_Track','scrollbars=no,width=650,height=500, resizable=no, z-index: 9999,location=no, left=' + left + ',top='+ top );
+        myWindow.focus();
+        return false;        
+    }        
+ 
+</script>
+    <apex:form id="myForm">
+        <apex:pageBlock >
+            <apex:pageBlockButtons >
+                <!-- <apex:commandButton value="Export" action="{!exporttoExcel}" />  -->
+                <apex:commandLink value="Export" onclick="return OpenHistoryPopup('{!wpvRecord.Id}');"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1" title="Mile Stone Report">
+                <apex:pageBlockTable value="{!mileStoneList}" var="rec" id="NewPage1">
+                    <apex:column >
+                        <apex:facet name="header">Deals</apex:facet> 
+                        <apex:outputText value="{!rec.deal}"/>
+                    </apex:column>
+                    <apex:column >  
+                        <apex:facet name="header">Location</apex:facet> 
+                        <apex:outputText value="{!rec.location}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">Waves</apex:facet> 
+                        <apex:outputText value="{!rec.Waves}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">Planning Modules</apex:facet> 
+                        <apex:outputText value="{!rec.planingModules}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">Activity List</apex:facet> 
+                        <apex:outputText value="{!rec.activityList}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">Planned Start Date</apex:facet> 
+                        <apex:outputText value="{!rec.plannedStartDate}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">Planned End Date</apex:facet> 
+                        <apex:outputText value="{!rec.plannedEndDate}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">Actual Start Date</apex:facet> 
+                        <apex:outputText value="{!rec.actualStartDate}"/>
+                    </apex:column>
+                    <apex:column >  
+                        <apex:facet name="header">Actual End Date</apex:facet> 
+                        <apex:outputText value="{!rec.actualEndDate}"/>
+                    </apex:column>
+                    <!--
+                    <apex:column >      
+                        <apex:facet name="header">RAG Status</apex:facet> 
+                        <apex:outputText value="{!rec.ragStatus}"/>
+                    </apex:column>
+                    -->
+                    <apex:column >      
+                        <apex:facet name="header">Status</apex:facet> 
+                        <apex:outputText value="{!rec.status}"/>
+                    </apex:column>
+                    <apex:column >      
+                        <apex:facet name="header">% Completed</apex:facet> 
+                        <apex:outputText value="{!rec.completed}"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,7 @@
+<apex:component access="global" controller="MFSI_FormatDateTime">
+     <apex:attribute assignTo="{!dateTimeValue}" description="The DateTime value to be rendered based upon the users
+               locale" name="date_Timevalue" type="DateTime"></apex:attribute> 
+       {!TimeZoneValue}
+        <apex:attribute assignTo="{!whatyouwant}" description="This attribute accepts 3 values Date, datetime,time" name="whatyou_want" type="string"></apex:attribute>
+        <apex:attribute assignTo="{!userslocale}" description="Provide users time zone here" name="user_locale" type="string"></apex:attribute>
+</apex:component>

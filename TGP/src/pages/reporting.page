@@ -1,0 +1,5 @@
+<apex:page standardController="Opportunity_Offering__c" extensions="reportingController">
+ <apex:form >
+<apex:outputLink value="/00OL0000000XEVR?pv0={!newOppOffer.Name}">click to report</apex:outputLink>
+</apex:form>
+</apex:page>

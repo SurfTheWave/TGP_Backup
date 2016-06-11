@@ -1,0 +1,6 @@
+<apex:page id="calenderpage" showHeader="false" sidebar="true" tabStyle="Client_Visit_Request__c" controller="ClientVisitCalendarController" >
+
+<script type="text/javascript"> 
+window.location="/00U/c?cType=1&cal_lkid={!$Label.ClientVisitCalender_id}&cal_lspf=1&md0={!currentYear}&md1={!currentmonth }"
+</script>
+</apex:page>

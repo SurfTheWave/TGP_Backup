@@ -1,0 +1,231 @@
+<!--
+Author : Mayank Tayal
+Story  :   SOL_082
+Description :Under View Submitted Meetings Tab under Approval Tab, default list of all the submitted meetings is displayed with button to see the previously scheduled meeting logs.
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    Sol_148                    5/15/2013          Sol UAM-Release 2
+Mayank Tayal    SOL_154                    21 May 2013        Change in Flow for Meeting Request & Scheduling Call
+
+-->
+
+<apex:page controller="ApprovalProcessPageController" showHeader="true" sidebar="true" tabStyle="Approval__tab" >
+  <style>
+.activeTab {background-color: #236FBD; color:white; 
+         background-image:none}
+      .inactiveTab { background-color: lightgrey; color:black; 
+         background-image:none}
+  .rich-tab-header {
+padding: 2px 10px 2px 10px;
+text-align: left;
+cursor:pointer;
+} 
+  .rich-tabpanel-content {cursor:default}; 
+        
+</style>
+<script type="text/javascript">
+   var j$ = jQuery.noConflict();
+</script>
+ <script>
+    window.onload=function()
+  {
+      scheduledMeetingList();                                          
+  }
+</script>
+    <apex:form >
+        <apex:actionFunction name="refreshPage" action="{!refreshPage}" reRender="formMsg,form1"/>
+    </apex:form>
+    <apex:form id="formMsg">
+        <apex:pageMessages rendered="{!showMainMsg}"></apex:pageMessages>
+    </apex:form>
+    <apex:form id="form1" rendered="{!showForm}">
+        <apex:tabPanel switchType="client" id="theTabPanel" inactiveTabClass="inactiveTab" value="{!selectedTab}" styleClass="rich-tab-header" >            
+             <apex:tab label="Approval Calendar" name="tab1" id="tabOne">
+                <apex:outputPanel rendered="{!if(showCal, false, true)}">
+                    <a href="#" target="_self">
+                        <iframe height="600" marginheight="0" src="/apex/CreateNewCalendarEventPage?isdtp=mn&calID={!meetingID}" frameborder="0" width="100%" marginwidth="0"></iframe>
+                        <br/><br/>
+                       <h1 style="font-weight:bold;font-size:130%">  <apex:commandLink onclick="return window.open('{!$Resource.OutlookInstructionsDocument}','Name','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes');" value="Download" style="color:blue;"/> instructions to access the Solution Workbench Calendar in Outlook  </h1>
+                        <br/><br/>
+                      <!--   <h1 style="font-weight:bold;font-size:130%"><apex:commandLink style="color:blue;" target="_parent" action="{!redirectToDownload}" value="Click Here "/> to Download Salesforce Outlook Integration Setup! </h1>-->
+                    </a>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!showCal}" >
+                    <a href="#" target="_self">
+                        <iframe height="800" marginheight="0" src="/00U/c?isdtp=mn&cType=1&cal=Approval+Calendar&cal_lkid={!calendarId}&cal_lkold=Approval+Calendar" frameborder="0" width="100%" marginwidth="0"></iframe>
+                        <br/><br/>
+                        <h1 style="font-weight:bold;font-size:130%">  <apex:commandLink onclick="return window.open('{!$Resource.OutlookInstructionsDocument}','Name','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes');" value="Download" style="color:blue;"/> instructions to access the Solution Workbench Calendar in Outlook  </h1>
+                        <br/><br/>
+                       <!--  <h1 style="font-weight:bold;font-size:130%"><apex:commandLink style="color:blue;" target="_parent" action="{!redirectToDownload}" value="Click Here "/> to Download Salesforce Outlook Integration Setup! </h1>  -->
+                    </a>
+                </apex:outputPanel>
+                
+            </apex:tab>
+            <apex:tab label="View Submitted Meeting" name="tab2" id="tabTwo">
+                <apex:pageBlock >
+                    <apex:pageMessages ></apex:pageMessages>
+                    <apex:pageBlockSection title="Submitted Meetings" columns="1" id="section2" collapsible="false" >
+                        <apex:outputPanel layout="block" style="overflow:auto;height:200px;">
+                            <apex:pageBlockTable value="{!meetingsList}" var="profDetail" style="width:140%;">
+                                <apex:column headerValue="Meeting ID" width="100px">
+                                    <apex:outputField value="{!profDetail.name}" />
+                                </apex:column>
+                                <apex:column headerValue="Opportunity ID" >
+                                    <apex:outputField value="{!profDetail.Opportunity_ID__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Opportunity Name">
+                                    <apex:outputField value="{!profDetail.Opportunity_Name__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Client Name" >
+                                    <apex:outputField value="{!profDetail.Client_Name__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Lead Solution Architect - BPO">
+                                    <apex:outputField value="{!profDetail.Opportunity_Solution_lead__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Offerings" width="100px">
+                                    <apex:outputField value="{!profDetail.Offering__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Client Geo Area">
+                                    <apex:outputField value="{!profDetail.Client_Geo_Area__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Client Geo Unit">
+                                    <apex:outputField value="{!profDetail.Client_Geo_Unit__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="BPO Net Revenue (MMS)">
+                                    <apex:outputField value="{!profDetail.TCV_M__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                
+                                <apex:column headerValue="Meeting Type">
+                                    <apex:outputField value="{!profDetail.Review_Process__r.Review_Stage_Master__r.name}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Requested Meeting Date">
+                                    <apex:outputField value="{!profDetail.Preferred_Meeting_Date_del__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Requested Meeting Time" width="100px">
+                                    <apex:outputField value="{!profDetail.Meeting_Time__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Comments">
+                                    <apex:outputField value="{!profDetail.Comments__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Schedule/Cancel Meeting" rendered="{!addButtonRender}">
+                                    <apex:commandLink action="{!scheduleCall}" value="Schedule Approval Call" style="color:blue;" rerender="form1,theTabPanel">
+                                        <apex:param name="meetingID" value="{!profDetail.id}" assignTo="{!meetingID}"/>
+                                    </apex:commandLink>
+                                    <br/>
+                                    <apex:commandLink action="{!deferCall}" value="Cancel Approval Call" style="color:blue;" onclick="return confirm('Are you sure you want to Cancel this meeting?');">
+                                        <apex:param name="meetingID" value="{!profDetail.id}" assignTo="{!meetingID}"/>
+                                    </apex:commandLink>
+                                </apex:column>
+                            </apex:pageBlockTable>
+                        </apex:outputPanel>                    
+                    </apex:pageBlockSection>                
+                </apex:pageBlock>
+                <apex:pageBlock id="schMeetList">
+                    <apex:actionFunction name="scheduledMeetingList" action="{!scheduledMeetingList}" reRender="schMeetList"/>
+                    <apex:commandButton value="View Scheduled Meeting Logs" action="{!scheduledMeetingList}" reRender="schMeetList"/> 
+                   <!-- <apex:commandButton value="Hide Scheduled Meeting Logs" action="{!hideScheduledList}" rendered="{!schMeetingDisplay}" reRender="schMeetList"/>-->
+                    &nbsp; &nbsp;
+                    <apex:commandButton value="View Cancelled Meeting Logs" action="{!deferredMeetingList}" rendered="{!deferredDisplay}" reRender="schMeetList"/>
+                   <!-- <apex:commandButton value="Hide Cancelled Meeting Logs" action="{!hideDeferredList}" rendered="{!defMeetingDisplay}" reRender="schMeetList"/>-->
+                    <br/><br/>
+                    <apex:pageBlockSection title="Scheduled Meeting Logs" columns="1" id="schMeeting" collapsible="false" rendered="{!schMeetingDisplay}" >
+                        <apex:outputPanel layout="block" style="overflow:auto;height:200px">
+                            <apex:pageBlockTable value="{!scheduledMeetingsList}" var="profDetail">
+                                <apex:column headerValue="Meeting ID" width="100px">
+                                    <apex:outputField value="{!profDetail.name}" />
+                                </apex:column>
+                                <apex:column headerValue="Opportunity ID" width="100px">
+                                    <apex:outputField value="{!profDetail.Opportunity_ID__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Opportunity Name" width="100px">
+                                    <apex:outputField value="{!profDetail.Opportunity_Name__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Client Name" width="100px">
+                                    <apex:outputField value="{!profDetail.Client_Name__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Lead Solution Architect - BPO" width="100px">
+                                    <apex:outputField value="{!profDetail.Opportunity_Solution_lead__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Offerings" width="100px">
+                                    <apex:outputField value="{!profDetail.Offering__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Client Geo Area" width="100px">
+                                    <apex:outputField value="{!profDetail.Client_Geo_Area__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Client Geo Unit" width="100px">
+                                    <apex:outputField value="{!profDetail.Client_Geo_Unit__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue=" BPO Net Revenue (MMS)" width="100px">
+                                    <apex:outputField value="{!profDetail.TCV_M__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                
+                                <apex:column headerValue="Meeting Type" width="100px">
+                                    <apex:outputField value="{!profDetail.Review_Process__r.Review_Stage_Master__r.name}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Requested Meeting Date" width="100px">
+                                    <apex:outputField value="{!profDetail.Preferred_Meeting_Date_del__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Requested Meeting Time" width="100px">
+                                    <apex:outputField value="{!profDetail.Meeting_Time__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Comments" width="100px">
+                                    <apex:outputField value="{!profDetail.Comments__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                            </apex:pageBlockTable>
+                        </apex:outputPanel>                   
+                    </apex:pageBlockSection>
+                    
+                    <apex:pageBlockSection title="Cancelled Meeting Logs" columns="1" id="defMeeting" collapsible="false" rendered="{!defMeetingDisplay}" >
+                        <apex:outputPanel layout="block" style="overflow:auto;height:200px">
+                            <apex:pageBlockTable value="{!deferredMeetingsList}" var="profDetail">
+                                <apex:column headerValue="Meeting ID" width="100px">
+                                    <apex:outputField value="{!profDetail.name}" />
+                                </apex:column>
+                                <apex:column headerValue="Opportunity ID" width="100px">
+                                    <apex:outputField value="{!profDetail.Opportunity_ID__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Opportunity Name" width="100px">
+                                    <apex:outputField value="{!profDetail.Opportunity_Name__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Client Name" width="100px">
+                                    <apex:outputField value="{!profDetail.Client_Name__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Lead Solution Architect - BPO" width="100px">
+                                    <apex:outputField value="{!profDetail.Opportunity_Solution_lead__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Offerings" width="100px">
+                                    <apex:outputField value="{!profDetail.Offering__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Client Geo Area" width="100px">
+                                    <apex:outputField value="{!profDetail.Client_Geo_Area__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Client Geo Unit" width="100px">
+                                    <apex:outputField value="{!profDetail.Client_Geo_Unit__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="BPO Net Revenue (MMS)" width="100px">
+                                    <apex:outputField value="{!profDetail.TCV_M__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                
+                                <apex:column headerValue="Meeting Type" width="100px">
+                                    <apex:outputField value="{!profDetail.Review_Process__r.Review_Stage_Master__r.name}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Requested Meeting Date" width="100px">
+                                    <apex:outputField value="{!profDetail.Preferred_Meeting_Date_del__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Requested Meeting Time" width="100px">
+                                    <apex:outputField value="{!profDetail.Meeting_Time__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                                <apex:column headerValue="Comments" width="100px">
+                                    <apex:outputField value="{!profDetail.Comments__c}" style="width: 90%; height: 45px"/>
+                                </apex:column>
+                            </apex:pageBlockTable>
+                        </apex:outputPanel>                   
+                    </apex:pageBlockSection>
+                       
+                </apex:pageBlock>
+            </apex:tab>
+            
+           
+        </apex:tabPanel>
+    </apex:form>
+</apex:page>

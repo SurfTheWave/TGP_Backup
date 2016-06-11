@@ -1,0 +1,310 @@
+<apex:page showHeader="false" standardController="Opportunity_TGP__c" extensions="VFC_Cost_Summary_Metrics_Old">
+<style type="text/css">
+table{
+    border-collapse:collapse
+}</style>
+<table cellpadding="5" style="width:100%;border:2px solid #000">
+<!--New Row Total Cost -->
+<tr>
+  <th>&nbsp;</th>
+  <th>&nbsp;</th>
+  <th>Price Parameter</th>
+  <th>Transition</th>
+  <th>Year 1</th>
+  <th>Year 2</th>
+  <th>Year 3</th>
+  <th>Year 4</th>
+  <th>Year 5</th>
+  <th>Year 6</th>
+  <th>Year 7</th>
+  <th>Year 8</th>
+  <th>Year 9</th>
+  <th>Year 10</th>
+  <th>Totals</th>
+  <th>&nbsp;</th>
+</tr>
+<tr>
+  <td colspan="2">&nbsp;</td>
+  <td align="left">Indicative Price</td>    
+  <td style="border-bottom:1px solid #000">$&nbsp;{!indicativeMob}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!indicativeYear1}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!indicativeYear2}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!indicativeYear3}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!indicativeYear4}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!indicativeYear5}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!indicativeYear6}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!indicativeYear7}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!indicativeYear8}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!indicativeYear9}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!indicativeYear10}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!indicativeYearTot}</td>
+  <th style="border-bottom:1px solid #000">&nbsp;</th>
+</tr>
+<tr>
+  <td colspan="2">&nbsp;</td>
+  <td align="left">Capital Charges</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!capitalMob}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!capitalYear1}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!capitalYear2}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!capitalYear3}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!capitalYear4}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!capitalYear5}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!capitalYear6}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!capitalYear7}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!capitalYear8}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!capitalYear9}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!capitalYear10}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!capitalYearTot}</td>
+  <td style="border-bottom:1px solid #000">&nbsp;</td>
+</tr>
+<tr>
+  <td colspan="2">&nbsp;</td>
+  <td align="left">Plus FX contingency</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusFxContgMob}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusFxContgYear1}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusFxContgYear2}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusFxContgYear3}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusFxContgYear4}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusFxContgYear5}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusFxContgYear6}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusFxContgYear7}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusFxContgYear8}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusFxContgYear9}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusFxContgYear10}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusFxContgYearTot}</td>
+  <td style="border-bottom:1px solid #000">&nbsp;</td>
+</tr>
+<tr>
+  <td colspan="2">&nbsp;</td>
+  <td align="left">Plus Cola</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusColaMob}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusColaYear1}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusColaYear2}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusColaYear3}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusColaYear4}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusColaYear5}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusColaYear6}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusColaYear7}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusColaYear8}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusColaYear9}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusColaYear10}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!plusColaYearTot}</td>
+  <td style="border-bottom:1px solid #000">&nbsp;</td>
+</tr>
+<tr>
+  <td colspan="2">&nbsp;</td>
+  <td align="left">Cost Plus Contingency</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!costContingMob}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!costContingYesr1}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!costContingYesr2}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!costContingYesr3}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!costContingYesr4}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!costContingYesr5}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!costContingYesr6}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!costContingYesr7}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!costContingYesr8}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!costContingYesr9}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!costContingYesr10}</td>
+  <td style="border-bottom:1px solid #000">$&nbsp;{!costContingYesrTot}</td>
+  <td style="border-bottom:1px solid #000">&nbsp;</td>
+</tr>
+<tr>
+  <td colspan="2" style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+  <td align="left" style="border-bottom:5px solid #01A9DB">Total Cost</td>  
+  
+  <td style="border-bottom:5px solid #01A9DB">$&nbsp;{!totalCost1}</td>
+  <td style="border-bottom:5px solid #01A9DB">$&nbsp;{!totalCost2}</td>
+  <td style="border-bottom:5px solid #01A9DB">$&nbsp;{!totalCost3}</td>
+  <td style="border-bottom:5px solid #01A9DB">$&nbsp;{!totalCost4}</td>
+  <td style="border-bottom:5px solid #01A9DB">$&nbsp;{!totalCost5}</td>
+  <td style="border-bottom:5px solid #01A9DB">$&nbsp;{!totalCost6}</td>
+  <td style="border-bottom:5px solid #01A9DB">$&nbsp;{!totalCost7}</td>
+  <td style="border-bottom:5px solid #01A9DB">$&nbsp;{!totalCost8}</td>
+  <td style="border-bottom:5px solid #01A9DB">$&nbsp;{!totalCost9}</td>
+  <td style="border-bottom:5px solid #01A9DB">$&nbsp;{!totalCost10}</td>
+  <td style="border-bottom:5px solid #01A9DB">$&nbsp;{!totalCost11}</td>
+  <td style="border-bottom:5px solid #01A9DB">$&nbsp;{!totalCost12}</td>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp;</td>
+</tr>
+<!--New Row Contingency -->
+
+<tr>
+  <th>Type</th>
+  <th>Offering</th>
+  <th>Service</th>
+  <th>Transition</th>
+  <th>Year 1</th>
+  <th>Year 2</th>
+  <th>Year 3</th>
+  <th>Year 4</th>
+  <th>Year 5</th>
+  <th>Year 6</th>
+  <th>Year 7</th>
+  <th>Year 8</th>
+  <th>Year 9</th>
+  <th>Year 10</th>
+  <th>Total Cost</th>
+  <th style="border-top:5px;">% of Costs</th>
+</tr>
+<apex:repeat value="{!opprBeancMarkSummaryList}" var="opprBeancMarkSummary">
+<tr>
+  <td>{!opprBeancMarkSummary.Pivot_Level__c}</td>
+  <td>{!opprBeancMarkSummary.Sub_Service_Offering__c}</td>
+  <td>{!opprBeancMarkSummary.Service__c}</td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_Mob_cost__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year1__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year2__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year3__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year4__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year5__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year6__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year7__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year8__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year9__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_RUN_Year10__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Sum_of_Total_Cost__c}"/></apex:outputText></td>
+  <!--<td><apex:outputText value="{0,number,###.00}%"><apex:param value="{!opprBeancMarkSummary.percent_of_costs__c}"/></apex:outputText></td>-->
+  <td>{!opprBeancMarkSummary.percent_of_costs__c}%</td>
+</tr>
+
+</apex:repeat>
+<!-- Row Following this line is for Total -->
+<hr/>
+<tr>
+
+  <td style="border-bottom:5px solid #01A9DB">&nbsp; </td>
+  <td style="border-bottom:5px solid #01A9DB"> &nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB"> &nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;{!totalCost1}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;{!totalCost2}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;{!totalCost3}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;{!totalCost4}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;{!totalCost5}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;{!totalCost6}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;{!totalCost7}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;{!totalCost8}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;{!totalCost9}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;{!totalCost10}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;{!totalCost11}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">$&nbsp;{!totalCost12}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost13}%</td>
+</tr>
+<tr>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td colspan='11' align='center'><b>Average FTEs / year</b></td>
+  <td>&nbsp;</td>
+</tr>
+<tr>
+  <th>Type</th>
+  <th>Offering</th>
+  <th>Service</th>
+  <th>&nbsp;</th>
+  <th>Year 1</th>
+  <th>Year 2</th>
+  <th>Year 3</th>
+  <th>Year 4</th>
+  <th>Year 5</th>
+  <th>Year 6</th>
+  <th>Year 7</th>
+  <th>Year 8</th>
+  <th>Year 9</th>
+  <th>Year 10</th>
+  <th>Total FTE</th>
+  <th>&nbsp;</th>
+</tr>
+<apex:repeat value="{!opprBeancMarkSummaryList}" var="opprBeancMarkSummary">
+<tr>
+  <td>{!opprBeancMarkSummary.Pivot_Level__c}</td>
+  <td>{!opprBeancMarkSummary.Sub_Service_Offering__c}</td>
+  <td>{!opprBeancMarkSummary.Service__c}</td>
+  <!-- <td><apex:outputText value="{0,number,0}%"><apex:param value="{!opprBeancMarkSummary.percent_of_costs__c}"/></apex:outputText></td> -->
+  <td></td>
+  <td>{!opprBeancMarkSummary.Sum_of_FTE_YR1__c}</td>
+  <td>{!opprBeancMarkSummary.Sum_of_FTE_YR2__c}</td>
+  <td>{!opprBeancMarkSummary.Sum_of_FTE_YR3__c}</td>
+  <td>{!opprBeancMarkSummary.Sum_of_FTE_YR4__c}</td>
+  <td>{!opprBeancMarkSummary.Sum_of_FTE_YR5__c}</td>
+  <td>{!opprBeancMarkSummary.Sum_of_FTE_YR6__c}</td>
+  <td>{!opprBeancMarkSummary.Sum_of_FTE_YR7__c}</td>
+  <td>{!opprBeancMarkSummary.Sum_of_FTE_YR8__c}</td>
+  <td>{!opprBeancMarkSummary.Sum_of_FTE_YR9__c}</td>
+  <td>{!opprBeancMarkSummary.Sum_of_FTE_YR10__c}</td>
+  <td>{!opprBeancMarkSummary.Total_FTE_all_years__c}</td>
+  <td>&nbsp;</td>
+</tr>
+</apex:repeat>
+<!-- Row Following this line is for Total -->
+<tr>
+  <td style="border-bottom:5px solid #01A9DB">&nbsp; </td>
+  <td style="border-bottom:5px solid #01A9DB"> &nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB"> &nbsp;</td>
+  <!-- <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost13}%</td> -->
+  <td style="border-bottom:5px solid #01A9DB;">&nbsp;</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost14}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost15}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost16}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost17}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost18}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost19}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost20}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost21}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost22}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost23}</td>
+  <td style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">{!totalCost24}</td>
+  <th style="border-bottom:5px solid #01A9DB; border-top:1px solid #000">&nbsp;</th>
+</tr>
+<tr>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td colspan='11' align="center"><b>Average Cost / FTE</b></td>
+  <td>&nbsp;</td>
+  
+</tr>
+<tr>
+  <th>Type</th>
+  <th>Offering</th>
+  <th>Service</th>
+  <th>&nbsp;</th>
+  <th>Year 1</th>
+  <th>Year 2</th>
+  <th>Year 3</th>
+  <th>Year 4</th>
+  <th>Year 5</th>
+  <th>Year 6</th>
+  <th>Year 7</th>
+  <th>Year 8</th>
+  <th>Year 9</th>
+  <th>Year 10</th>
+  <th>Avg All Years</th>
+  <th>&nbsp;</th>
+</tr>
+<apex:repeat value="{!opprBeancMarkSummaryList}" var="opprBeancMarkSummary">
+<tr>
+  <td>{!opprBeancMarkSummary.Pivot_Level__c}</td>
+  <td>{!opprBeancMarkSummary.Sub_Service_Offering__c}</td>
+  <td>{!opprBeancMarkSummary.Service__c}</td>
+  <td>&nbsp;</td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_1_Mob__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_2__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_3__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_4__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_5__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_6__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_7__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_8__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_9__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_YR_10__c}"/></apex:outputText></td>
+  <td><apex:outputText value="${0, number, #,###,###}"><apex:param value="{!opprBeancMarkSummary.Average_cost_FTE_Full_deal__c}"/></apex:outputText></td>
+  <td>&nbsp;</td>
+</tr>
+</apex:repeat>
+<!-- Row Following this line is for Total -->
+
+</table>
+ 
+</apex:page>

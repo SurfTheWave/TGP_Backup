@@ -1,0 +1,18 @@
+<apex:page showHeader="false"  controller="MaintainTrackerHistoryController">
+    <apex:form >
+    <apex:pageBlock >
+        <apex:pageBlockButtons location="top">
+            <apex:commandButton value="Close" onclick="window.top.close()"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockTable value="{!HistoryList}" var="h" rendered="{!showMessage}">
+            <apex:column headerValue="Field Name" value="{!h.FieldName}"/>
+            <apex:column headerValue="Old Value" value="{!h.OldValue}"/>
+            <apex:column headerValue="New Value" value="{!h.NewValue}" />
+            <apex:column headerValue="Last Modified Date" value="{!h.ModifiedDate}"/>
+            <apex:column headerValue="Last Modified By" value="{!h.ModifiedBy}"/>
+            <apex:column headerValue="Wave" value="{!h.Wave}" rendered="{!!WaveTrue}"/>
+        </apex:pageBlockTable> 
+        <apex:outputLabel rendered="{!!showMessage}"><B>No History Found.</B></apex:outputLabel>       
+    </apex:pageBlock>
+    </apex:form>
+ </apex:page>

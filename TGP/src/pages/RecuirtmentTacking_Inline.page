@@ -1,0 +1,322 @@
+<!--
+Author : Sanjay Kumar Das
+Story : Story-0138 / MOB_122 
+Decription : VF Page - Recruitment Plan
+
+Updated by          Story no                Update Date        Update details
+------------      -----------------        --------------    -------------------------------------------------------------
+Varsha Chougule    Story-0030 / MOB_016        27-Feb-13        Duplicate validation
+Varsha Chougule    Story-0030 / MOB_122        01-March-13    Browser Incompatability Defect 
+Varsha Chougule      MOB_131                  31-may-2013       Active inactive
+-->
+
+<apex:page standardController="Wave_Plan_Version__c" title="addnewRecord" extensions="Recuitment_InlineController" id="pg" sidebar="false" showHeader="false" >
+<style>
+.reqSelect 
+{
+}
+
+table.inlineEditTbl td
+{
+    height: 20px !important; 
+}
+table.inlineEditTbl input[type="text"] 
+{
+    width: 50px;
+}
+body 
+{
+    font-size: 75% important;
+}
+table.inlineEditTbl2 td
+{
+    height: 50px !important; 
+}
+
+</style>
+     <!-- To Remove Browser Incompatability Defect &nbsp; is added-->
+      &nbsp;
+       <!-- This form is used to show the error message or success message once the records get added or saved-->
+      <apex:form id="msg">
+      <apex:pageMessages />
+    </apex:form>
+    <!-- MOB_154 Start-->
+     <apex:form id="frm2" rendered="{!IF(isTrackingOn && isNA,true,false)}">
+       <apex:pageBlock >
+        <apex:pageBlockSection columns="3"  title="Recruitment Tracker Section">
+        <center> <apex:commandButton id="goButton" value="GO TO Recruitment Tracker"  action="{!goToRecTracker}" /> </center>
+     </apex:pageBlockSection>
+     </apex:pageBlock>
+     </apex:form>
+     <!--MOB_154 End -->
+     <apex:form id="frm" rendered="{!IF(isWaveVersionActive==true && showForm==true && isNA,true,false)}" >
+    <apex:inputHidden id="hiddenSection1" value="{!hiddenNavigator}"/>
+        <apex:variable value="{!dealLocation }" var="newWaveProcessDetail"/>
+        <apex:pageBlock rendered="{!isAddVisible}">        
+            <apex:pageBlockSection title="{!sectionTitle}" columns="{!col1}" id="section1">
+                <apex:pageBlockSection columns="1" >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Activity" rendered="{!IF(isEditable,true,false)}"/> 
+                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock"/>
+                            <apex:inputField value="{!newWaveProcessDetail.Activity__c}" style="width:100px;height:20px;"  rendered="{!IF(isEditable,true,false)}"/>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+                    <apex:outputField value="{!newWaveProcessDetail.Activity__c}" style="width:100px;height:20px;" rendered="{!IF(isEditable,false,true)}"/>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection columns="{!col3}" id="block1">
+                    <apex:pageBlockSectionItem >  
+                    <apex:outputLabel value="Location"/>
+                    <apex:outputPanel styleClass="requiredInput" layout="block" > 
+                        <apex:outputPanel styleClass="requiredBlock" rendered="{!IF(isEditable,true,false)}"/>
+                            <apex:actionRegion immediate="true">
+                                <apex:selectList size="1" value="{!locationName}" required="true" tabindex="1" style="width:140px;height:20px;"    rendered="{!IF(isEditable,true,false)}" >
+                                    <apex:actionSupport event="onchange" rerender="block1" />
+                                    <apex:selectOptions value="{!LocationNames}"/>
+                                </apex:selectList>
+                            </apex:actionRegion>
+                        <apex:outputField value="{!newWaveProcessDetail.Deal_Location_lk__r.Deal_Home_Location__r.Delivery_Location_Master__r.name}" style="width:60px;height:20px;" rendered="{!IF(isEditable,false,true)}"/>
+                        </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                        <apex:outputlabel value="Wave Dependency"/>
+                        <apex:outputPanel styleClass="requiredInput" layout="block" >
+                            <apex:outputPanel styleClass="requiredBlock" rendered="{!IF(isEditable,true,false)}" />
+                                <apex:selectList size="1" value="{!WavePlanName}" style="width:50px;height:20px;"   rendered="{!IF(isEditable,true,false)}">
+                                    <apex:selectOptions value="{!WavePlans}"/>
+                                </apex:selectList>
+                            <apex:outputField value="{!newWaveProcessDetail.Wave_Plan_lk__r.Wave_Label__c}" style="width:40px;height:20px;" rendered="{!IF(isEditable,false,true)}"/>
+                            </apex:outputPanel>
+                             </apex:pageBlockSectionItem>
+                         </apex:pageBlockSection>
+                         <apex:pageBlockSection columns="{!col2}" >
+                         <!-- <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="No of FTEs" style="width:50px;height:20px;"/> 
+                        <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!newWaveProcessDetail.FTE_Number__c}" style="width:20px;height:20px;" label="No of FTEs"/>
+                        </apex:outputPanel>
+                        </apex:pageBlockSectionItem>-->
+                        <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Planned Start Date" style="width:100px;height:20px;"/> 
+                        <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!newWaveProcessDetail.Planned_Start_Date__c}" style="width:100px;height:20px;"/>
+                        </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Planned End Date" style="width:100px;height:20px;"/> 
+                        <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!newWaveProcessDetail.Planned_End_Date__c}" style="width:100px;height:20px;"/>
+                        </apex:outputPanel>
+                        </apex:pageBlockSectionItem>            
+                                    <apex:inputField value="{!newWaveProcessDetail.Active__c}" rendered="{!isActive}"/>
+                                    <apex:inputField value="{!newWaveProcessDetail.Comments__c}" rendered="{!isActive}"/>
+                                    <apex:outputPanel id="PanelForButton">
+                                        <apex:commandButton id="saveButton" action="{!checkRecordDeactivated}"  value="{!buttonName}" oncomplete="isDeactivated('{!isRecordDeactivated}');" rendered="{!if(isWaveVersionActive==true && valueOfActiveField==true,true,false)}"/>
+                                    </apex:outputPanel>
+                         </apex:pageBlockSection>                            
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:actionFunction action="{!addWaveProcessDetail}" name="SaveRecord" oncomplete="updateTable();"  reRender="{!rerenderText}"/>    
+    </apex:form>
+    <!-- This form is used to display the added location,wave dependency, planned start date, planned end date-->
+    <apex:form id="form3" rendered="{!IF(ShowForm && isNA,true,false)}">
+     <apex:inputHidden id="hiddenSection2" value="{!hiddenNavigator1}"/>
+        <apex:actionregion >
+            <apex:pageBlock rendered="{!isTableRendedered}">
+               <!-- <apex:pageBlockSection title="Recruitment Tracking Plan Details" columns="1" id="section1"> -->
+               
+               <apex:pageBlockButtons rendered="{!isAddVisible}" location="top" >
+                        <apex:commandButton value="Edit" action="{!edit}" id="editButton" reRender="form3,msg"  rendered="{!IF(isNA && isEdit,false,true)}" />      
+                        <apex:commandButton value="Save" action="{!save}" id="saveButton" reRender="form3,msg" rendered="{!IF(isNA && isEdit,true,false)}" />
+                        <apex:commandButton action="{!cancel}" id="cancelButton" value="Cancel" reRender="form3,msg" rendered="{!IF(isNA && isEdit,true,false)}"/>
+                    </apex:pageBlockButtons>
+                    
+                   
+                    <apex:pageBlockTable value="{!listOfLoactionDetailsActual}" var="profDetail" styleClass="inlineEditTbl" rendered="{!IF(isNA && isEdit,false,true)}">
+                        <apex:column headerValue="Activity">
+                            <apex:outputField value="{!profDetail.Activity__c}" />
+                        </apex:column>
+                      <!--  <apex:column headerValue="Location">
+                            <apex:outputField value="{!profDetail.Deal_Location_lk__r.Deal_Home_Location__r.Delivery_Location_Master__r.name}"/>
+                        </apex:column>
+                        <apex:column headerValue="Wave Dependency" id="service1">
+                            <apex:outputField value="{!profDetail.Wave_Plan_lk__r.Wave_Label__c}"/>
+                        </apex:column> -->
+                        
+                        <apex:column headerValue="Location - Wave">
+                            <apex:outputField value="{!profDetail.Location_Name_Wave_Name__c}" />
+                        </apex:column>
+                        
+                        <!--<apex:column headerValue="No of FTEs">
+                            <apex:outputField value="{!profDetail.FTE_Number__c}" />
+                        </apex:column>-->
+                        <apex:column headerValue="Planned Start Date">
+                            <apex:outputField value="{!profDetail.Planned_Start_Date__c}" />
+                        </apex:column>
+                        <apex:column headerValue="Planned End Date">
+                            <apex:outputField value="{!profDetail.Planned_End_Date__c}" />
+                        </apex:column>                  
+                        <apex:column headerValue="Active">
+                              <apex:outputField value="{!profDetail.Active__c}"/> 
+                        </apex:column>
+                        <apex:column headerValue="Milestone">
+                            <apex:outputField value="{!profDetail.Milestone__c}" />
+                         </apex:column>
+                        <apex:column headerValue="Comments">
+                              <apex:outputField value="{!profDetail.Comments__c}"/> 
+                        </apex:column>
+                       <!-- <apex:column headerValue="Edit" rendered="{!isWaveVersionActive}">
+                            <apex:commandButton value="Edit" onclick="update('{!profDetail.id}');" rendered="{!if(isWaveVersionActive==true && profDetail.isEditVisible__c =true,true,false)}"/>
+                        </apex:column> -->
+                        <apex:facet name="footer">You are viewing page {!pageNumber} of {!totalPages} pages</apex:facet>
+                    </apex:pageBlockTable>
+                    
+                    
+                    <apex:pageBlockTable value="{!listOfLoactionDetailsActual}" var="profDetail" id="userTable" rendered="{!IF(isNA && isEdit,true,false)}"> 
+                       
+                        <apex:column headerValue="Activity">
+                            <apex:outputField value="{!profDetail.Activity__c}" rendered="{!profDetail.Is_From_Add_Section__c==false}"/>
+                          <!--  <apex:inputField value="{!profDetail.Activity__c}" rendered="{!profDetail.Is_From_Add_Section__c==true}"/> -->
+                            <apex:inputField value="{!profDetail.Activity__c}" rendered="{!if(profDetail.Is_From_Add_Section__c=true && profDetail.isEditVisible__c =true,true,false)}"/>
+                            <apex:outputField value="{!profDetail.Activity__c}" rendered="{!if(profDetail.Is_From_Add_Section__c=true && profDetail.isEditVisible__c =false,true,false)}"/>
+                         
+                         </apex:column> 
+                         
+                        <apex:column headerValue="Location - Wave">
+                            <apex:outputField value="{!profDetail.Location_Name_Wave_Name__c}" rendered="{!profDetail.Is_From_Add_Section__c==false}"/>
+                            <apex:outputField value="{!profDetail.Location_Name_Wave_Name__c}" rendered="{!if(profDetail.Is_From_Add_Section__c=true && profDetail.isEditVisible__c =false,true,false)}"/>
+                           <!-- <apex:selectList value="{!profDetail.Location_Id_Wave_Id__c}"  multiselect="false" size="1" rendered="{!profDetail.Is_From_Add_Section__c==true}" id="t1" onclick="popup();"> -->
+                           <apex:selectList value="{!profDetail.Location_Id_Wave_Id__c}"  multiselect="false" size="1" rendered="{!if(profDetail.Is_From_Add_Section__c=true && profDetail.isEditVisible__c =true,true,false)}" id="t1" onclick="popup();" style="width:420px;">                           
+                                <apex:selectOptions value="{!LocationWaveList}"/>
+                            </apex:selectList>
+                        </apex:column>
+                       
+                         <apex:column headerValue="Planned Start Date"> 
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                                <c:noDateLink >                         
+                                     <apex:inputField value="{!profDetail.Planned_Start_Date__c}"  rendered="{!if(isWaveVersionActive==true && profDetail.isEditVisible__c =true,true,false)}"/>
+                                 </c:noDateLink>
+                        </apex:column> 
+                                         
+                        <apex:column headerValue="Planned End Date">
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                                   <c:noDateLink >
+                                        <apex:inputField value="{!profDetail.Planned_End_Date__c}"  rendered="{!if(isWaveVersionActive==true && profDetail.isEditVisible__c =true,true,false)}"/>
+                                    </c:noDateLink>
+                        </apex:column>
+                        
+                         <apex:column headerValue="Active" >
+                             <apex:facet name="header" >
+                             <apex:outputPanel >Active
+                                 <apex:inputCheckBox label="Active" > 
+                                     <apex:actionSupport event="onclick" action="{!selectAll}" onsubmit="checkAllActive(this)" rerender="userTable"/>
+                                 </apex:inputCheckBox>
+                                 </apex:outputPanel>
+                             </apex:facet>                          
+                           <apex:inputcheckbox value="{!profDetail.Active__c}" id="checkedone" rendered="{!profDetail.isEditVisible__c =true}"/>
+                           <apex:outputField value="{!profDetail.Active__c}"  rendered="{!profDetail.isEditVisible__c =false}"/>
+                        </apex:column>
+                       
+                        <apex:column headerValue="Milestone">
+                        <apex:facet name="header">
+                            <apex:outputpanel >Milestone                                
+                                <apex:inputCheckBox label="Milestone" > 
+                                     <apex:actionSupport event="onclick" action="{!selectAllMilestone}" onsubmit="checkAllMilestone(this)" rerender="userTable"/>
+                                 </apex:inputCheckBox>                               
+                            </apex:outputpanel>
+                        </apex:facet>
+                            <apex:outputField value="{!profDetail.Milestone__c}"   rendered="{!profDetail.isEditVisible__c=false}"/>
+                            <apex:inputCheckbox value="{!profDetail.Milestone__c}" id="checkMilestone" rendered="{!profDetail.isEditVisible__c=true}"/>
+                         </apex:column>
+                        
+                         <apex:column headerValue="Comments">
+                            <apex:inputField value="{!profDetail.Comments__c}"  rendered="{!if(isWaveVersionActive==true && profDetail.isEditVisible__c =true,true,false)}"/>
+                        </apex:column>
+                 
+<!--                          --->
+                    </apex:pageBlockTable>
+                    
+                
+             <!--   </apex:pageBlockSection> -->
+             
+              <apex:pageBlockButtons location="bottom" >
+                       <apex:outputPanel id="myButtons" style="align:center">                
+                       <!-- <apex:facet name="footer">Showing Page # {!pageNumber} of {!totalPages}</apex:facet> -->
+                            <apex:commandButton action="{!Beginning}" title="Beginning" value="<<" disabled="{!disablePrevious || disablePrevious1}" reRender="frm,form3,myButtons" />
+                            <apex:commandButton action="{!Previous}" title="Previous" value="<" disabled="{!disablePrevious || disablePrevious1}" reRender="frm,form3,myButtons" />        
+                            <apex:commandButton action="{!Next}" title="Next" value=">" disabled="{!disableNext || disableNext1}" reRender="frm,form3,myButtons" />
+                            <apex:commandButton action="{!End}" title="End" value=">>" disabled="{!disableNext  || disableNext1}" reRender="frm,form3,myButtons" /> 
+                       </apex:outputPanel>
+                       </apex:pageBlockButtons>
+               
+            </apex:pageBlock>
+            <apex:actionFunction name="RefreshAfterUpdate" action="{!initializeDetailRecords}" immediate="true" rerender="form3" >
+            </apex:actionFunction>
+        </apex:actionregion>
+    </apex:form>  
+<!-- This following java script will be called when user click on Edit button-->
+<script>
+   function update(processId)
+    {
+        //alert(processId);
+        var w = 500;
+        var h = 400;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/3)-(h/2));
+        window.open('/apex/RecuirtmentTacking_Inline?processId='+processId,'Product','scrollbars=no,width=500,height=550, resizable=no, chrome=yes, minimizable=no, location=no, left=' + left + ',top='+ top );
+        //window.showModalDialog('/apex/RecuirtmentTacking_Inline?processId='+processId,'Product','scroll:off; resizable:no; dialogWidth:500px; dialogHeight:400px; center:yes');
+        //updateClientProcess();
+    }
+    
+    function updateTable()
+    {
+        if(top.window.parent.opener != null)
+        {
+             top.window.parent.opener.closePage();
+         }
+ 
+    }
+    function closePage()
+    {
+            RefreshAfterUpdate();
+    }  
+    function isDeactivated(isRecordDeactivated)
+    {
+        if(isRecordDeactivated=='true')
+        {
+            var option=confirm('To activate, you need to create new High Level Mobilization Plan.');
+            if (option==true)
+            {
+                SaveRecord();
+            }
+        }
+        else
+        {
+            SaveRecord();
+        }
+    }
+    
+     function checkAllActive(cb)
+    {
+        var inputElem = document.getElementsByTagName("input");
+        for(var i=0; i<inputElem.length; i++)
+        {
+            if(inputElem[i].id.indexOf("checkedone")!=-1)
+            inputElem[i].checked = cb.checked;
+        }
+    }
+    function checkAllMilestone(cb1)
+    {
+        var inputElem1 = document.getElementsByTagName("input");
+        for(var i=0; i<inputElem1.length; i++)
+        {
+            if(inputElem1[i].id.indexOf("checkMilestone")!=-1)
+            inputElem1[i].checked = cb1.checked;
+        }
+    }
+    
+</script>
+</apex:page>

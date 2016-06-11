@@ -1,0 +1,20 @@
+<apex:page standardController="Solution_Scope__c">
+  <!-- Begin Default Content REMOVE THIS -->
+  <h1>Congratulations</h1>
+  FIELD SETS This is your new Page
+  <!-- End Default Content REMOVE THIS -->
+  
+  <apex:form >
+      <apex:pageblock >   
+       <apex:pageBlockButtons >
+        <apex:commandButton action="{!save}" value="Save"/>
+      </apex:pageBlockButtons>
+          <apex:pageBlockSection title="Account detail">
+             <apex:repeat value="{!$ObjectType.Solution_Scope__c.fieldsets.SCF}" var="fieldValue">
+                 <apex:Inputfield value="{!Solution_Scope__c[fieldValue]}"/>
+             </apex:repeat>
+          </apex:pageBlockSection>
+      </apex:pageblock>
+    </apex:form>
+    
+</apex:page>

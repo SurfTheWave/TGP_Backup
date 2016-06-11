@@ -1,0 +1,15 @@
+<apex:page >
+<script>
+function goBack()
+  {
+  window.history.go(-1)
+  }
+  
+</script>
+    <body>
+      <p  style="font-size:15px;"><b>No additional data is available.<br /><br />
+    
+        Click <a href='#' onClick="goBack();">here</a> to go back to previous page.</b></p>
+    </body>
+
+</apex:page>

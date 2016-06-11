@@ -1,0 +1,39 @@
+<apex:page controller="ImportOpexSratChecklist" sidebar="false" showHeader="false">
+    <script>
+        function ConfirmCancel(){
+         var isCancel = confirm("Are you sure you wish to cancel?")
+            if (isCancel) return true;
+            return false;
+        } 
+        window.onunload = refreshParent;
+        function refreshParent() {
+        window.opener.location.reload();
+    }
+        function CloseAndRefresh(){
+           //window.opener.location.href="/{!$CurrentPage.parameters.id}";
+           
+           window.top.close();
+          
+        }  
+    </script>
+    <!--second section of DML Operation starts here-->
+    <apex:outputPanel id="pick" >  
+        <apex:outputPanel id="pick1"> 
+            <apex:sectionHeader title="" subtitle="Choose your .CSV File" id="next2" />
+                <apex:form > 
+                <apex:pageMessages />
+                    <apex:pageBlock >   
+                        <center>
+                        <br/>                                                    
+                        <br/>  
+                        <apex:inputFile value="{!contentFile}" filename="{!nameFile}" />
+                        <apex:commandButton action="{!SratL1Import}" value="Upload File"  id="theButton" style="width:70px;" />
+                         </center>
+                        <apex:pageBlockButtons location="bottom">
+                            <apex:commandButton value="Close" onClick="CloseAndRefresh();" immediate="true" style="width:20%"/>
+                        </apex:pageBlockButtons>
+                    </apex:pageBlock> 
+                </apex:form> 
+            </apex:outputPanel> 
+    </apex:outputPanel> 
+</apex:page>

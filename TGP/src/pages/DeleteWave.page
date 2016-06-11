@@ -1,0 +1,4 @@
+<apex:page standardcontroller="Wave__c" extensions="CheckDeleteMWB" action="{!CheckDeleteMWB}">
+<apex:pageMessages />
+
+</apex:page>

@@ -1,0 +1,10 @@
+<apex:page controller="ExportRAIDController" action="{!exportToExcel}" contenttype="application/vnd.ms-excel#ExportRAID.xls" cache="true" language="en-US">
+    <apex:pageBlock >
+    
+        <apex:pageBlockTable value="{!objLst}" var="object">
+            <apex:repeat value="{!flds}" var="field">
+                <apex:column value="{!object[field]}" />
+            </apex:repeat>
+        </apex:pageBlockTable>             
+    </apex:pageBlock>  
+</apex:page>

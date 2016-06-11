@@ -1,0 +1,28 @@
+<apex:page controller="RefreshSyncStatus">
+     <script>   
+      
+      function doStart(){
+          console.log('--- inside ---------');
+          Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.RefreshSyncStatus.checkStatus}',
+             function(result, event){                                       
+                    if (event.status) {                                                                                                 
+                        var msg ="";
+                        for(var key in result){
+                            msg +=  key+result[key] +'\n';
+                        }                         
+                        if(msg !='' && msg != null ) {        
+                            alert(msg);                       
+                            finalActionCntrlr(); 
+                        }
+                      }                                          
+               }                   
+            );
+       }         
+     </script>      
+    <apex:form >                
+          <apex:actionPoller onsubmit="doStart()" interval="60" /> 
+    <!--  <input type="button" value="click" onclick="doStart();" />-->
+       <apex:actionFunction name="finalActionCntrlr" action="{!finalAction}" rerender=""/>                 
+    </apex:form> 
+</apex:page>

@@ -1,0 +1,302 @@
+<apex:page standardController="Solution_User_Assignment__c"  sidebar="false" title="addnewRecord" extensions="PMOSolutionUserAssignmentController" tabStyle="PMO_User_Assignment__tab" >
+
+<apex:form id="errorMesg">
+    <apex:pageMessages ></apex:pageMessages>
+</apex:form>
+    
+  <apex:form id="frm">
+  
+   <apex:inputHidden value="{!strOppLookupValue}" id="strOppValueHidden" />
+   
+             <apex:inputHidden value="{!strRoleRequested}" id="strRoleRequestHidden" />
+             <apex:inputHidden value="{!strSAPOMID}" id="strSapomidHidden" />
+             <apex:inputHidden value="{!strClient}" id="strClientNameHidden" />           
+            <apex:inputHidden value="{!strOppList}" id="strOppSelectHidden" />          
+            <apex:inputHidden value="{!strOffering}" id="strOfferingHidden" />
+            <apex:inputHidden value="{!strComment}" id="strCommentsHidden" />
+            <apex:inputHidden value="{!strDateNeededBy}" id="strDateNeededByHidden" />
+            
+            <apex:inputHidden value="{!submitRequestIds}" id="selectedCheckboxHidden" />
+            
+  
+
+ 
+  <apex:pageBlock mode="edit" id="Table">
+ 
+  <table width="100%" border="0">
+  <tr>  
+    <td width="200" valign="top">
+ 
+      <apex:pageBlock title="Filter Criteria" mode="edit" id="criteria">
+ 
+      <script type="text/javascript">
+      
+     function doSearch() {
+    
+    var SAPSelect = document.getElementById("j_id0:frm:Table:criteria:SAPSelect").value;
+    var clSelect= document.getElementById("j_id0:frm:Table:criteria:clSelect").value; 
+    var oppSelect= document.getElementById("j_id0:frm:Table:criteria:oppSelect").value;   
+    
+        searchServer(            
+          document.getElementById("role").options[document.getElementById("role").selectedIndex].value,
+          document.getElementById("status").options[document.getElementById("status").selectedIndex].value,
+          SAPSelect,
+          clSelect,
+          oppSelect          
+          );
+       }   
+
+     function clearComponents(input,lookupId) {
+        //document.getElementById("role").value='';
+        //document.getElementById("status").value='';
+        document.getElementById("j_id0:frm:Table:criteria:SAPSelect").selectedIndex = 0;
+        document.getElementById("j_id0:frm:Table:criteria:clSelect").selectedIndex = 0;
+        document.getElementById("j_id0:frm:Table:criteria:oppSelect").selectedIndex = 0;
+      }
+      
+      </script> 
+ 
+      <apex:actionFunction name="searchServer" action="{!runSearch}" rerender="results,debug,errors,errorMesg" > <!-- rerender="results,debug,errors" -->       
+          <apex:param name="role" value="" />
+          <apex:param name="status" value="" />
+          <apex:param name="SAPSelect" value="" />
+          <apex:param name="clSelect" value="" />
+          <apex:param name="oppSelect" value="" />
+
+
+      </apex:actionFunction>
+ 
+      <table cellpadding="2" cellspacing="2">
+      <tr>
+        <td style="font-weight:bold;">Role<br/>
+          <select id="role" onchange="doSearch();">
+            <option value="All">All</option>
+            <apex:repeat value="{!role}" var="tech">
+              <option value="{!tech}">{!tech}</option>
+            </apex:repeat>
+          </select>
+        </td>
+      </tr>
+      
+     <tr>
+        <td style="font-weight:bold;">Status<br/>
+          <select id="status" onchange="doSearch();">
+            <option value="All">All</option>
+            <apex:repeat value="{!status}" var="tech">
+              <option value="{!tech}">{!tech}</option>
+            </apex:repeat>
+          </select>
+        </td>
+      </tr>
+      
+       <tr>
+         <td style="font-weight:bold;">SAP OM ID<br/>
+            <apex:selectList id="SAPSelect" value="{!listSAPOMSelected}" onchange="doSearch();" multiselect="false" size="1" style="width:170px;height:20px;">
+                <apex:selectOptions id="SAPOMSelectValue" value="{!SAPOMIDList}"/>
+            </apex:selectList>
+        </td>
+      </tr>
+      
+      <tr>
+         <td style="font-weight:bold;">Client Name<br/>
+           <apex:selectList id="clSelect" value="{!listClientSelected}" onchange="doSearch();" multiselect="false" size="1" style="width:170px;height:20px;">
+                <apex:selectOptions id="clSelectValue" value="{!ClientList}"/>
+            </apex:selectList>
+        </td>
+      </tr>
+        
+      <tr>
+         <td style="font-weight:bold;">Opportunity<br/>
+            <apex:selectList id="oppSelect" value="{!listOppSelected}" onchange="doSearch();" multiselect="false" size="1" style="width:170px;height:20px;">
+                <apex:selectOptions id="oppSelectValue" value="{!OpportunityList}"/>
+            </apex:selectList>
+        </td>
+      </tr>
+      <tr></tr><tr></tr>
+      <tr>
+          <td style="font-weight:bold;">
+          <apex:commandButton value="Clear Filter Criteria" action="{!clearFilter}" reRender="frm" oncomplete="clearComponents();" /> 
+          </td>
+      </tr>
+      
+      </table>
+ 
+      </apex:pageBlock>
+ 
+    </td>
+    <td valign="top">
+
+    <apex:pageBlock title="PMO View" mode="edit" id="results">
+    
+    <apex:pageBlockButtons location="top">
+       <!-- <apex:commandButton value="Save" id="saveButton" action="{!savingPMORecord}" style="vertical-align:middle;" reRender="frm,myPanel,results,t1" /> -->
+        <apex:commandButton value="Assign" id="assign" action="{!assignRecords}" style="vertical-align:middle;" onClick="showBoxes(this.form);" reRender="myPanel,results,t1,errorMesg" />
+        <apex:commandButton value="On Hold" id="onhold" action="{!onHoldRecords}" style="vertical-align:middle;" onClick="showBoxes(this.form);" reRender="myPanel,results,t1,errors,errorMesg"/>
+        <apex:commandButton value="Not Filled" id="notfilled" action="{!notFilledRecords}" style="vertical-align:middle;" onClick="showBoxes(this.form);" reRender="myPanel,results,t1,errors,errorMesg"/>
+    </apex:pageBlockButtons>
+
+ <apex:outputPanel id="myPanel">
+
+        <apex:pageBlockTable value="{!solUserAssign}" var="soluser" id="t1"> 
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="Action"/>
+                </apex:facet>
+                <apex:outputPanel rendered="{!if(soluser.Status__c=='New' || soluser.Status__c=='Cancelled',false,true)}">
+             <input type="checkbox" NAME="selectCheckbox" id="theCheckBox" value="{!soluser.id}" onClick="" />  <!-- <apex:outputText value="{!soluser.Id}"/> -->            
+               </apex:outputPanel>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="Role Requested"/>
+                </apex:facet>
+                <apex:outputField value="{!soluser.Role__c}"/>
+            </apex:column>
+            
+             <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="Opportunity"/>
+                </apex:facet>
+                <apex:outputField value="{!soluser.BPO_Opportunity__c}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="SAP OM ID"/>
+                </apex:facet>
+                <apex:outputField value="{!soluser.SAP_OM_ID__c}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="Client Name"/>
+                </apex:facet>
+                <apex:outputField value="{!soluser.ClientName__c}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="Offering Name"/>
+                </apex:facet>
+                <apex:outputField value="{!soluser.Offering_Master__r.Name}"/>
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="Comments"/>
+                </apex:facet>
+                <apex:inputTextarea value="{!soluser.Comments__c}" rendered="{!if(soluser.Status__c=='New' || soluser.Status__c=='Cancelled',false,true)}"/>    
+                <apex:outputfield value="{!soluser.Comments__c}" rendered="{!if(soluser.Status__c=='New' || soluser.Status__c=='Cancelled',true,false)}"/>                                             
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="Requestor Name"/>
+                </apex:facet>
+                <apex:outputText value="{!soluser.Requester_Name__r.name}"/>
+            </apex:column>
+            
+             <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="Date Needed By"/>
+                </apex:facet>
+                <apex:outputField value="{!soluser.Date_Needed_by__c}"  />
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="Date Requested"/>
+                </apex:facet>                
+                <apex:outputField value="{!soluser.Date_Requested__c}" />
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="Date Assigned"/>
+                </apex:facet>
+                <apex:outputField value="{!soluser.Date_Assigned__c}" />
+            </apex:column>
+             
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="Resource Assigned"/>
+                </apex:facet>               
+              <apex:inputField value="{!soluser.Resource_Assigned_User_New__c}" rendered="{!if(soluser.Status__c=='New' || soluser.Status__c=='Cancelled',false,true)}"/>    
+                <apex:outputfield value="{!soluser.Resource_Assigned_User_New__c}" rendered="{!if(soluser.Status__c=='New' || soluser.Status__c=='Cancelled',true,false)}"/>
+            
+            </apex:column>
+            
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:outputLabel value="Status"/>
+                </apex:facet>
+                <apex:outputText value="{!soluser.Status__c}"/>
+            </apex:column>
+             
+           
+            <!--<apex:column >
+                <apex:facet name="header">
+                    <apex:commandLink value="New Status" action="{!toggleSort}" rerender="results,debug,errorMesg">
+                        <apex:param name="sortField" value="Status" assignTo="{!sortField}"/>
+                    </apex:commandLink>                    
+                </apex:facet>
+                <apex:selectList title="PickList1" size="1" value="{!soluser.Status__c}" styleClass="form-select">
+                    <apex:selectOptions value="{!PickLstValue}"/>
+                </apex:selectList>
+            </apex:column>-->
+            
+          <!-- <apex:inlineEditSupport showOnEdit="saveButton" event="ondblclick"/> -->  
+        <apex:facet name="footer">Showing Page # {!pageNumber} of {!totalPages}</apex:facet>    
+        </apex:pageBlockTable>          
+        </apex:outputPanel>
+        
+        <apex:pageBlockButtons location="bottom" >
+       <apex:outputPanel id="myButtons">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+              
+            <apex:commandButton action="{!Beginning}" title="Beginning" value="<<" disabled="{!disablePrevious}" reRender="myPanel,myButtons,errorMesg"/>
+            <apex:commandButton action="{!Previous}" title="Previous" value="<" disabled="{!disablePrevious}" reRender="myPanel,myButtons,errorMesg"/>        
+            <apex:commandButton action="{!Next}" title="Next" value=">" disabled="{!disableNext}" reRender="myPanel,myButtons,errorMesg"/>
+            <apex:commandButton action="{!End}" title="End" value=">>" disabled="{!disableNext}" reRender="myPanel,myButtons,errorMesg"/> 
+       </apex:outputPanel>
+       </apex:pageBlockButtons>
+       
+    </apex:pageBlock>
+
+    </td>
+  </tr>
+  </table>
+
+ <!-- <apex:pageBlock title="Debug - SOQL" id="debug">
+      <apex:outputText value="{!debugSoql}" />           
+  </apex:pageBlock> -->
+         
+  </apex:pageBlock>
+
+  </apex:form>
+<script>
+    function showBoxes(frm){
+        var checkValues="";
+       //alert('vinay-----'+frm.selectCheckbox.length);
+         if(frm.selectCheckbox.length==undefined){
+         checkValues =frm.selectCheckbox.value;
+         checkValues = checkValues + ","
+         }
+
+           //For each checkbox see if it has been checked, record the value.
+           for (i = 0; i < frm.selectCheckbox.length; i++)
+              if (frm.selectCheckbox[i].checked){
+                 checkValues = checkValues +  frm.selectCheckbox[i].value +  ","
+              }
+      
+        var updateValues=checkValues.replace(/.$/,'')
+       //alert('updateValues-----'+updateValues);
+        document.getElementById("{!$Component.frm.selectedCheckboxHidden}").value = updateValues;    
+    }
+</script>
+
+</apex:page>

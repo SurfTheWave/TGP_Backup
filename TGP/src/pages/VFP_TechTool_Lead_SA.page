@@ -1,0 +1,102 @@
+<apex:page controller="VFC_TechToolsLeadSA" action="{!CallFirst}" tabStyle="Opportunity">
+    <script type="text/javascript">
+        function checkAll(cb,cbid)
+            {
+                var inputElem = document.getElementsByTagName("input");                     
+                for(var i=0; i<inputElem.length; i++)
+                {             
+                     if(inputElem[i].id.indexOf(cbid)!=-1){                                        
+                        inputElem[i].checked = cb.checked;
+                    }
+                }
+            }
+            function doValidate(){
+            console.log("inside the do validate");
+            var elm = document.getElementsByClassName("select-option");
+            var inputElem = document.getElementsByClassName("chk");
+            var bool = false;
+            var bool1 =false;
+            for(var i=0; i<inputElem.length; i++) {  
+                if(inputElem[i].checked){
+                    bool = true;
+                    console.log("elm----------"+ elm[i].options[elm[i].selectedIndex].text);
+                    if(elm[i].options[elm[i].selectedIndex].text =="Other"){
+                        var elmDescr = document.getElementsByClassName("text-descript")[i].value;
+                        console.log('elmDescr-----------'+ elmDescr);
+                        if(elmDescr != "" && elmDescr != null){
+                            bool1 = true;
+                        }else{
+                            document.getElementById("error-msg").innerHTML="Please enter out of scope description";
+                            bool1 = false;
+                            return false;
+                        }
+                    }else
+                        bool1 = true;    
+                }
+            }
+            if(bool == false){
+                document.getElementById("error-msg").innerHTML="Please select atleast one record to update";
+            }else{
+                document.getElementById("error-msg").innerHTML="";
+                if(bool1 == false){
+                    document.getElementById("error-msg").innerHTML="Please enter out of scope description";
+                }else{
+                    document.getElementById("error-msg").innerHTML="";
+                } 
+            }
+            if(bool && bool1)
+                return true;
+            else
+                return false;
+        }
+    </script>  
+    
+     <apex:form >
+        <apex:pageBlock title="Out of Scope Technology Tools">
+         
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton onclick="return doValidate()" action="{!save}" value="Save"/>    
+                <apex:commandButton action="{!doCancel}" value="Cancel"/>             
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2" title="Opportunity Details"  >
+                <apex:outputField value="{!OppRecord.SAP_OM_Item_Id__c}"/>
+                <apex:outputField value="{!OppRecord.Geo_Region__c}"/>
+                <apex:outputField value="{!OppRecord.Name}"/>
+                <apex:outputField value="{!OppRecord.Geo_Unit__c}"/>
+                <apex:outputField value="{!OppRecord.Account.Name}"/>
+                <apex:outputField value="{!OppRecord.Service_Grp__c}"/>              
+                <apex:outputField value="{!OppRecord.StageName}"/>
+                <apex:outputField value="{!OppRecord.OperatingGroup__c}"/>               
+                <apex:outputField value="{!OppRecord.BPO_Reporting_Status__c}"/>
+                <apex:outputField value="{!OppRecord.Opportunity_Solution_Lead__c}"/>           
+                <apex:outputField value="{!OppRecord.ECSD_Quarter__c}"/>               
+                <apex:outputField value="{!OppRecord.BPO_Net_Rev_Thousands__c}"/>  
+            </apex:pageBlockSection>
+            <br/>
+            <span id="info-msg" style="background-color:yellow;padding-top:5px;padding-bottom:5px;font-weight:bold;">Note: Select atleast one check box to update</span><br/><br/>
+            <span id="error-msg" style="color:red;padding-top:1%;font-weight:bold;"></span>
+            <apex:pageBlockSection title="Out of Scope Technology Tools" columns="1">            
+                <apex:pageBlockTable value="{!techToolResultsList}" var="item" align="center"  CELLSPACING="2" CELLPADDING="0"  >
+                    <apex:column >
+                        <apex:facet name="header">                          
+                            <apex:inputCheckbox onclick="checkAll(this,'checkedone')"/>
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!item.checked}" id="checkedone" styleClass="chk"/>
+                    </apex:column>
+                    <apex:column value="{!item.techTool.Service__r.Solutionscope__r.Offering_Master__c}" headerValue="Offering"/>
+                    <apex:column value="{!item.techTool.Service__r.services__c}" headerValue="Service"/>
+                    <apex:column value="{!item.techTool.Tech_Tool__c}" headerValue="Tech Tool Name" />
+                    <apex:column value="{!item.techTool.Tech_Tool_Type__c}" headerValue="Tech Tool Type"/>
+                  <!--  <apex:column value="{!item.techTool.Scope_Status__c}"/>  -->            
+                    <apex:column headerValue="Out Of Scope Reason" >
+                        <apex:inputField value="{!item.techTool.Out_Of_Scope_Reason__c}" styleClass="select-option"/>
+                    </apex:column>
+                    <apex:column headerValue="Description">
+                        <apex:inputField value="{!item.techTool.Out_Of_Scope_Reason_Description__c}" styleClass="text-descript"/>
+                    </apex:column>                                    
+                    <apex:column value="{!item.techTool.LastModifiedDate}"  headerValue="Last Updated On"/>   
+                </apex:pageBlockTable>
+            </apex:pageBlockSection> 
+         </apex:pageBlock>   
+    </apex:form>
+</apex:page>

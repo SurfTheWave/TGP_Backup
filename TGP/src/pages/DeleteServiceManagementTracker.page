@@ -1,0 +1,4 @@
+<apex:page standardcontroller="Service_Management_Tracker__c" extensions="CheckDeleteMWB" action="{!CheckDeleteMWB}">
+<apex:pageMessages />
+
+</apex:page>

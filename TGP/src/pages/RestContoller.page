@@ -1,0 +1,15 @@
+<apex:page controller="RestDemoController">
+  <apex:form >
+      <apex:pageBlock >
+       <apex:commandButton value="Sync Data" action="{!sendSyncData}"/>
+       <apex:commandButton value="Get Opportunity Details" action="{!sendOppdetails}"/>
+       <apex:commandButton value="Get Opp Team Details" action="{!sendOppteamdetails}"/>
+       <apex:commandButton value="Auto Sync Date" action="{!autoSyncData}"/>
+       <apex:commandButton value="Send BDL DATA" action="{!sendBDL}"/>
+       <apex:commandButton value="Complete Sync" action="{!synccomplete}"/>
+      </apex:pageBlock> 
+      <apex:pageBlock >
+       <apex:outputText >{!response}</apex:outputText>
+      </apex:pageBlock>
+  </apex:form>
+</apex:page>

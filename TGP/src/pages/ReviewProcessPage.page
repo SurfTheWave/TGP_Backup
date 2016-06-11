@@ -1,0 +1,351 @@
+<!--
+Author : Mayank Tayal
+Story  :   SOL_081
+Description :Reqeust by SA to schedule a call.
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    Sol_148                    5/15/2013           Sol UAM-Release 2
+Mayank Tayal    SOL_153                    20 May 2013        Change in Flow for Meeting Request
+
+-->
+
+<apex:page standardController="Review_Process__c" extensions="ReviewProcessPageController" showHeader="true" sidebar="true" tabStyle="Review__tab">
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
+</script>-->
+<apex:includeScript value="{!$Resource.jQuery}"/>
+
+<script type="text/javascript">
+   var j$ = jQuery.noConflict();
+</script> 
+
+<script  type="text/javascript" language="javascript"> 
+     window.onload = function(){
+
+        jQuery('[id$=block1]').focus();
+    };
+    
+
+</script>
+ 
+
+<style>
+.activeTab {background-color: #236FBD; color:white; 
+         background-image:none}
+.inactiveTab { background-color: lightgrey; color:black; 
+         background-image:none}
+.rich-tab-header {
+    padding: 2px 10px 2px 10px;
+    text-align: left;
+    cursor:pointer;
+}
+ .rich-tabpanel-content {cursor:default;}
+</style>
+<script type="text/javascript">
+var bajb_backdetect={Version:'1.0.0',Description:'Back Button Detection',Browser:{IE:!!(window.attachEvent&&!window.opera),Safari:navigator.userAgent.indexOf('Apple')>-1,Opera:!!window.opera,Chrome:navigator.userAgent.toLowerCase().indexOf('msie')==-1},FrameLoaded:0,FrameTry:0,FrameTimeout:null,OnBack:function(){window.history.back()},BAJBFrame:function(){var BAJBOnBack=document.getElementById('BAJBOnBack');if(bajb_backdetect.FrameLoaded>1){if(bajb_backdetect.FrameLoaded==2){bajb_backdetect.OnBack();history.back()}}bajb_backdetect.FrameLoaded++;if(bajb_backdetect.FrameLoaded==1){if(bajb_backdetect.Browser.IE){bajb_backdetect.SetupFrames()}else{bajb_backdetect.FrameTimeout=setTimeout("bajb_backdetect.SetupFrames();",700)}}},SetupFrames:function(){clearTimeout(bajb_backdetect.FrameTimeout);var BBiFrame=document.getElementById('BAJBOnBack');var checkVar=BBiFrame.src.substr(-11,11);if(bajb_backdetect.FrameLoaded==1&&checkVar!="HistoryLoad"){BBiFrame.src="blank.html?HistoryLoad"}else{if(bajb_backdetect.FrameTry<2&&checkVar!="HistoryLoad"){bajb_backdetect.FrameTry++;bajb_backdetect.FrameTimeout=setTimeout("bajb_backdetect.SetupFrames();",700)}}},SafariHash:'false',Safari:function(){if(bajb_backdetect.SafariHash=='false'){if(window.location.hash=='#b'){bajb_backdetect.SafariHash='true'}else{window.location.hash='#b'}setTimeout("bajb_backdetect.Safari();",100)}else if(bajb_backdetect.SafariHash=='true'){if(window.location.hash==''){bajb_backdetect.SafariHash='back';bajb_backdetect.OnBack();history.back()}else{setTimeout("bajb_backdetect.Safari();",100)}}},Initialise:function(){if(bajb_backdetect.Browser.Safari){setTimeout("bajb_backdetect.Safari();",600)}else{document.write('<iframe src="blank.html" style="display:none;" id="BAJBOnBack" onunload="alert(\'de\')" onload="bajb_backdetect.BAJBFrame();"></iframe>')}}};bajb_backdetect.Initialise();
+      function doListSearch() 
+      {
+        searchServer();
+      }
+      function doOfferingSearch()
+      {
+          searchOffering();
+      }
+      function fillTitle()
+      {
+          getTitleValue();
+      }
+    //Used to prevent the default focus on the calendar field.
+    window.onload=setFocus
+    function setFocus()
+    {
+        document.getElementById("hideElement").focus();
+        //refreshPage();                                          
+    }
+    
+</script>
+    <apex:form >
+        <apex:actionFunction name="refreshPage" action="{!refreshPage}" reRender="formMsg,form1"/>
+    </apex:form>
+  <input type="hidden" id="hideElement" /> 
+       
+        <apex:variable value="{!newReviewProcess}" var="review"/>
+        <apex:form >
+        <apex:pageBlock rendered="{!showForm}">    
+            <apex:outputPanel style="text-align:left" layout="block">
+             <font color="red">DO NOT USE BROWSER BACK BUTTON.</font> 
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <apex:commandButton value="Go to Opportunity General Information tab" action="{!GoBackToHomeTab}" />
+            </apex:outputPanel>                                
+            <apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Opportunity ID"/>
+                    <apex:outputField value="{!review.Opportunity_ID__c}"/>                                    
+                </apex:pageBlockSectionItem>
+            <!-- </apex:pageBlockSection>
+                            
+            <apex:pageBlockSection columns="2" >  -->                          
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Opportunity Name"/>
+                     <apex:outputLink value="/{!opportunityId}">{!review.Opportunity_Name__c}</apex:outputLink>
+                    <!--<apex:outputField value="{!review.Opportunity_Name__c}"/>-->
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Client Name"/>
+                    <apex:outputField label="Client Name" value="{!review.Client_Name__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                   <apex:outputlabel value="Offerings"/>
+                   <apex:outputField value="{!review.Offering__c}"/>                                    
+               </apex:pageBlockSectionItem>                        
+                <!-- <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Lead Solution Architect - BPO"/>                            
+                    <apex:outputField value="{!review.Opportunity_Solution_lead__c}"/>                            
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Complex Cost Architect"/>
+                    <apex:outputField value="{!review.Complex_Cost_Architect__c}"/>
+                </apex:pageBlockSectionItem> -->
+           </apex:pageBlockSection>
+                            
+           <!-- <apex:pageBlockSection columns="2">
+                                                            
+               <apex:pageBlockSectionItem >                            
+                   <apex:outputlabel value="Solution Specialists"/>
+                   <apex:outputField value="{!review.Solution_Specialist__c}"/>
+               </apex:pageBlockSectionItem>                            
+            </apex:pageBlockSection> -->
+            
+            <apex:pageBlockSection collapsible="false" columns="2">
+                <apex:outputField value="{!review.Review_Stage_Master__c}" label="Approval Stage"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Approval Version"/>
+                    <apex:outputlabel value="{!version}"/>
+                </apex:pageBlockSectionItem>
+                <apex:outputField value="{!review.Review_Date__c}" label="Approval Date" rendered="{!revDateRender}"/>
+            </apex:pageBlockSection>            
+        </apex:pageBlock>
+        </apex:form>
+        <apex:form id="formMsg">
+            <apex:pageMessages rendered="{!showMainMsg}"></apex:pageMessages>
+        </apex:form>
+        <apex:tabPanel switchType="Server" value="{!tabFocus}" id="theTabPanel" inactiveTabClass="inactiveTab" rendered="{!showToUser}" styleClass="rich-tab-header">
+            
+            <apex:tab label="Approval Status" switchType="Server" name="tab1" id="tabOne" style="width:100%; height:130px;font-weight: bold">   
+                <apex:include pageName="RequsetReviewAdd_Inline"/>                                 
+            </apex:tab>
+            
+            <apex:tab label="Action Items Log" switchType="Server" name="tab2" id="tabTwo" style="width:100%; height:130px;font-weight: bold">
+                 <apex:include pageName="ReviewActionItemLog_Inline"/>
+            </apex:tab>
+            
+            <apex:tab label="Minutes of Meeting" name="tab4" switchType="Server" id="tabFour" style="width:100%; height:130px;font-weight: bold">
+                 <apex:include pageName="ReviewMOM_Inline"/>
+            </apex:tab>
+            <apex:tab label="Request for Approval Meeting" name="tab3" id="tabThree" switchType="ajax" style="width:100%; height:130px;font-weight: bold">                                                    
+                    <!-- <apex:actionFunction name="searchServer" action="{!runListSearch}" rerender="form1"/>
+                    <apex:actionFunction name="searchOffering" action="{!runOfferingSearch}"/>
+                    <apex:actionFunction name="getTitleValue" action="{!fillTitleValue}"/>  -->                   
+                    <apex:pageBlock >                                            
+                        <apex:pageblockSection columns="1" collapsible="false" >                                                 
+                            
+                            <apex:pageBlockSection columns="2" >
+                                <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel value="Lead Solution Architect - BPO"/>                            
+                                    <apex:outputField value="{!review.Opportunity_Solution_lead__c}"/>                            
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputlabel value="Complex Cost Architect"/>
+                                    <apex:outputField value="{!newReviewProcess.Complex_Cost_Architect__c}"/>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >                            
+                                    <apex:outputlabel value="Solution Specialists"/>
+                                    <apex:outputField value="{!newReviewProcess.Solution_Specialist__c}"/>
+                                </apex:pageBlockSectionItem>
+                                <!-- <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem> -->
+                                <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >BPO Net Revenue (SAP OM)<br/>(Thousands)</apex:outputlabel>                          
+                                    <apex:outputField value="{!opportunityRecord.TCV__c}"/>                            
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:outputlabel value="Client Geo Area"/>
+                                    <apex:outputField value="{!opportunityRecord.Client_Geo_Area__r.name}"/>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >                            
+                                    <apex:outputlabel value="Client Geo Unit"/>
+                                    <apex:outputField value="{!opportunityRecord.Client_Geo_Unit__r.name}"/>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                        </apex:pageBlockSection>                                                 
+                   </apex:pageBlock>
+                <apex:form id="form1" rendered="{!showForm}">               
+                    <apex:pageBlock >
+                        <apex:pageMessages rendered="{!tab3Message}" ></apex:pageMessages>
+                        <apex:pageblockButtons location="top" rendered="{!saveEditButtonRender}">
+                                 <apex:actionStatus id="save_Btn">                 
+                                    <apex:facet name="stop">
+                                        <apex:commandButton value="Save & Email to Operations" action="{!saveAndEmailToPMO}" reRender="form1"  status="save_Btn"/>
+                                  </apex:facet>
+                                <apex:facet name="start">
+                                <apex:outputPanel >
+                                <apex:commandButton value="Save & Email to Operations..." action="{!saveAndEmailToPMO}" reRender="form1"  status="save_Btn" disabled="true"/>
+                                </apex:outputPanel>
+                             </apex:facet> 
+              </apex:actionStatus> 
+                                
+                                <apex:commandButton value="Cancel" rerender="form1"/>
+                        </apex:pageblockButtons>                      
+                      <apex:pageBlockSection columns="1" title="Approval Meeting Request" collapsible="false" rendered="{!if(readOnlyMode,false,true)}">
+                           <apex:outputPanel layout="block" style="overflow:auto;height:250px">                          
+                            <apex:pageBlockTable value="{!MeetingReviewList}" var="review" columnsWidth="10%,10%,10%,15%,10%,15%,20%,10%,">
+                                <apex:column headerValue="Meeting Type">                                    
+                                    <apex:outputField value="{!review.meetingRequest.Review_Process__r.Review_Stage_Master__r.name}" />
+                                </apex:column>
+                                <apex:column headerValue="Title">
+                                    <apex:outputField value="{!review.meetingRequest.Title__c}" />
+                                </apex:column>                                
+                                <apex:column headerValue="Requested Meeting Date" >
+                                    <!-- <apex:outputPanel styleClass="requiredInput" layout="block" rendered="{!review.isDisableMeeting}">
+                                        <apex:outputPanel styleClass="requiredBlock"/> -->
+                                        <c:noDateLink >
+
+                                        <apex:inputField value="{!review.meetingRequest.Preferred_Meeting_Date_del__c}" required="false" rendered="{!review.isDisableMeeting}"/>
+                                   <!-- </apex:outputPanel> -->
+                                    </c:noDateLink>
+
+                                    <c:noDateLink >
+
+                                    <apex:outputField value="{!review.meetingRequest.Preferred_Meeting_Date_del__c}" rendered="{!if(review.isDisableMeeting,false,true)}"/>
+                                </c:noDateLink>
+
+                                </apex:column> 
+                                <apex:column headerValue="Requested Meeting Time" >
+                                   <!-- <apex:outputPanel styleClass="requiredInput" layout="block" rendered="{!review.isDisableMeeting}">
+                                        <apex:outputPanel styleClass="requiredBlock"/> -->
+                                        <apex:inputField value="{!review.meetingRequest.Meeting_Time__c}" required="false" rendered="{!review.isDisableMeeting}"/>
+                                   <!-- </apex:outputPanel> -->
+                                    <apex:outputField value="{!review.meetingRequest.Meeting_Time__c}" rendered="{!if(review.isDisableMeeting,false,true)}"/>
+                                </apex:column>
+                                <apex:column headerValue="Scheduled Meeting Date">
+                                
+                                    <apex:outputField value="{!review.meetingRequest.Scheduled_Meeting_Date__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Scheduled Meeting Time">
+                                    <apex:outputField value="{!review.meetingRequest.Scheduled_Meeting_Time__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Comments">
+                                    <apex:inputField value="{!review.meetingRequest.Comments__c}" style="width: 100%; height: 60px" rendered="{!review.isDisableMeeting}"/>                                   
+                                    <apex:outputField value="{!review.meetingRequest.Comments__c}" rendered="{!if(review.isDisableMeeting,false,true)}"/>
+                                </apex:column>
+                                <apex:column headerValue="Status" >
+                                    <apex:outputField value="{!review.meetingRequest.Status__c}" />
+                                </apex:column>                                
+                            </apex:pageBlockTable>
+                            </apex:outputPanel>    
+                      </apex:pageBlockSection>
+                      <!--Read Only Mode Detail List-->
+                      <apex:pageBlockSection columns="1" title="Approval Meeting Request" collapsible="false" rendered="{!readOnlyMode}">
+                           <apex:outputPanel layout="block" style="overflow:auto;height:250px">                          
+                            <apex:pageBlockTable value="{!MeetingReviewList}" var="review">
+                                <apex:column headerValue="Meeting Type">                                    
+                                    <apex:outputField value="{!review.meetingRequest.Review_Process__r.Review_Stage_Master__r.name}" />
+                                </apex:column>
+                                <apex:column headerValue="Title">
+                                    <apex:outputField value="{!review.meetingRequest.Title__c}" />
+                                </apex:column>                                
+                                <apex:column headerValue="Requested Meeting Date" >
+                                <c:noDateLink >
+
+                                    <apex:outputField value="{!review.meetingRequest.Preferred_Meeting_Date_del__c}" />
+                                    </c:noDateLink>
+
+                                </apex:column> 
+                                <apex:column headerValue="Requested Meeting Time" >
+                                   <apex:outputField value="{!review.meetingRequest.Meeting_Time__c}"/>
+                                </apex:column>
+                                
+                                <!-- <apex:column headerValue="Scheduled Meeting Date">
+                                    <apex:outputField value="{!review.meetingRequest.Review_Process__r.Meeting_Time__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Scheduled Meeting Time">
+                                    <apex:outputField value="{!review.meetingRequest.Review_Process__r.Meeting_Time__c}" />
+                                </apex:column> -->
+                                
+                                <apex:column headerValue="Scheduled Meeting Date">
+                                
+                                    <apex:outputField value="{!review.meetingRequest.Scheduled_Meeting_Date__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Scheduled Meeting Time">
+                                    <apex:outputField value="{!review.meetingRequest.Scheduled_Meeting_Time__c}" />
+                                </apex:column>
+                                
+                                
+                                <apex:column headerValue="Comments">
+                                    <apex:outputField value="{!review.meetingRequest.Comments__c}"/>
+                                </apex:column>
+                                <apex:column headerValue="Status" >
+                                    <apex:outputField value="{!review.meetingRequest.Status__c}" />
+                                </apex:column>                                
+                            </apex:pageBlockTable>
+                            </apex:outputPanel>    
+                      </apex:pageBlockSection>                                                                                            
+                    </apex:pageBlock>
+                </apex:form>
+                
+                <apex:form id="form2" rendered="{!addButtonRender}">    
+                    <apex:pageBlock >        
+                        <apex:pageBlockSection title="Add Meeting Request" collapsible="false" columns="1" id="section2">
+                            <apex:pageBlockTable value="{!newReviewMeet}" var="review">
+                                <apex:column headerValue="Meeting Type">
+                                    <apex:outputField label="Meeting Type" value="{!newReviewProcess.Review_Stage_Master__r.name}" />                                    
+                                </apex:column>                                
+                                <apex:column headerValue="Requested Meeting Date">
+                                    <apex:outputPanel styleClass="requiredInput" layout="block">                                 
+                                        <apex:outputPanel styleClass="requiredBlock"/>
+                                        <c:noDateLink >
+
+                                        <apex:inputField value="{!review.Preferred_Meeting_Date_del__c}" required="false"/>
+                                    </c:noDateLink>
+
+                                    </apex:outputPanel>
+                                </apex:column>
+                                <apex:column headerValue="Requested Meeting Time">
+                                    <apex:outputPanel styleClass="requiredInput" layout="block">
+                                        <apex:outputPanel styleClass="requiredBlock"/>
+                                        <apex:inputField value="{!review.Meeting_Time__c}" required="false"/>
+                                    </apex:outputPanel>
+                                </apex:column>
+                                <apex:column headerValue="Comments">
+                                    <apex:inputField value="{!review.Comments__c}" style="width: 90%; height: 60px"/>                                     
+                                </apex:column>
+                                <apex:column headerValue="Status">
+                                    <apex:outputField value="{!review.Status__c}" />
+                                </apex:column>
+                                <apex:column headerValue="">
+                                <apex:actionStatus id="add_EMail_Btn">                 
+                            <apex:facet name="stop">
+                                  <apex:commandButton value="Add & Email to Operations" action="{!emailToPMO}" reRender="form1,form2"  status="add_EMail_Btn"/>                            
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                  <apex:commandButton value="Add & Email to Operations..." action="{!emailToPMO}" reRender="form1,form2" disabled="true"  status="add_EMail_Btn"/>  
+                                </apex:outputPanel>
+                             </apex:facet> 
+                           </apex:actionStatus>
+                                    
+                                </apex:column>
+                            </apex:pageBlockTable>
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </apex:form>
+            </apex:tab>
+        </apex:tabpanel>
+    
+</apex:page>

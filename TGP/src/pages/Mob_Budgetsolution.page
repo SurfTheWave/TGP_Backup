@@ -1,0 +1,43 @@
+<!--
+Author : Varsha Chougle
+Story  : Story-0093/MOB_052  
+Description :initiate Budget Tracker. 
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+-->
+
+<apex:page standardController="Wave_Plan_Version__c" extensions="Mob_BudgetSolutionController">
+    <apex:form id="form0">
+        <apex:pagemessages ></apex:pagemessages>
+    </apex:form>
+    <apex:form id="form1">
+        <apex:pageBlock >
+            <apex:pageBlockButtons rendered="{!if(isSubmit,false,true)}">
+                <apex:commandButton value="Save" action="{!saveBudgetSolution}" reRender="form0,form1"/>
+                <apex:commandButton value="Submit" action="{!submitBudgetSolution}" onclick="return confirm('Some of the Cost Model Estimates may have zero value. Are you sure you want to submit?');"/>
+                <apex:commandButton value="Cancel" action="{!CancelBudgetSolution}" reRender="form0,form1"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockTable value="{!ListOfBudgetSolution}" var="BudgetSolution">
+                    <apex:column headerValue="Cost Heads" style="background-color:{!BudgetSolution.bgColor};">
+                        <b><apex:outputField value="{!BudgetSolution.newBudgetSolution.name}" /></b>
+                    </apex:column>
+                    <apex:column headerValue="Budget Owner" style="background-color:{!BudgetSolution.bgColor};">
+                        <apex:inputField value="{!BudgetSolution.newBudgetSolution.Budget__c}"  rendered="{!BudgetSolution.isDisableInput}"/>
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.Budget__c}" rendered="{!BudgetSolution.isDisableOutput}"/>
+                    </apex:column>
+                    <apex:column headerValue="CTA/Cost Model Estimates (in $ ‘000)" style="background-color:{!BudgetSolution.bgColor};">
+                        <apex:inputField value=" {!BudgetSolution.newBudgetSolution.CTA_Cost_Model_Estimates__c}" rendered="{!BudgetSolution.isDisableInput}"/>
+                        <apex:outputField value=" {!BudgetSolution.newBudgetSolution.CTA_Cost_Model_Estimates__c}" rendered="{!BudgetSolution.isDisableOutput}"/>
+                    </apex:column>
+                    <apex:column headerValue="Notes" style="background-color:{!BudgetSolution.bgColor};">
+                        <apex:inputField value="{!BudgetSolution.newBudgetSolution.Notes__c}" rendered="{!BudgetSolution.isDisableInput}"/>
+                        <apex:outputField value="{!BudgetSolution.newBudgetSolution.Notes__c}" rendered="{!BudgetSolution.isDisableOutput}"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>  
+</apex:page>

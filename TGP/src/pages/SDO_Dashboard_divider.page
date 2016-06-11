@@ -1,0 +1,26 @@
+<apex:page showHeader="false" sidebar="false">
+<!-- standardStylesheets="false" -->
+
+<apex:pageBlock >
+<style>
+        body .bPageBlock .pbBody .red .pbSubheader
+        {
+        background-color:#949494;
+        }
+</style>
+
+
+<apex:pageBlockSection title="" collapsible="false" columns="1" >
+        <apex:pageBlockSectionItem >
+            <apex:outputPanel styleclass="red" layout="block">
+            <apex:form >            
+                <apex:commandButton value="Solution Planning Dashboard" onclick="window.open('https://accentureopsworkbench.my.salesforce.com/01ZE0000000R5mK');"/>
+                <apex:commandButton value="Mobilization Planning Dashboard" onclick="window.open('https://accentureopsworkbench.my.salesforce.com/01ZE0000000R5lg');"/>
+                <br></br>
+                <font color="red" size="1">Click here to drill down by Delivery Locations</font>                
+                </apex:form>                
+                </apex:outputPanel>
+        </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>           
+</apex:pageBlock>
+</apex:page>

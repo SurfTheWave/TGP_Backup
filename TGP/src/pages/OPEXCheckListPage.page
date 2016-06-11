@@ -1,0 +1,287 @@
+<!--
+Author : Sanjay Kumar Das
+Story :  Story-0064/MOB_025    
+Description :  As an opex coach, I should be able to initiate & submit OPEX checklist to OPEX Lead.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    MOB_029/030/031/032        4 March 2013        Added Log RAID Button and functionality
+
+-->
+<apex:page standardController="OPEX__c" extensions="OpexQuestionCheckListController" sidebar="true" showHeader="true">
+<style>
+.activeTab {background-color: #236FBD; color:white; 
+         background-image:none}
+      .inactiveTab { background-color: lightgrey; color:black; 
+         background-image:none}
+</style>
+
+<!--<apex:outputPanel id="refresh1" rendered="{!refreshPage}">
+</apex:outputPanel>-->
+<script>
+ var newWin=null;
+ function openPopup()
+ {
+    var url="/resource/OPEXCheckListHelpImage";
+    newWin=window.open(url, "Popup","height=500,width=800,left=200,top=200,resizable=no,scrollbars=yes,toolbar=no,status=no");
+    newWin.focus();
+     
+    return false;
+ }
+                  
+                  
+  function closePopup()
+  {
+    if (null!=newWin)
+    {
+      newWin.close();
+    }  
+  }
+</script>
+<script>
+    function confirmSubmit()
+    {
+        var r=confirm("Post Submission, you cannot edit Operational Maturity. Do you want to continue?")
+        return r;
+    }
+</script>
+
+
+<script>
+    function startRAID()
+    {
+        var urlName="/apex/RAIDLog_Inline?id={!opexId}&moduleName=OPEX";
+        window.open(urlName);
+        return false;        
+    }
+</script> 
+    <apex:form id="form1">
+            <apex:pageMessages />
+    
+<!--<apex:outputPanel id="refresh" rendered="true"/>-->
+        <apex:pageBlock title="Operational Maturity Checklist">
+        <apex:pageBlockSection columns="2">
+            <apex:outputLabel value="Deal Details" style="font-weight: bold; font-size:10pt; text-decoration : underline;"/>
+            <apex:outputLabel value=""/>
+            
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Deal Name"/>
+                <apex:outputLink value="/{!waveVersionRecord.Deal__r.id}" target="_blank">
+            <apex:outputField value="{!waveVersionRecord.Deal__r.name}" label="Deal Name" style="font-family:arial;color:blue;font-size:15px;"/>
+                </apex:outputLink>
+                </apex:pageBlockSectionItem>
+                
+                 <apex:pageBlockSectionItem >
+                <apex:outputLabel value="High Level Mobilization Plan"/>
+                <apex:outputLink value="/{!waveVersionRecord.id}" target="_blank">
+            <apex:outputField value="{!waveVersionRecord.name}" label="High Level Mobilization Plan" style="font-family:arial;color:blue;font-size:15px;"/>
+                </apex:outputLink>
+            </apex:pageBlockSectionItem>
+                
+        
+        
+         </apex:pageBlockSection>
+        <apex:pageBlockSection columns="2">
+            <apex:outputLabel value="Operational Maturity Plan Details" style="font-weight: bold; font-size:10pt; text-decoration : underline;"/>
+            <apex:outputLabel value=""/>                     
+            <apex:outputField value="{!opexRecord.Item__c}" label="Item" style="font-family:arial;color:blue;font-size:15px;" />
+            
+             <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Location"/>
+                <apex:outputLink value="/{!opexRecord.Deal_Location_lk__r.id}" target="_blank">
+            <apex:outputField value="{!opexRecord.Deal_Location_lk__r.Deal_Home_Location__r.Delivery_Location_Master__r.name}" label="Location" style="font-family:arial;color:blue;font-size:15px;"/>
+                </apex:outputLink>
+            </apex:pageBlockSectionItem> 
+            
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Wave Dependency"/>
+                <apex:outputLink value="/{!opexRecord.Wave_Plan_lk__r.id}" target="_blank">
+            <apex:outputField value="{!opexRecord.Wave_Plan_lk__r.Wave_Label__c}" label="Wave Dependency" style="font-family:arial;color:blue;font-size:15px;"/>      
+                </apex:outputLink>
+            </apex:pageBlockSectionItem>
+            <apex:outputField value="{!opexRecord.Wave_Process__r.Client_Specific_Process_Mapping__r.name}" label="Wave Process" style="font-family:arial;color:blue;font-size:15px;"/>            
+            <apex:outputField value="{!opexRecord.Planned_Date__c}" label="Planned Date" style="font-family:arial;color:blue;font-size:15px;"/>
+        </apex:pageBlockSection>
+        <apex:pageBlockButtons >
+            <apex:commandButton value="Save" action="{!SaveOPEXChecklist}"/>
+            <apex:commandButton value="Submit" action="{!SubmitOPEXChecklist}" onclick="return confirmSubmit();"/>
+            <apex:commandButton value="Cancel" action="{!doCancelChecklist}"/>
+            <apex:commandButton value="Log RAID" onclick="return startRAID();"/>
+            <apex:commandButton onclick="openPopup();" value="Help" />
+        </apex:pageBlockButtons>
+         <apex:pageBlockSection columns="2">
+              <apex:outputField value="{!opexRecord.Score__c}" label="Overall Rating" style="font-weight: bold; font-size:10pt; text-decoration : underline;"/>
+               <apex:outputField value="{!opexRecord.Overall_Rating_Status__c}" label="Overall Score" style="font-weight: bold; font-size:10pt; text-decoration : underline;"/>
+         </apex:pageBlockSection>
+            <apex:tabPanel switchType="client" selectedTab="tab1" id="theTabPanel" inactiveTabClass="inactiveTab">
+                <apex:tab label="Focus the Service operation" name="tab1" id="tabOne">
+                    <apex:pageBlock >
+                    <apex:pageBlockSection columns="3" title="Focus the Service operation" >
+                        <apex:outputLabel />
+                            <apex:outputField value="{!opexRecord.Focus_Service_operation_Status__c}" label="Stability :" style="font-family:arial;color:blue;font-size:15px;" />
+                        <apex:outputLabel />
+                    </apex:pageBlockSection>
+                       <!-- <apex:pageMessages /> -->
+                        <apex:pageBlockSection columns="1" > 
+                             <apex:repeat value="{!ServiceOperationQuestionnaire}" var="subSec">
+                                <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                    <apex:column headerValue="Question Description" width="800">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Answer">
+                                      <apex:inputField value="{!subSecQues.subSecQuestion.Answer__c}" />
+                                    </apex:column>                                    
+                                </apex:pageBlockTable>
+                               </apex:repeat>      
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </apex:tab>
+                 <apex:tab label="Standardize the Service operation" name="tab2" id="tabTwo">
+                    <apex:pageBlock >
+                    <apex:pageBlockSection columns="3" title="Standardize the Service operation" >
+                    <apex:outputLabel />
+                    <apex:outputField value="{!opexRecord.Standard__c}" label="Stability :" style="font-family:arial;color:blue;font-size:15px;" />
+                    <apex:outputLabel />
+                    </apex:pageBlockSection>
+                    <!-- <apex:pageMessages /> -->
+                        <apex:pageBlockSection columns="1">                             
+                            <apex:repeat value="{!StandarizeServiceOperationQuestionnaire}" var="subSec">
+                                <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                    <apex:column headerValue="Question Description" width="800">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Answer">
+                                        <apex:inputField value="{!subSecQues.subSecQuestion.Answer__c}"/>
+                                    </apex:column>                                    
+                                </apex:pageBlockTable>
+                               </apex:repeat>      
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </apex:tab>
+                 <apex:tab label="Plan the Service operation" name="tab3" id="tabThree">
+                    <apex:pageBlock >
+                     <apex:pageBlockSection columns="3" title="Plan the Service operation" >
+                    <apex:outputLabel />
+                    <apex:outputField value="{!opexRecord.Plan_Service_operation_Status__c}" label="Stability :" style="font-family:arial;color:blue;font-size:15px;" />
+                    <apex:outputLabel />
+                    </apex:pageBlockSection>
+                    <!-- <apex:pageMessages /> -->
+                        <apex:pageBlockSection columns="1"> 
+                                <apex:repeat value="{!PlanServiceOperationQuestionnaire}" var="subSec">
+                                <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                    <apex:column headerValue="Question Description" width="800">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Answer">
+                                        <apex:inputField value="{!subSecQues.subSecQuestion.Answer__c}" />
+                                    </apex:column>                                    
+                                </apex:pageBlockTable>
+                               </apex:repeat>      
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                    </apex:tab>
+                    <apex:tab label="Organize the Service operation" name="tab4" id="tabFour">
+                    <apex:pageBlock >
+                    <apex:pageBlockSection columns="3" title="Organize the Service operation">
+                    <apex:outputLabel />
+                    <apex:outputField value="{!opexRecord.Organize_Service_Operation__c}" label="Stability :" style="font-family:arial;color:blue;font-size:15px;" />
+                    <apex:outputLabel />
+                    </apex:pageBlockSection>
+                    <!-- <apex:pageMessages /> -->
+                        <apex:pageBlockSection columns="1">
+                                <apex:repeat value="{!OrgServiceOperationQuestionnaire}" var="subSec">
+                                <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                    <apex:column headerValue="Question Description" width="800">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Answer">
+                                        <apex:inputField value="{!subSecQues.subSecQuestion.Answer__c}" />
+                                    </apex:column>                                    
+                                </apex:pageBlockTable>
+                               </apex:repeat>      
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                    </apex:tab>
+                    <apex:tab label="Visualize the Service operation" name="tab5" id="tabFive">
+                    <apex:pageBlock >
+                    <apex:pageBlockSection columns="3" title="Visualize the Service operation">
+                    <apex:outputLabel />
+                    <apex:outputField value="{!opexRecord.Visualize_Service_Operation_Status__c}" label="Stability :" style="font-family:arial;color:blue;font-size:15px;" />
+                    <apex:outputLabel />
+                    </apex:pageBlockSection>
+                    <!-- <apex:pageMessages /> -->
+                        <apex:pageBlockSection columns="1"> 
+                                <apex:repeat value="{!VisServiceOperationQuestionnaire}" var="subSec">
+                                <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                    <apex:column headerValue="Question Description" width="800">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Answer">
+                                        <apex:inputField value="{!subSecQues.subSecQuestion.Answer__c}"/>
+                                    </apex:column>                                    
+                                </apex:pageBlockTable>
+                               </apex:repeat>      
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                    </apex:tab>
+                    <apex:tab label="Improve the Service operation" name="tab6" id="tabSix">
+                    <apex:pageBlock >
+                    <apex:pageBlockSection columns="3" title="Improve the Service operation">
+                    <apex:outputLabel />
+                    <apex:outputField value="{!opexRecord.Improve_Service_Operation_Status__c}" label="Stability :" style="font-family:arial;color:blue;font-size:15px;" />
+                    <apex:outputLabel />
+                    </apex:pageBlockSection>
+                    <!-- <apex:pageMessages /> -->
+                        <apex:pageBlockSection columns="1"> 
+                                <apex:repeat value="{!ImpServiceOperationQuestionnaire}" var="subSec">
+                                <apex:pageBlockTable value="{!subSec.subQues}" var="subSecQues">
+                                    <apex:column headerValue="Question Description" width="800">
+                                        <apex:outputField value="{!subSecQues.subSecQuestion.Question_Description__c}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Answer">
+                                        <apex:inputField value="{!subSecQues.subSecQuestion.Answer__c}" />
+                                    </apex:column>                                    
+                                </apex:pageBlockTable>
+                               </apex:repeat>      
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                    </apex:tab>
+                    <!-- Story-0295/MOB_155 Start ---->
+                    <apex:tab label="Mobilization and Operational Maturity Criteria" name="tab7" id="tabSeven">
+                         <apex:pageBlock >
+                             <apex:pageBlockSection title="Mobilization Criteria">
+                                <apex:inputField id="people" value="{!opexRecord.People__c}" />
+                                <apex:inputField id="technology" value="{!opexRecord.Technology__c}" />
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection title="Operational Maturity Criteria" rendered="{!IF(isSubmitted,false,true)}">
+                                <apex:inputField value="{!opexRecord.Focus__c}" />
+                                <apex:inputField value="{!opexRecord.Standardize__c}" />
+                                <apex:inputField value="{!opexRecord.Plan__c}" />
+                                <apex:inputField value="{!opexRecord.Organize__c}" />
+                                <apex:inputField value="{!opexRecord.Visualize__c}" />
+                                <apex:inputField value="{!opexRecord.Improve__c}" />
+                                <apex:outputField value="{!opexRecord.Process_Score__c}" />
+                                <apex:outputField value="{!opexRecord.Overall_Rating__c}" />
+                                <apex:outputField value="{!opexRecord.Operational_Maturity_Criteria_Remark__c }" />
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection title="Operational Maturity Criteria" rendered="{!IF(isSubmitted,true,false)}">
+                                <apex:outputField value="{!opexRecord.Focus__c}" />
+                                <apex:outputField value="{!opexRecord.Standardize__c}" />
+                                <apex:outputField value="{!opexRecord.Plan__c}" />
+                                <apex:outputField value="{!opexRecord.Organize__c}" />
+                                <apex:outputField value="{!opexRecord.Visualize__c}" />
+                                <apex:outputField value="{!opexRecord.Improve__c}" />
+                                <apex:outputField value="{!opexRecord.Process_Score__c}" />
+                                <apex:outputField value="{!opexRecord.Overall_Rating__c}" />
+                                <apex:outputField value="{!opexRecord.Operational_Maturity_Criteria_Remark__c }" />
+                            </apex:pageBlockSection>
+                         </apex:pageBlock>
+                     </apex:tab>                    
+                    <!-- Story-0295/MOB_155 End ---->
+                    
+            </apex:tabPanel>
+             
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

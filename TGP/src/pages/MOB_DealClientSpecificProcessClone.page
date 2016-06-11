@@ -1,0 +1,131 @@
+<!--
+Page name : MOB_DealClientSpecificProcess
+Author : Nilesh Adkar
+
+-->
+
+<apex:page standardController="Client_Specific_Process_Mapping__c" extensions="MOB_DealClientSpecificProcessController" showHeader="false" sidebar="false" tabStyle="Client_Specific_Process_Mapping__c" id="ClientProcessPage">
+<body onLoad="init();"/>
+<apex:form >
+        <apex:pageMessages ></apex:pageMessages>
+</apex:form>
+    
+    <script>
+    function saveValues()
+    {
+        var ProcessName = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem1.ProcessName}");
+        var strProcessName = ProcessName.value;
+        if ( ProcessName != null && ProcessName.value != '' )
+        { 
+            document.getElementById("{!$Component.frm.strProcessNameHidden}").value = ProcessName.value;
+        }
+
+        var Offering = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem2.Offering}");
+        var strOffering = Offering.value;
+        if ( Offering != null && Offering.value != '' ) 
+            document.getElementById("{!$Component.frm.strOfferingHidden}").value = Offering.value;
+
+
+        var Service = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem3.Service}");
+        var strService = Service.value;
+        if ( Service != null && Service.value != '' ) 
+            document.getElementById("{!$Component.frm.strServiceHidden}").value = Service.value;
+
+        var ServiceComponent = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem4.ServiceComponent}");
+        var strServiceComponent = ServiceComponent.value;
+        if ( ServiceComponent != null && ServiceComponent.value != '' ) 
+            document.getElementById("{!$Component.frm.strServiceComponentHidden}").value = ServiceComponent.value;
+        SaveProcess();
+    }
+    
+    function refresh()
+    {
+        RefreshAfterUpdate();
+    }
+    
+    function refreshServicesValues()
+    {    
+         var Offering = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem2.Offering}");
+         var strOffering = Offering.value;
+         if ( Offering != null && Offering.value != '' ) 
+            document.getElementById("{!$Component.frm.strOfferingHidden}").value = Offering.value;
+         refreshServices(Offering.value);  
+    }
+
+    function refreshServiceComponentValues()
+    {    
+        var Service = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem3.Service}");
+        var strService = Service.value;
+        if ( Service != null && Service.value != '' ) 
+            document.getElementById("{!$Component.frm.strServiceHidden}").value = Service.value;
+        refreshServiceComponents(Service.value);  
+    }
+    
+    function update(ProcessId)
+    {
+        //alert(ProcessId);
+        var w = 500;
+        var h = 300;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/2)-(h/2));
+        window.open('/apex/MOB_DealClientSpecificProcess?ProcessId='+ProcessId,'Product','scrollbars=yes,width=500,height=300,left=' + left + ',top='+ top );
+        //updateClientProcess();
+    }
+
+    function updateTable()
+    {
+        alert('update table');
+        var ButtonName = document.getElementById("{!$Component.frm.Block.BlockSection.BlockSectionItem5.saveButton}");
+        var OprName = ButtonName.value;
+        alert(OprName);
+            if(OprName =='Update')
+            {
+                if(top.window.parent.opener != null)
+                {
+                    alert('update operation');
+                    top.window.parent.opener.closePage();
+                    top.window.close("/apex/MOB_DealClientSpecificProcess");         
+                }
+            }
+            else
+            {
+                    alert('save');
+                var ua = navigator.userAgent.toLowerCase();
+                alert(ua);
+                if(ua.indexOf('msie')== -1)
+                {
+                    alert('chrome');
+                    RefreshAfterUpdate();
+                }
+                else
+                {
+                    alert('IE');
+                    RefreshAfterUpdate();
+                }
+                                           
+            }
+    }  
+    
+    function closePage()
+    {
+            alert('update close page');
+        var ua = navigator.userAgent.toLowerCase();
+        alert(ua);
+        if(ua.indexOf('msie')== -1)
+        {
+            alert('chrome');
+            RefreshAfterUpdate();
+        }
+        else
+        {
+            alert('IE');
+            location.href = location.href;
+        }
+    } 
+    
+    function init()
+    {
+        document.getElementById("{!$Component.frm.strClientInlinePageURLHidden}").value = location.href;
+    } 
+    </script>
+</apex:page>

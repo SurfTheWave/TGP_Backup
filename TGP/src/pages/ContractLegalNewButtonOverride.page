@@ -1,0 +1,29 @@
+<apex:page standardController="Contract_Legal_Tracker__c">
+<script src="/soap/ajax/25.0/connection.js" type="text/javascript"></script>
+<script>
+//window.location= "https://accentureopsworkbench--r3at.cs14.my.salesforce.com/a6b/e?retURL=/a6b/o&00Nc00000011gcX=Credit%20Services&nooverride=1"; 
+window.onload=assignDefaultValue();
+    
+    function assignDefaultValue(){
+        
+         var url = window.location.href; 
+         var urlArray1 = url.split('retURL=%2F'); 
+         var mobplanid= urlArray1[1].split('&sfdc.'); 
+         
+         var mobplanrecord=sforce.connection.query("Select id,Contract_Legal_In_Scope__c,Name From Mobilization_Plan__c where id='" + mobplanid[0] + "'" );
+         var mobplanrecords= mobplanrecord.getArray("records"); 
+         
+         if(mobplanrecords[0].Contract_Legal_In_Scope__c=='true'){
+             
+              parent.location.href='{!$Setup.Salesforce_Base_URL__c.Domain_URL__c}/a4M/e?CF00NE0000005hTD6='+mobplanrecords[0].Name+'&CF00NE0000005hTD6_lkid='+mobplanid[0]+'&nooverride=1'+'&retURL=%2F'+mobplanid[0];
+              //parent.location.href= "https://accentureopsworkbench--dev25.cs19.my.salesforce.com/a5Z/e?CF00NE0000005hTDc=mob+plan+for+deal222&CF00NE0000005hTDc_lkid=a4m29000000055F&retURL=%2Fa4m29000000055F&nooverride=1";
+       
+              //window.location= '{!$Setup.Salesforce_Base_URL__c.Domain_URL__c}'+'/a5Z/e?CF00NE0000005hTDc=mob+plan+for+deal222&CF00NE0000005hTDc_lkid=a4m29000000055F&retURL=%2Fa4m29000000055F'; 
+             }
+         else{
+           alert('Contract & Legal (In Scope) must be enabled.Go to Tracker setup section to enable it.');
+           parent.location.href = '{!$Setup.Salesforce_Base_URL__c.Domain_URL__c}/'+mobplanid[0];
+         }
+    }
+   </Script>
+</apex:page>

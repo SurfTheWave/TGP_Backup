@@ -1,0 +1,494 @@
+<apex:page standardController="Costing_Request__c" extensions="CanvasClass">
+<apex:outputPanel id="msg" rendered="{!OR(AND(OR(CONTAINS(p.name,'Solution'),CONTAINS(p.name,'System')),costingRequest.In_Progress_IO__c!='4'),AND(OR(CONTAINS(p.name,'IO'),CONTAINS(p.name,'IC'),CONTAINS(p.name,'IS'),CONTAINS(p.name,'System')),costingRequest.In_Progress__c!='4'))}">
+<apex:pagemessage severity="Info" summary="Sync is in progress for recently uploaded BPO costing data." rendered="{!AND(costingRequest.In_Progress__c=='2',hideeditblock,costingRequest.In_Sync__c,NOT(costingRequest.Data_Cleaning_dev__c))}"/>
+<apex:pagemessage severity="Info" summary="Sync is complete for recently uploaded costing data." rendered="{!AND(costingRequest.In_Progress__c=='2',hideeditblock,NOT(costingRequest.In_Sync__c),NOT(costingRequest.Data_Cleaning_dev__c))}"/>   
+<apex:pagemessage severity="Info" summary="Calculation is in progress for recently uploaded costing data." rendered="{!AND(costingRequest.Calculation__c,hideeditblock)}"/>
+<apex:pagemessage severity="error" summary="Sync Failed.. Data Cleaning in Progress" rendered="{!AND(costingRequest.Data_Cleaning_dev__c,costingRequest.Sync_Failed_At__c=='Sync')}"/>
+<apex:pagemessage severity="error" summary="BenchMark Calculation Failed.Data Cleaning in Progress" rendered="{!AND(costingRequest.Data_Cleaning_dev__c,costingRequest.Sync_Failed_At__c=='BenchMark',hideeditblock)}"/>
+<apex:pagemessage severity="error" summary="Mob Analytics Failed.Data Cleaning in Progress." rendered="{!AND(costingRequest.Data_Cleaning_dev__c,OR(costingRequest.Sync_Failed_At__c=='Mob Analytics',costingRequest.Sync_Failed_At__c=='Opp Analytics'),hideeditblock)}"/>
+<apex:pagemessage severity="error" summary="Data Cleaning Failed.Please contact your administrator." rendered="{!AND(costingRequest.Data_Cleaning_dev__c,costingRequest.Sync_Failed_At__c=='Roll Back Failed',hideeditblock)}"/>
+<apex:pagemessage severity="Confirm" summary="All calculations are complete. Please hit the refresh button on the page. Please do not use browser refresh." rendered="{!AND(costingRequest.Has_Updated__c,costingRequest.In_Progress__c=='1',hideeditblock)}"/>
+
+<apex:pagemessage severity="Info" summary="Sync is in progress for recently uploaded IO costing data." rendered="{!AND(costingRequest.In_Progress_IO__c=='2',hideeditblock,costingRequest.In_Sync_IO__c,NOT(costingRequest.Data_Cleaning_dev_IO__c))}"/>
+<apex:pagemessage severity="Info" summary="Sync is complete for recently uploaded IO costing data." rendered="{!AND(costingRequest.In_Progress_IO__c=='2',hideeditblock,NOT(costingRequest.In_Sync_IO__c),NOT(costingRequest.Data_Cleaning_dev_IO__c))}"/>   
+<apex:pagemessage severity="Info" summary="Calculation is in progress for recently uploaded costing data." rendered="{!AND(costingRequest.Calculation_IO__c,hideeditblock)}"/>
+<apex:pagemessage severity="error" summary="Sync Failed for IO. Data Cleaning in Progress" rendered="{!AND(costingRequest.Data_Cleaning_dev_IO__c,costingRequest.Sync_Failed_At_IO__c=='Sync')}"/>
+<apex:pagemessage severity="error" summary="Data Cleaning Failed.Please contact your administrator." rendered="{!AND(costingRequest.Data_Cleaning_dev_IO__c,costingRequest.Sync_Failed_At_IO__c=='Roll Back Failed',hideeditblock)}"/>
+<apex:pagemessage severity="Confirm" summary="All calculations are complete. Please hit the refresh button on the page. Please do not use browser refresh." rendered="{!AND(costingRequest.Has_Updated_IO__c,costingRequest.In_Progress_IO__c=='1',hideeditblock)}"/>
+
+<!-- 
+
+
+<apex:pagemessage severity="Info" summary="Sync is in progress for recently uploaded costing data." rendered="{!OR(AND(bpoRendered, costingRequest.In_Progress__c=='2',hideeditblock,costingRequest.In_Sync__c,NOT(costingRequest.Data_Cleaning_dev__c)), AND(ioRendered, costingRequest.In_Progress_IO__c=='2',hideeditblock,costingRequest.In_Sync_IO__c,NOT(costingRequest.Data_Cleaning_dev_IO__c)))}"/>
+<apex:pagemessage severity="Info" summary="Sync is complete for recently uploaded costing data." rendered="{!OR(AND(bpoRendered, costingRequest.In_Progress__c=='2',hideeditblock,NOT(costingRequest.In_Sync__c),NOT(costingRequest.Data_Cleaning_dev__c)), AND(ioRendered, costingRequest.In_Progress_IO__c=='2',hideeditblock,NOT(costingRequest.In_Sync_IO__c),NOT(costingRequest.Data_Cleaning_dev_IO__c)))}"/>   
+<apex:pagemessage severity="Info" summary="Calculation is in progress for recently uploaded costing data." rendered="{!OR(AND(bpoRendered, costingRequest.Calculation__c,hideeditblock), AND(ioRendered, costingRequest.Calculation_IO__c, hideeditblock))}"/>
+<apex:pagemessage severity="error" summary="Sync Failed.. Data Cleaning in Progress" rendered="{!OR(AND(bpoRendered, costingRequest.Data_Cleaning_dev__c,costingRequest.Sync_Failed_At__c=='Sync'), AND(ioRendered, costingRequest.Data_Cleaning_dev_IO__c, costingRequest.Sync_Failed_At_IO__c =='Sync'))}"/>
+<apex:pagemessage severity="error" summary="BenchMark Calculation Failed.Data Cleaning in Progress" rendered="{!OR(AND(bpoRendered, costingRequest.Data_Cleaning_dev__c,costingRequest.Sync_Failed_At__c=='BenchMark',hideeditblock),AND(ioRendered, costingRequest.Data_Cleaning_dev_IO__c,costingRequest.Sync_Failed_At_IO__c=='BenchMark',hideeditblock)) }"/>
+<apex:pagemessage severity="error" summary="Mob Analytics Failed.Data Cleaning in Progress." rendered="{!OR( AND(bpoRendered, costingRequest.Data_Cleaning_dev__c,OR(costingRequest.Sync_Failed_At__c=='Mob Analytics',costingRequest.Sync_Failed_At__c=='Opp Analytics'),hideeditblock), AND(ioRendered, costingRequest.Data_Cleaning_dev_IO__c, OR(costingRequest.Sync_Failed_At_IO__c=='Mob Analytics',costingRequest.Sync_Failed_At_IO__c=='Opp Analytics'),hideeditblock))}"/>
+<apex:pagemessage severity="error" summary="Data Cleaning Failed.Please contact your administrator." rendered="{!OR( AND(bpoRendered, costingRequest.Data_Cleaning_dev__c,costingRequest.Sync_Failed_At__c=='Roll Back Failed',hideeditblock),AND(ioRendered, costingRequest.Data_Cleaning_dev_IO__c, costingRequest.Sync_Failed_At_IO__c=='Roll Back Failed',hideeditblock)) }"/>
+<apex:pagemessage severity="Confirm" summary="All calculations are complete. Please hit the refresh button on the page. Please do not use browser refresh." rendered="{!OR(AND(bpoRendered, costingRequest.Has_Updated__c,costingRequest.In_Progress__c=='1',hideeditblock), AND(ioRendered, costingRequest.Has_Updated_IO__c,costingRequest.In_Progress_IO__c=='1',hideeditblock))}"/>
+ 
+-->
+
+<apex:pageMessage summary="Last Sync Failed" severity="INFO" rendered="{!IF(OR(AND(costingRequest.In_Progress__c=='0', bpoRendered), AND(ioRendered,costingRequest.In_Progress_IO__c=='0' )), true, false)}" strength="2" escape="false">
+    <a href="/apex/SyncErrorPage?oppid={!costingRequest.Opportunity__c}" target="_blank" onclick="window.open(this.href, 'Sync Status',
+'left=20,top=20,width=500,height=300,toolbar=1,resizable=0'); return false;">Click Here For Details</a>
+    </apex:pageMessage>
+</apex:outputPanel>
+
+<apex:outputPanel id="BPOmsg" rendered="{!AND(CONTAINS(p.name,'Solution'),costingRequest.In_Progress_IO__c=='4')}">
+<apex:pagemessage severity="info" summary="Please wait while IOSM sync is inprogress." rendered="{!IF(costingRequest.In_Progress_IO__c=='4',true,false)}"/>
+</apex:outputPanel>
+
+<apex:outputPanel id="IOmsg" rendered="{!AND(OR(CONTAINS(p.name,'IO'),CONTAINS(p.name,'IC'),CONTAINS(p.name,'IS')),costingRequest.In_Progress__c=='4')}">
+<apex:pagemessage severity="info" summary="Please wait while BPOSE sync is inprogress." rendered="{!IF(costingRequest.In_Progress__c=='4',true,false)}"/>
+</apex:outputPanel>
+
+<apex:pageMessages id="pgMsg"/>
+<script src="/soap/ajax/25.0/connection.js" type="text/javascript"></script>
+<script >
+    var newRecords = new Array(); 
+    var result = sforce.connection.query("select id,IsCheckedOutPage__c,Is_Checked_Out__c,LastModifiedDate, Last_Checked_Out_By_Dev__c,Opportunity__c from Costing_Request__c where id='{!costingrequest.id}' LIMIT 1");
+    var records = result.getArray("records");
+    var bool = records[0].Is_Checked_Out__c;
+    var str1='{!userid}';
+    var str2=records[0].Last_Checked_Out_By_Dev__c;
+    var opptid= records[0].Opportunity__c;
+    idleLogout= function() {
+        var t;
+        var t1;
+        var newwindow=null;
+        window.onload = resetTimer;
+        window.onmousedown = resetTimer;
+       // window.onmousemove = resetTimer;
+       //   window.onclick = resetTimer; 
+       window.onscroll = resetTimer; 
+        // window.onkeypress = resetTimer;
+        
+       // document.documentElement.onload =resetTimer;
+       
+        document.documentElement.onmousemove=resetTimer;
+       
+       // document.documentElement.onmousedown = resetTimer;
+     
+        document.documentElement.onclick= resetTimer;    
+           
+       // document.documentElement.onscroll = resetTimer; 
+      
+        document.documentElement.onkeypress = resetTimer; 
+
+        this.openLookupPopup = function() {
+            // window.onmousemove = null;
+            document.documentElement.onmousemove=null;
+             var url='/apex/IOSyncPopup?opptid=' +opptid +'&costid='+'{!costingrequest.id}'; 
+            newwindow = window.open(url,'Popup','height=200,width=400,left=100,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no'); 
+            newwindow.focus();
+        }
+        
+        this.resetCostPage = function() {  
+            
+             var accObj = new sforce.SObject("Costing_Request__c"); 
+             accObj.set("Id", records[0].Id ); //Setting the Id to be updated
+             accObj.Is_checked_out__c = false;//mapping check out  to false.
+             accObj.Last_Checked_Out_By_Dev__c = null;
+             accObj.Checked_Out_By__c = null; 
+             newRecords.push(accObj); //Adding records.
+             sforce.connection.update(newRecords);
+             window.location.href='/'+opptid;
+             newwindow.close();
+            
+        }
+
+        function resetTimer() {
+            
+            clearTimeout(t);
+       //     t = setTimeout(openLookupPopup, 1000000);
+           
+           
+            
+            
+        }
+    }
+    function callParent(){
+    
+        var fCall = new idleLogout();
+        fCall.resetTimer;
+    }
+    if(bool == "true" && str1 == str2){
+     //  idleLogout();
+    }
+         
+      window.onbeforeunload =function() { 
+       //alert('hi');  
+        var newRecords = new Array();         
+         var result = sforce.connection.query("select id,IsCheckedOutPage__c,Is_Checked_Out__c,LastModifiedDate, Last_Checked_Out_By_Dev__c from Costing_Request__c where id='{!costingrequest.id}' LIMIT 1");
+         var records = result.getArray("records");
+         //alert('ischeck out-->'+records[0].Is_Checked_Out__c+'flag ---- >'+records[0].IsCheckedOutPage__c);
+         var nowD = Date.now();
+         //If(nowD);
+         //alert(nowD == records[0].LastModifiedDate);
+         var allowcheckin = 'false';
+          
+            var str1='{!userid}';
+            var str2=records[0].Last_Checked_Out_By_Dev__c;
+            //alert(str1==str2);
+            var bool = records[0].Is_Checked_Out__c;            
+          if( bool && str1==str2){
+             var accObj = new sforce.SObject("Costing_Request__c"); 
+             accObj.set("Id", records[0].Id ); //Setting the Id to be updated
+             accObj.Is_checked_out__c = false;//mapping check out  to false.
+             accObj.Last_Checked_Out_By_Dev__c = null;
+             accObj.Checked_Out_By__c = null; 
+             newRecords.push(accObj); //Adding records.
+             allowcheckin = 'true';
+                 
+               console.log('if block'+allowcheckin);
+             //Updating data into the Costing object. 
+             //alert('after records-->'+newRecords);
+             sforce.connection.update(newRecords);
+         }
+         
+         
+         console.log(allowcheckin);
+         var url = "{!$Setup.Rest_URL__c.Base_URL__c}";
+         console.log(url);
+        if(allowcheckin =='true'){
+            window.location.href = url+"apex/check_redirect?id="+records[0].Id;
+           
+        }
+       };
+       function refresh(){
+      // alert('hi');
+           var newRecords = new Array(); 
+          sforce.connection.sessionId = "{!$Api.Session_ID}";  
+           var queryString="Select Id,Has_Updated__c,Has_Updated_IO__c,IsCheckedOutPage__c From Costing_Request__c where id='{!costingrequest.id}' LIMIT 1";
+           var customSetting = sforce.connection.query(queryString);
+           // alert(customSetting );
+           var customRecord = customSetting.getArray("records");
+           var isUpdated = customRecord[0].Has_Updated__c;
+           var isIOupdated=customRecord[0].Has_Updated_IO__c;
+           if(isUpdated=='true' || isIOupdated ){
+         
+           //alert('reloading now..');
+           //alert(isIOupdated);
+           var accObj1 = new sforce.SObject("Costing_Request__c");
+          accObj1.set("Id", customRecord[0].Id );
+         // alert(customRecord[0].Id);
+           accObj1.Has_Updated__c = false;
+           accObj1.Has_Updated_IO__c = false;
+           accObj1.IsCheckedOutPage__c = true;
+           newRecords.push(accObj1);
+           sforce.connection.update(newRecords);
+         // alert('reloading');
+         //  window.location.href = 'https://accentureopsworkbench--dev25--c.cs8.visual.force.com/apex/CostingRequestDetail_Page?id='+'{!costingrequest.id}' ;
+              //updateSetting();
+         }  
+       }     
+         
+  </script>
+  
+ <apex:form id="frm">
+    
+   <apex:actionFunction name="checkback" action="{!checkin}" />
+
+     <apex:actionPoller action="{!showUpdates}" interval="5" rerender="msg,refreshbtn"/> 
+      <apex:outputText value="{!showUpdate}" escape="false" id="updates" rendered="{!costingRequest.Has_Updated__c}"></apex:outputText> 
+    <!-- </apex:actionPoller> -->
+<apex:pageblock rendered="{!showeditblock}" mode="mainDetail">
+  
+    <apex:pageblockButtons >
+        <apex:commandButton action="{!saveRecord}" value="Save"/>
+        <apex:commandButton action="{!cancelRecord}" value="Cancel" immediate="true"/>
+    </apex:pageblockButtons>
+    <apex:pageBlockSection collapsible="true" title="Opportunity Details" columns="1">
+        <apex:outputField value="{!costingRequest.Client__c}" label="Client"/>
+        <apex:outputField value="{!costingRequest.Opportunity__c}" label="Opportunity"/>
+            </apex:pageBlockSection>
+            
+            <!--
+            <apex:pageBlockSection collapsible="true" title="Costing Information BPO" columns="2" rendered="{!bpoRendered}">
+                <apex:inputField value="{!costingRequest.Contract_Start__c}" required="true" rendered="{!IF(OR(costingRequest.Contract_Start__c==null,isError ),true,false)}"/>
+                <apex:outputField value="{!costingRequest.Contract_Start__c}" rendered="{!IF(AND(costingRequest.Contract_Start__c!=null,!isError),true,false)}"/>
+                <apex:outputPanel rendered="{!!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Synced_Scenario_Name__c}" rendered="{!isSynced}"/>
+                <apex:inputField value="{!costingRequest.Initial_Go_Live__c}" required="true" rendered="{!IF(OR(costingRequest.Initial_Go_Live__c==null,isError),true,false)}"/>
+                <apex:outputField value="{!costingRequest.Initial_Go_Live__c}" rendered="{!IF(AND(costingRequest.Initial_Go_Live__c!=null,!isError),true,false)}"/>
+                <apex:outputPanel rendered="{!!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Version__c}" rendered="{!isSynced}"/>
+                <apex:inputField value="{!costingRequest.Contract_End__c}" required="true" rendered="{!IF(OR(costingRequest.Contract_End__c==null,isError) ,true,false)}"/>
+                <apex:outputField value="{!costingRequest.Contract_End__c}" rendered="{!IF(AND(costingRequest.Contract_End__c!=null,!isError),true,false)}"/>
+                <apex:outputPanel rendered="{!!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Last_Synced_Date__c}" rendered="{!isSynced}"/>
+                <apex:inputField value="{!costingRequest.Country__c}" required="true"/>
+                <apex:outputPanel rendered="{!!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Last_Synced_Up_By__c}" rendered="{!isSynced}"/>
+                <apex:inputField value="{!costingRequest.Allow_Deal_Customization__c}" rendered="{!IF(AND(NOT(CONTAINS($Profile.Name,'Admin')),NOT(CONTAINS($Profile.Name,'Operations'))),false,IF(!costingRequest.Allow_Deal_Customization__c,true,false))}"/>
+                <apex:outputField value="{!costingRequest.Allow_Deal_Customization__c}" rendered="{!IF(AND(NOT(CONTAINS($Profile.Name,'Admin')),NOT(CONTAINS($Profile.Name,'Operations'))),true,IF(costingRequest.Allow_Deal_Customization__c,true,false))}"/>
+                <apex:outputField value="{!costingRequest.Cost_Summary_and_Metrics__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.MRDB_Last_Refresh_Date__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.MRDB_Version__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel> 
+                <apex:outputField value="{!costingRequest.Last_BDL_Generated_Scenario__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Last_BDL_Generated_Version__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.BDL_Generated_UTC_Date__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Last_BDL_Generated_User__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Checked_Out_By__c}" rendered="{!isSynced}"/>              
+              
+            </apex:pageBlockSection>
+            
+            
+            
+            
+            <apex:pageBlockSection collapsible="true" title="Costing Information IO" columns="2" rendered="{!ioRendered}">
+                <apex:inputField value="{!costingRequest.Contract_Start__c}" required="true" rendered="{!IF(OR(costingRequest.Contract_Start__c==null,isError ),true,false)}"/>
+                <apex:outputField value="{!costingRequest.Contract_Start__c}" rendered="{!IF(AND(costingRequest.Contract_Start__c!=null,!isError),true,false)}"/>
+                <apex:outputPanel rendered="{!!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Synced_Scenario_Name__c}" rendered="{!isSynced}"/>
+                <apex:inputField value="{!costingRequest.Initial_Go_Live__c}" required="true" rendered="{!IF(OR(costingRequest.Initial_Go_Live__c==null,isError),true,false)}"/>
+                <apex:outputField value="{!costingRequest.Initial_Go_Live__c}" rendered="{!IF(AND(costingRequest.Initial_Go_Live__c!=null,!isError),true,false)}"/>
+                <apex:outputPanel rendered="{!!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Version_IO__c}" rendered="{!isSynced}"/>
+                <apex:inputField value="{!costingRequest.Contract_End__c}" required="true" rendered="{!IF(OR(costingRequest.Contract_End__c==null,isError) ,true,false)}"/>
+                <apex:outputField value="{!costingRequest.Contract_End__c}" rendered="{!IF(AND(costingRequest.Contract_End__c!=null,!isError),true,false)}"/>
+                <apex:outputPanel rendered="{!!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Last_Synced_Date_IO__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Last_Synced_Up_By_IO__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.MRDB_Last_Refresh_Date_IO__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.MRDB_Version_IO__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel> 
+                <apex:outputField value="{!costingRequest.Last_IDL_Generated_Scenario__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Last_IDL_Generated_Version__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.IDL_Generated_UTC_Date__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Last_IDL_Generated_User__c}" rendered="{!isSynced}"/>
+                <apex:outputPanel rendered="{!isSynced}"></apex:outputPanel>
+                <apex:outputField value="{!costingRequest.Checked_Out_By_IO__c}" rendered="{!isSynced}"/>              
+                
+            
+            </apex:pageBlockSection>
+          -->  
+          
+          <apex:pageBlockSection collapsible="true" title="Costing Information BPO" columns="2" rendered="{!bpoRendered}">
+            <apex:inputField value="{!costingRequest.Contract_Start__c}" required="true" rendered="{!IF(OR(costingRequest.Contract_Start__c==null,isError ),true,false)}"/>
+            <apex:outputField value="{!costingRequest.Contract_Start__c}" rendered="{!IF(AND(costingRequest.Contract_Start__c!=null,!isError),true,false)}"/>
+            
+            <apex:outputField value="{!costingRequest.Synced_Scenario_Name__c}" />
+            <apex:inputField value="{!costingRequest.Initial_Go_Live__c}" required="true" rendered="{!IF(OR(costingRequest.Initial_Go_Live__c==null,isError),true,false)}"/>
+            <apex:outputField value="{!costingRequest.Initial_Go_Live__c}" rendered="{!IF(AND(costingRequest.Initial_Go_Live__c!=null,!isError),true,false)}"/>
+            
+            <apex:outputField value="{!costingRequest.Version__c}" />
+            <apex:inputField value="{!costingRequest.Contract_End__c}" required="true" rendered="{!IF(OR(costingRequest.Contract_End__c==null,isError) ,true,false)}"/>
+            <apex:outputField value="{!costingRequest.Contract_End__c}" rendered="{!IF(AND(costingRequest.Contract_End__c!=null,!isError),true,false)}"/>
+            
+            <apex:outputField value="{!costingRequest.Last_Synced_Date__c}" label="Last Synced Date/Time"/>
+            <apex:inputField value="{!costingRequest.Country__c}" required="true"/>
+            
+            <apex:outputField value="{!costingRequest.Last_Synced_Up_By__c}" label="Last Synced By"/>
+            <apex:inputField value="{!costingRequest.Allow_Deal_Customization__c}" rendered="{!IF(AND(NOT(CONTAINS($Profile.Name,'Admin')),NOT(CONTAINS($Profile.Name,'Operations'))),false,IF(!costingRequest.Allow_Deal_Customization__c,true,false))}"/>
+            <apex:outputField value="{!costingRequest.Allow_Deal_Customization__c}" rendered="{!IF(AND(NOT(CONTAINS($Profile.Name,'Admin')),NOT(CONTAINS($Profile.Name,'Operations'))),true,IF(costingRequest.Allow_Deal_Customization__c,true,false))}"/>
+            <apex:outputField value="{!costingRequest.Cost_Summary_and_Metrics__c}" />
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.MRDB_Last_Refresh_Date__c}" />
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.MRDB_Version__c}" />
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.Last_BDL_Generated_Scenario__c}" />
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.Last_BDL_Generated_Version__c}" />
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.BDL_Generated_UTC_Date__c}" />
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.Last_BDL_Generated_User__c}" />
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.Checked_Out_By__c}" />              
+          
+        </apex:pageBlockSection>
+        
+        
+        
+        
+        <apex:pageBlockSection collapsible="true" title="Costing Information IO" columns="2" rendered="{!ioRendered}">
+            <apex:inputField value="{!costingRequest.Contract_Start__c}" required="true" rendered="{!IF(OR(costingRequest.Contract_Start__c==null,isError ),true,false)}"/>
+            <apex:outputField value="{!costingRequest.Contract_Start__c}" rendered="{!IF(AND(costingRequest.Contract_Start__c!=null,!isError),true,false)}"/>
+            
+            <apex:outputField value="{!costingRequest.Synced_Scenario_Name__c}" />
+            <apex:inputField value="{!costingRequest.Initial_Go_Live__c}"  rendered="{!IF(OR(costingRequest.Initial_Go_Live__c==null,isError),true,false)}"/>
+            <apex:outputField value="{!costingRequest.Initial_Go_Live__c}" rendered="{!IF(AND(costingRequest.Initial_Go_Live__c!=null,!isError),true,false)}"/>
+            
+            <apex:outputField value="{!costingRequest.Version_IO__c}" />
+            <apex:inputField value="{!costingRequest.Contract_End__c}" required="true" rendered="{!IF(OR(costingRequest.Contract_End__c==null,isError) ,true,false)}"/>
+            <apex:outputField value="{!costingRequest.Contract_End__c}" rendered="{!IF(AND(costingRequest.Contract_End__c!=null,!isError),true,false)}"/>
+            
+            <apex:outputField value="{!costingRequest.Last_Synced_Date_IO__c}" label="Last Synced Date/Time" />
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.Last_Synced_Up_By_IO__c}" label="Last Synced By"/>
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.MRDB_Last_Refresh_Date_IO__c}" label="MRDB Last Refresh Date"/>
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.MRDB_Version_IO__c}" label="MRDB Version"/>
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.Last_IDL_Generated_Scenario__c}" />
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.Last_IDL_Generated_Version__c}"/>
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.IDL_Generated_UTC_Date__c}"/>
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.Last_IDL_Generated_User__c}" />
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.CDR_Sync_Date__c}"/>
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.CDR_Scenario_Name__c}"/>
+            <apex:pageBLockSectionItem ></apex:pageBLockSectionItem>
+            <apex:outputField value="{!costingRequest.Checked_Out_By__c}" />              
+
+        </apex:pageBlockSection>
+            
+    </apex:pageblock>
+    <apex:pageBlock id="pb2" rendered="{!hideeditblock}" mode="mainDetail">
+       <apex:actionStatus id="refresh" startText="Refreshing" rendered="{!costingRequest.Has_Updated__c}"/> 
+            <apex:pageBlockButtons location="Top">
+        
+            <!-- <apex:commandButton action="{!edit}" value="Edit" disabled="{!IF($Profile.Name!='Workbench Read Only',!access,false)}"/> -->
+                <apex:commandButton action="{!editCostingRequest}" value="Edit"/>
+                <apex:commandButton action="/{!Costing_Request__c.Opportunity__c}" value="Go to Opportunity"/>
+                <apex:commandButton value="Check In Solution Estimator" action="{!checkin}" rendered="{!ischeckin}" rerender="pgMsg"/>
+                <apex:outputpanel id="refreshbtn"> 
+                    <apex:commandButton action="{!showUpdates}" value="Refresh" reRender="pbs,pbsio,appBlock,updates,msg,refreshbtn" rendered="{!OR(costingRequest.Has_Updated__c,costingRequest.Has_Updated_IO__c)}" oncomplete="refresh();"/>
+               </apex:outputpanel>     
+            </apex:pageblockButtons>
+        
+      <apex:pageBlockSection collapsible="true" title="Opportunity Details">
+        <apex:repeat value="{!$ObjectType.Costing_Request__c.FieldSets.OpportunitySection}" var="f"> 
+            <apex:outputField value="{!Costing_Request__c[f]}" /><br/>
+        </apex:repeat> 
+        
+        
+
+     </apex:pageBlockSection>
+     
+   <apex:pageBlockSection collapsible="true" title="Costing Information BPO" columns="2" rendered="{!bpoRendered}" id="pbs">
+   <!--  <apex:outputpanel>
+     <script>
+         alert('hi');
+     </script>
+     </apex:outputpanel> -->
+         <apex:outputField value="{!costingRequest.Contract_Start__c}"/>
+         <apex:outputField value="{!costingRequest.Synced_Scenario_Name__c}"/> 
+         <apex:outputField value="{!costingRequest.Initial_Go_Live__c}"/>
+         <apex:outputField value="{!costingRequest.Version__c}"/>  
+         <apex:outputField value="{!costingRequest.Contract_End__c}"/>
+         <apex:outputField value="{!costingRequest.Last_Synced_Date__c}" label="Last Synced Date/Time"/>
+         <apex:outputField value="{!costingRequest.Country__c}"/>
+         <apex:outputField value="{!costingRequest.Last_Synced_Up_By__c}" label="Last Synced By"/>
+         <apex:outputField value="{!costingRequest.Allow_Deal_Customization__c}"/>
+       <!--  <apex:outputPanel rendered="{!IF(AND(NOT(CONTAINS($Profile.Name,'Admin')),NOT(CONTAINS($Profile.Name,'Operations'))),true,false)}"></Apex:outputpanel> -->
+         <apex:outputField value="{!costingRequest.Cost_Summary_and_Metrics__c}"/>
+         <apex:outputPanel ></apex:outputPanel>
+         <apex:outputField value="{!costingRequest.MRDB_Last_Refresh_Date__c}"/> 
+         <apex:outputPanel ></apex:outputPanel>
+         <apex:outputField value="{!costingRequest.MRDB_Version__c}"/>
+         <apex:outputPanel ></apex:outputPanel>
+         <apex:outputField value="{!costingRequest.Last_BDL_Generated_Scenario__c}"/>
+         <apex:outputPanel ></apex:outputPanel>
+         <apex:outputField value="{!costingRequest.Last_BDL_Generated_Version__c}"/>
+         <apex:outputPanel ></apex:outputPanel>
+         <apex:outputField value="{!costingRequest.BDL_Generated_UTC_Date__c}"/>
+         <apex:outputPanel ></apex:outputPanel>
+         <apex:outputField value="{!costingRequest.Last_BDL_Generated_User__c}"/>
+         <apex:outputPanel ></apex:outputPanel>
+         <apex:outputField value="{!costingRequest.Checked_Out_By__c}"/>       
+        </apex:pageBlockSection>
+     
+     <apex:pageBlockSection collapsible="true" title="Costing Information IO" columns="2" rendered="{!ioRendered}" id="pbsio">
+        <apex:outputField value="{!costingRequest.Contract_Start__c}" label="Contract Start Date"/>
+                         <apex:outputField value="{!costingRequest.Synced_Scenario_Name_IO__c}" label="Synced Scenario Name"/> 
+                         <apex:outputField value="{!costingRequest.Initial_Go_Live__c}" label="Initial Go-Live Date"/>
+                         <apex:outputField value="{!costingRequest.Version_IO__c}"  label="Version"/>
+                         <apex:outputField value="{!costingRequest.Contract_End__c}" label="Contract End Date"/>
+                         <apex:outputField value="{!costingRequest.Last_Synced_Date_IO__c}" label="Last Synced Date/Time"/>
+                         <apex:outputPanel ></apex:outputPanel>
+                         <apex:outputField value="{!costingRequest.Last_Synced_Up_By_IO__c}" label="Last Synced By"/>
+                         <apex:outputPanel ></apex:outputPanel> 
+                        <!-- <apex:outputPanel rendered="{!IF(AND(NOT(CONTAINS($Profile.Name,'Admin')),NOT(CONTAINS($Profile.Name,'Operation'))),true,false)}"></Apex:outputpanel> 
+                        
+                         <apex:outputField value="{!costingRequest.Allow_Deal_Customization__c}"/>
+                         <apex:outputPanel ></apex:outputPanel>
+                         -->
+                        <apex:outputField value="{!costingRequest.CostSummaryandMetrics_IO__c}" label="Cost Summary and Metrics"/>
+                         <apex:outputPanel ></apex:outputPanel>
+                         <apex:outputField value="{!costingRequest.MRDB_Last_Refresh_Date_IO__c}" label="MRDB Last Refresh Date" />
+                         <apex:outputPanel ></apex:outputPanel>
+                         <apex:outputField value="{!costingRequest.MRDB_Version_IO__c}" label="MRDB Version" />
+                         <apex:outputPanel ></apex:outputPanel>
+                         <apex:outputField value="{!costingRequest.Last_IDL_Generated_Scenario__c}"/>
+                         <apex:outputPanel ></apex:outputPanel>
+                         <apex:outputField value="{!costingRequest.Last_IDL_Generated_Version__c}"/>
+                         <apex:outputPanel ></apex:outputPanel>
+                         <apex:outputField value="{!costingRequest.IDL_Generated_UTC_Date__c}"/>
+                         <apex:outputPanel ></apex:outputPanel>
+                         <apex:outputField value="{!costingRequest.Last_IDL_Generated_User__c}"/>
+                         <apex:outputPanel ></apex:outputPanel>
+                         <apex:outputField value="{!costingRequest.CDR_Sync_Date__c}"/>
+                         <apex:outputPanel ></apex:outputPanel>
+                         <apex:outputField value="{!costingRequest.CDR_Scenario_Name__c}"/>
+                         <apex:outputPanel ></apex:outputPanel>
+                         <apex:outputField value="{!costingRequest.Checked_Out_By__c}"/>
+   <!--  <apex:outputpanel>
+     <script>
+         alert('hi');
+     </script>
+     </apex:outputpanel> 
+         <apex:outputField value="{!costingRequest.Contract_Start__c}"/>
+         <apex:outputField value="{!costingRequest.Synced_Scenario_Name__c}"/> 
+         <apex:outputField value="{!costingRequest.Initial_Go_Live__c}"/>
+         <apex:outputField value="{!costingRequest.Version_io__c}"/>  
+         <apex:outputField value="{!costingRequest.Contract_End__c}"/>
+         <apex:outputField value="{!costingRequest.Last_Synced_Date_IO__c}"/>
+         <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+         <apex:outputField value="{!costingRequest.Last_Synced_Up_By_IO__c}"/>
+        <apex:outputPanel ></apex:outputPanel>
+        <apex:outputField value="{!costingRequest.MRDB_Last_Refresh_Date_IO__c}" />
+        <apex:outputPanel ></apex:outputPanel>
+        <apex:outputField value="{!costingRequest.MRDB_Version_IO__c}" />
+        <apex:outputPanel ></apex:outputPanel> 
+        <apex:outputField value="{!costingRequest.Last_IDL_Generated_Scenario__c}" />
+        <apex:outputPanel ></apex:outputPanel>
+        <apex:outputField value="{!costingRequest.Last_IDL_Generated_Version__c}" />
+        <apex:outputPanel ></apex:outputPanel>
+        <apex:outputField value="{!costingRequest.IDL_Generated_UTC_Date__c}" />
+        <apex:outputPanel ></apex:outputPanel>
+        <apex:outputField value="{!costingRequest.Last_IDL_Generated_User__c}"/>
+        <apex:outputPanel ></apex:outputPanel>
+        <apex:outputField value="{!costingRequest.Checked_Out_By__c}"/>     
+        <apex:outputPanel ></apex:outputPanel>
+        <apex:outputField value="{!costingRequest.Last_Synced_Date__c}"/>
+         <apex:outputField value="{!costingRequest.Last_Synced_Up_By__c}"/>-->
+        
+        </apex:pageBlockSection>
+        
+     <apex:pageBlockSection rendered="{!OR(AND(isSynced),AND(costingRequest.Is_Checked_Out__c))}" title="Solution Estimator" columns="1">  
+        <apex:canvasApp id="appBlock" applicationName="BPOSE_QA" parameters="{!generateJSONContent}" width="100%" height="1200" border="0" scrolling="no" />    
+    </apex:pageBlockSection>
+<!--
+ <apex:pageBlockSection collapsible="true" title="ResetBlock" rendered="{!IF(AND(if(OR($Profile.Name=='System Administrator',$Profile.Name=='Solution Operations'),true,false),AND(Costing_Request__c.In_Progress__c!='1',Costing_Request__c.In_Progress__c!='3')),true,false)}">
+        <apex:commandButton value="Force Check In" action="{!forceCheckIn}" rendered="{!if(Costing_Request__c.Is_Checked_Out__c==true,true,false)}" title="Sets the field 'Is_Checked_Out__c' to False"/><br></br> 
+        <apex:commandButton value="Clear Previous Data" action="{!clearPrevData}" title="Deletes the records based on the condition"/>
+        </apex:pageBlockSection> 
+-->
+</apex:pageBlock> 
+</apex:form>
+
+
+ 
+</apex:page>

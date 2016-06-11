@@ -1,0 +1,40 @@
+<apex:page standardController="Opportunity_TGP__c" extensions="BPO_Opportunity_tabController" showHeader="true" sidebar="true" ID="bpoOppPage" >
+  
+  <apex:form id="form1">
+      <apex:pageMessages id="msg"/> 
+      <apex:variable value="{!objOpportunityrec}" var="ccb"/> 
+      <apex:pageBlock id="oppCircle">
+          <apex:pageBlockSection title="Opportunity Circle" columns="1" collapsible="false" id="oppCircle">
+              <apex:outputText rendered="{!if(isOppCircleLinkNotAvaiable == true,false,true)}">
+                   Virtual collaborative workspace is available in the <apex:commandLink action="{!ClickHereForOppCircle}" value="Opportunity Circle." target="_blank"></apex:commandLink>
+              </apex:outputText>
+              <apex:outputText rendered="{!isOppCircleLinkNotAvaiable}">
+                   Virtual collaborative workspace is available in the Opportunity Circle.
+              </apex:outputText>
+              <apex:outputPanel >
+                <apex:pageBlockSection showHeader="false" columns="3" rendered="{!isOppCircleLinkAvailable}">          
+                     <apex:inputField value="{!ccb.Link_to_Opportunity_Circle__c}" label="Link to Opportunity Circle" style="width: 500px; height: 20px">                      
+                     </apex:inputField>
+                     <apex:commandButton value="Save" action="{!SaveLinkForOppCircle}" reRender="oppCircle,msg"/>
+                </apex:pageBlockSection>
+            </apex:outputPanel> 
+        </apex:pageBlockSection>
+            
+        <apex:pageBlockSection title="OneNote" columns="1" collapsible="false" id="oppNote">
+            <apex:outputText rendered="{!if(isOneNoteLinkNotAvaiable == true,false,true)}">
+               Virtual collaborative notes are available via  <apex:commandLink action="{!ClickHereForOppNote}" value=" OneNote." target="_blank"></apex:commandLink>
+            </apex:outputText>
+            <apex:outputText rendered="{!isOneNoteLinkNotAvaiable}">
+               Virtual collaborative notes are available via OneNote.
+            </apex:outputText>
+            <apex:outputPanel >
+                <apex:pageBlockSection showHeader="false" columns="3" rendered="{!isOneNoteLinkAvailable}">          
+                     <apex:inputField value="{!ccb.Link_to_OneNote__c}" label="Link to OneNote" style="width: 500px; height: 20px">                      
+                     </apex:inputField>
+                     <apex:commandButton value="Save" action="{!SaveLinkForOneNote}" reRender="oppNote,msg"/>
+                </apex:pageBlockSection>
+            </apex:outputPanel> 
+       </apex:pageBlockSection>    
+    </apex:pageBlock>
+  </apex:form>
+</apex:page>

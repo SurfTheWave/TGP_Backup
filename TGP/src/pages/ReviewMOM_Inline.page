@@ -1,0 +1,131 @@
+<!--
+Author : Shridhar Patankar
+Story  : SOL_165  
+Description : Capturing Minutes of Meetings for a review. 
+
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    Sol_148                    5/15/2013           Sol UAM-Release 2
+
+-->
+<apex:page standardController="Review_Process__c" title="addnewRecord" extensions="ReviewMOM_InlineController" id="pg">
+   <apex:form id="frm0">
+    <apex:outputPanel id="refresh1" rendered="{!refreshPage}">
+        <apex:inputHidden value="{!fileExten}" id="hiddenValue" /> 
+        <script>
+            function check(obj_inpf)
+            {
+                var FileNameArr = obj_inpf.value.split("\\");
+                var exten=FileNameArr[2];
+                document.getElementById('{!$Component.hiddenValue}').value = exten;           
+            }
+            
+        </script>
+    </apex:outputPanel>
+</apex:form>
+
+   <apex:form id="form1">
+      <apex:pageMessages id="pgmsg2"  rendered="{!pgmsg2}" ></apex:pageMessages>
+            <apex:pageBlock id="block" >
+            <apex:pageBlockButtons location="top" rendered="{!saveEditButtonRender}" >
+                <!-- <apex:actionStatus id="save_Btn">                 
+                <apex:facet name="stop">
+                    <apex:commandButton value="Save" action="{!saveAccProfileDetails}" id="saveButton" reRender="form1,frm0,section3" status="save_Btn"  />
+                </apex:facet>
+                <apex:facet name="start">
+                    <apex:outputPanel >
+                         <apex:commandButton value="Saving..." action="{!saveAccProfileDetails}" id="saveButton1" reRender="form1,frm0,section3" disabled="true" status="save_Btn"  />                    </apex:outputPanel>
+                 </apex:facet> 
+              </apex:actionStatus> -->
+               <apex:commandButton value="Save" action="{!saveAccProfileDetails}" id="saveButton1"  />   
+            <apex:commandButton id="cancelButton" value="Cancel" />          
+            </apex:pageBlockButtons>
+            
+                 <br> <h1 style="font-weight:bold;font-size:11px;"> <apex:commandLink onclick="return window.open('{!$Resource.ApprovalCallMOMTemplate}','Name','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes');" value="Click Here!" style="color:blue;"/> to download the MOM Template </h1></br><br></br>
+                 
+            <apex:pageBlockSection title="Minutes of Meeting Details" columns="1" id="section3" collapsible="false" >
+               <apex:outputPanel id="table3">
+               
+                <apex:pageBlockTable value="{!reviewTitle}" var="mom">
+                    <apex:column >   
+                     <apex:inputField value="{!mom.MOM_Rich__c}" style="Height:100%,Width:100%" rendered="{!if(readOnlyMode,false,true)}"/>
+                     <apex:outputField value="{!mom.MOM_Rich__c}" style="Height:100%,Width:100%" rendered="{!readOnlyMode}"/>
+                    </apex:column>
+                </apex:pageBlockTable>
+                
+               </apex:outputPanel>
+            </apex:pageBlockSection>
+         </apex:pageBlock>
+        </apex:form>
+    <apex:form id="form3">
+   <apex:pageMessages id="pgmsg3"  rendered="{!pgmsg3}" ></apex:pageMessages>
+    <apex:pageBlock >
+         <apex:pageBlockButtons rendered="{!saveEditButtonRender}" location="top">
+            <apex:commandButton action="{!saveNow}" value="Save" id="saveButton" reRender="frm,form3,pgmsg3"/>
+            <apex:commandButton value="Cancel" action="{!cancelNow}"  immediate="true" id="cancelButton" reRender="frm,form3"/>
+         </apex:pageBlockButtons>
+         
+    
+         
+        <apex:pageBlockSection title="File List" columns="1" collapsible="false" rendered="{!if(readOnlyMode,false,true)}"> 
+           <apex:outputPanel layout="block" style="overflow:auto;height:250px">     
+                <apex:pageBlockTable value="{!listReviewMOM}" var="f"><!-- styleClass="inlineEditTbl"> -->
+                    <apex:column headerValue="File Name">
+                        <apex:commandLink onclick="window.open('/servlet/servlet.FileDownload?file={!f.Picture_ID__c}','Name','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes')" value="{!f.File_Name__c}"/>           
+                    </apex:column>
+                    <apex:column headerValue="Comments">                
+                        <apex:inputField value="{!f.Comments__c}" style="width: 500px; height: 90px"></apex:inputField>
+                    </apex:column>         
+                                               
+                    <apex:column headerValue="Delete File" rendered="{!deleteButtonRender}">                
+                        <apex:commandLink action="{!deleteFile}" value="Delete" onclick="return confirm('Are you sure you want to delete this file?');" >
+                            <apex:param name="fileIdDelete" value="{!f.Picture_ID__c}" assignTo="{!fileIdDelete}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                    <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                </apex:pageBlockTable>
+            </apex:outputPanel>        
+        </apex:pageBlockSection>
+         <!--Read Only Mode Detail List-->
+        <apex:pageBlockSection title="File List" columns="1" collapsible="false" rendered="{!readOnlyMode}"> 
+           <apex:outputPanel layout="block" style="overflow:auto;height:250px">     
+                <apex:pageBlockTable value="{!listReviewMOM}" var="f"><!-- styleClass="inlineEditTbl"> -->
+                    <apex:column headerValue="File Name">
+                        <apex:commandLink onclick="window.open('/servlet/servlet.FileDownload?file={!f.Picture_ID__c}','Name','toolbar=yes,menubar=yes,scrollbars=yes,fullscreen=yes')" value="{!f.File_Name__c}"/>           
+                    </apex:column>
+                    <apex:column headerValue="Comments">                
+                        <apex:outputField value="{!f.Comments__c}" style="width: 500px; height: 90px"></apex:outputField>
+                    </apex:column>         
+                                               
+                    <apex:column headerValue="Delete File" rendered="{!deleteButtonRender}">                
+                        <apex:commandLink action="{!deleteFile}" value="Delete" onclick="return confirm('Are you sure you want to delete this file?');" >
+                            <apex:param name="fileIdDelete" value="{!f.Picture_ID__c}" assignTo="{!fileIdDelete}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                    <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                </apex:pageBlockTable>
+            </apex:outputPanel>        
+        </apex:pageBlockSection>                
+    </apex:pageBlock>    
+</apex:form>
+
+<apex:form enctype="multipart/form-data" rendered="{!addButtonRender}" id="frm">
+    
+    <apex:variable value="{!Review_Process__c}" var="ccb"/>     
+    <apex:pageBlock >
+        <apex:outputPanel id="out">
+            <apex:pageBlockSection showHeader="false" columns="3" id="block1">          
+                <apex:outputLabel value="File Upload: " for="file">
+                    <apex:inputFile value="{!doc1.body}" filename="{!doc1.name}" id="file" onchange="check(this)"/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              
+                </apex:outputLabel> 
+                 <apex:inputField value="{!ccb.Comments__c}" style="width: 500px; height: 90px"/>                       
+                <apex:outputLabel ></apex:outputLabel>
+            </apex:pageBlockSection>
+        </apex:outputPanel>       
+        &nbsp;&nbsp;&nbsp;&nbsp;<apex:commandButton action="{!upload}" value="Upload File" id="uploadButton"   />
+    </apex:pageBlock>
+</apex:form>      
+</apex:page>

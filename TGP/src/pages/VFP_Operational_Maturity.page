@@ -1,0 +1,106 @@
+<!--
+Author : Shashank Shastri.
+Description : 'Operational Maturity' screen 
+-->
+<apex:page standardController="Deal_Track__c" extensions="VFC_Deal_Track_Controller" action="{!oPEX_Construtor}" sidebar="false" showHeader="false">
+ <script>
+
+  function OpenHistoryPopup(RecordID,ObjName,Field1, Field2,Field3, Field4,Field5)
+    {
+        var w = 500;
+        var h = 400;
+        var left = Number((screen.width/2)-(w/2));
+        var top = Number((screen.height/3)-(h/2));
+        var url = '/apex/MaintainHistory?ID='+RecordID+'&ObjName='+ObjName+'&Field1='+Field1+'&Field2='+Field2+'&Field3='+Field3+'&Field4='+Field4+'&Field5='+Field5;
+        var myWindow = window.open(url,'Mob_Deal_Track','scrollbars=no,width=650,height=500, resizable=no, chrome=yes, minimizable=no, z-index: 9999,location=no, left=' + left + ',top='+ top );
+        myWindow.focus();
+        return false;        
+    }
+</script>    
+<apex:pageMessages ></apex:pageMessages>
+ <apex:form >
+        <apex:pageBlock >
+        <apex:pageBlockButtons location="top" rendered="{!isEditVisible}">
+                      <apex:commandButton value="Save" id="saveButton" action="{!SaveOppMaturity}"/>
+                      <apex:commandButton value="Cancel" action="{!Cancel}" />
+                  </apex:pageBlockButtons>
+             <apex:pageBlockSection columns="7">
+                  <!--<apex:outputLabel value="Operational Maturity" style="font-weight: bold; font-size:10pt; text-decoration : underline;"/>
+                  <apex:outputLabel value=""/><apex:outputLabel value=""/><apex:outputLabel value=""/><apex:outputLabel value=""/><apex:outputLabel value=""/><apex:outputLabel value=""/>-->
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==true}">
+                      <apex:outputLabel value="Overall Completion Status (%)"/>
+                      <apex:inputField value="{!wpv.OPEX_Overall_Completion_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==false}">
+                      <apex:outputLabel value="Overall Completion Status (%)"/>
+                      <apex:outputField value="{!wpv.OPEX_Overall_Completion_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==true}">
+                      <apex:outputLabel value="Overall RAG Status"/>
+                      <apex:inputField value="{!wpv.OPEX_Overall_RAG_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==false}">
+                      <apex:outputLabel value="Overall RAG Status"/>
+                      <apex:outputField value="{!wpv.OPEX_Overall_RAG_Status__c}" style="background-color:#FFFFFF;"/>
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==true}">
+                      <apex:outputLabel value="Comments(Max Limit on character:32768)"/>
+                      <apex:inputField value="{!wpv.OPEX_Comments__c}" style="background-color:#FFFFFF;"/> 
+                  </apex:pageBlockSectionItem> 
+                  <apex:pageBlockSectionItem rendered="{!isRecordAccess==false}">
+                      <apex:outputLabel value="Comments(Max Limit on character:327)"/>
+                      <apex:outputField value="{!wpv.OPEX_Comments__c}" style="background-color:#FFFFFF;"/> 
+                  </apex:pageBlockSectionItem>
+                  <apex:pageBlockSectionItem >
+                      <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!wpv.Id}','Wave_Plan_Version__c','OPEX_Overall_Completion_Status__c','OPEX_Overall_RAG_Status__c','','','');"/>                                                
+                  </apex:pageBlockSectionItem>  
+              </apex:pageBlockSection>     
+            <apex:pageBlockSection columns="1">
+                  <apex:outputLabel value="Operational Maturity Plans" style="font-size:10pt; text-decoration : underline;"/>
+                  <apex:pageBlockTable value="{!ListOfOPEX}" var="OPEXList">
+                      <apex:column headerValue="Item" style="background-color:#EBEBFA ;">
+                            <apex:outputField value="{!OPEXList.NewOPEX.Item__c}" />
+                        </apex:column>
+                        <apex:column headerValue="Planned Date" style="background-color:#EBEBFA ;">
+                            <apex:outputField value="{!OPEXList.NewOPEX.Planned_Date__c}" />
+                        </apex:column>    
+                        <apex:column headerValue="Location" style="background-color:#EBEBFA ;">
+                           <apex:outputField value="{!OPEXList.NewOPEX.Deal_Location_lk__r.Deal_Home_Location__r.Delivery_Location_Master__r.name}"/>
+                        </apex:column>
+                        <apex:column headerValue="Wave Dependency" style="background-color:#EBEBFA ;">
+                           <apex:outputField value="{!OPEXList.NewOPEX.Wave_Plan_lk__r.Wave_Label__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="Wave Process" style="background-color:#EBEBFA ;">
+                           <apex:outputField value="{!OPEXList.NewOPEX.Wave_Process__r.Client_Specific_Process_Mapping__r.name}"/>
+                        </apex:column>
+                        <apex:column headerValue="Completed" style="background-color:{!OPEXList.backgroundcolor};">
+                           <apex:outputField value="{!OPEXList.NewOPEX.Completed__c}">
+                           <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!OPEXList.isDisabled}"/>
+                           </apex:outputField>
+                        </apex:column>
+                        <apex:column headerValue="Actual Date" style="background-color:{!OPEXList.backgroundcolor};">
+                           <apex:outputField value="{!OPEXList.NewOPEX.Actual_Date__c}">
+                           <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!OPEXList.isDisabled}"/>
+                           </apex:outputField>
+                        </apex:column>
+                        <apex:column headerValue="Stability" style="background-color:{!OPEXList.backgroundcolor};">
+                           <apex:outputField value="{!OPEXList.NewOPEX.Stablity__c}">
+                           <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!OPEXList.isDisabled}"/>
+                           </apex:outputField>
+                        </apex:column>
+                        <apex:column headerValue="Tracking Comments" style="background-color:{!OPEXList.backgroundcolor};">
+                           <apex:outputField value="{!OPEXList.NewOPEX.Tracking_Comments__c}">
+                           <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!OPEXList.isDisabled}"/>
+                           </apex:outputField>
+                        </apex:column>
+                         <apex:column headerValue="Milestone" style="background-color:#EBEBFA ;">
+                           <apex:outputField value="{!OPEXList.NewOPEX.Milestone__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="Maintain History"  style="background-color:#EBEBFA ;">
+                            <apex:commandLink value="History" onclick="return OpenHistoryPopup('{!OPEXList.NewOPEX.Id}','OPEX__c','Completed__c','Actual_Date__c','Stablity__c','','');"/>                                                
+                        </apex:column>
+                  </apex:pageBlockTable>
+              </apex:pageBlockSection> 
+          </apex:pageBlock>    
+    </apex:form>
+</apex:page>

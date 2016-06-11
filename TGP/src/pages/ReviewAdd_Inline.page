@@ -1,0 +1,190 @@
+<!--
+Author :  Varsha Chougule
+Story  :  Story-0089/SOL_034  
+Description : Addition New Reviews for an opportunity.
+
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Mayank Tayal    Sol_148                    5/15/2013        Sol UAM-Release 2
+-->
+<apex:page standardController="Opportunity_TGP__c" title="addnewRecord" extensions="ReviewAdd_InlineController" id="page">
+<script src="https:/code.jquery.com/jquery-1.10.2.js"></script><script>
+jQuery.noConflict();
+    window.onload = function(){
+      
+        jQuery('[id$=block1]').focus();
+    };
+</script>
+<style>
+.reqSelect {
+}
+
+table.inlineEditTbl td{
+    height: 26px !important; 
+}
+table.inlineEditTbl input[type="text"] {
+    width: 80px;
+}
+body {
+    font-size: 75% important;
+}
+</style>
+
+    <input type="hidden" id="hideElement" />   
+    <apex:form id="form" rendered="{!displayMsg}">
+         <font size="3">{!strDisplayMsg}</font>
+    </apex:form> 
+    <apex:form id="form0" rendered="{!displayReview}">
+         <apex:pageMessages id="pageMsg1"/>
+    </apex:form>
+    <apex:form id="form1" >    
+        <apex:pageBlock >
+            <apex:pageBlockSection title="Approval Summary" collapsible="false" columns="1" id="section1" rendered="{!if(readOnlyMode,false,true)}" >
+                <apex:outputPanel id="table1">
+                <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                <apex:pageBlockTable value="{!ReviewList}" var="Review" columnsWidth="5%,15%,50%,15%,15%" ><!-- styleClass="inlineEditTbl"-->
+                    <apex:column headerValue="Version">
+                        V<apex:outputField value="{!Review.Version__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Approval Stage">
+                        <apex:outputField value="{!Review.Review_Type_link__c}"/>
+                    </apex:column>
+                    <!-- <apex:column headerValue="Review Date">
+                        <apex:inputField value="{!Review.Review_Date__c}">
+                        </apex:inputField>  
+                    </apex:column> -->
+                    <apex:column headerValue="Comments">
+                        <apex:inputField value="{!Review.NewComments__c}"  style="width: 90%; height:45px">
+                        </apex:inputField> 
+                    </apex:column>  
+                    <apex:column headerValue="Status">
+                        <apex:outputField value="{!Review.NewStatus__c }">
+                        </apex:outputField> 
+                    </apex:column> 
+                    <apex:column headerValue="Delete" rendered="{!deleteButtonRender}">
+                        <apex:commandLink value="Delete" onclick="return confirm('Are you sure you want to delete this record?');" action="{!deleteReview}"> 
+                            <apex:param name="reviewIdToDelete" value="{!Review.id}" assignTo="{!reviewIdToDelete}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                </apex:pageBlockTable>
+                </apex:outputPanel>
+                </apex:outputpanel>    
+            </apex:pageBlockSection>
+            <!--Read Only Mode Detail List-->
+            <apex:pageBlockSection title="Approval Summary" collapsible="false" columns="1" id="sectionRead" rendered="{!readOnlyMode}">
+                <apex:outputPanel id="tableRead">
+                <apex:outputPanel layout="block" style="overflow:auto;height:250px">
+                <apex:pageBlockTable value="{!ReviewList}" var="Review" columnsWidth="5%,15%,50%,15%,15%">
+                    <apex:column headerValue="Version">
+                        V<apex:outputField value="{!Review.Version__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Approval Stage">
+                        <apex:outputField value="{!Review.Review_Type_link__c}"/>
+                    </apex:column>
+                    <!-- <apex:column headerValue="Review Date">
+                        <apex:inputField value="{!Review.Review_Date__c}">
+                        </apex:inputField>  
+                    </apex:column> -->
+                    <apex:column headerValue="Comments">
+                        <apex:outputField value="{!Review.NewComments__c}"  style="width: 290px; height:45px">
+                        </apex:outputField> 
+                    </apex:column>  
+                    <apex:column headerValue="Status">
+                        <apex:outputField value="{!Review.NewStatus__c }">
+                        </apex:outputField> 
+                    </apex:column> 
+                    <apex:column headerValue="Delete" rendered="{!deleteButtonRender}">
+                        <apex:commandLink value="Delete" onclick="return confirm('Are you sure you want to delete this Review Stage?');" action="{!deleteReview}"> 
+                            <apex:param name="reviewIdToDelete" value="{!Review.id}" assignTo="{!reviewIdToDelete}"/>
+                        </apex:commandLink>
+                    </apex:column>
+                </apex:pageBlockTable>
+                </apex:outputPanel>
+                </apex:outputpanel>    
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="top" rendered="{!saveEditButtonRender}">
+                <apex:actionStatus id="save_Btn">                 
+                            <apex:facet name="stop">
+                                <apex:commandButton value="Save" action="{!saveReviewList}" id="saveButton" reRender="form0,form1,form2" status="save_Btn"/>
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                    <apex:commandButton value="Saving..." action="{!saveReviewList}" id="saveButton1" reRender="form0,form1,form2" disabled="true" status="save_Btn"/>
+                                </apex:outputPanel>
+                             </apex:facet> 
+              </apex:actionStatus> 
+                
+                <apex:commandButton value="Cancel" action="{!cancelReviewList}"  id="cancelButton" reRender="form0,form1,form2"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        <!--<apex:pageBlock id="Approval_pgblock">
+            <apex:pageBlockSection title="Approval Documents" columns="1" collapsible="false" >
+                 <apex:outputPanel rendered="{!isDocLinkVisible}">
+                    <apex:pageBlockSection showHeader="false" columns="3">
+                        <apex:inputField value="{!objOpportunity.Link_to_Approvel__c}" label="Link to Archived Deal Page (if applicable)" style="width: 500px; height: 20px">
+                        </apex:inputField>
+                        
+                        
+                         <apex:actionStatus id="save_Btn">                 
+                            <apex:facet name="stop">
+                                <apex:commandButton value="Save" action="{!SaveLink}" reRender="Approval_pgblock" status="save_Btn"/>
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                    <apex:commandButton value="Saving..." action="{!SaveLink}" reRender="Approval_pgblock" status="save_Btn" disabled="true"/>
+                                </apex:outputPanel>
+                             </apex:facet> 
+              </apex:actionStatus> 
+                    </apex:pageBlockSection> 
+                 </apex:outputPanel>
+                 <apex:outputPanel rendered="{!if(isDocLinkVisible==false,true,false)}">
+                     <apex:pageBlockSection showHeader="false" columns="1" rendered="{!isLinkNotAvaiable}">  
+                        <apex:outputLabel value="Link to Archived Deal Page (if applicable) ">&nbsp;&nbsp;&nbsp;
+                             <apex:commandLink action="{!ClickHere}" value="Click Here" target="_Parent"></apex:commandLink>
+                        </apex:outputLabel>  
+                     </apex:pageBlockSection>
+                 </apex:outputPanel>
+            </apex:pageBlockSection>    
+        </apex:pageBlock>-->
+        
+    </apex:form>
+    <apex:form id="form2" rendered="{!addButtonRender}">    
+        <apex:pageBlock >        
+            <apex:pageBlockSection title="Add New Approval" collapsible="false" columns="1" id="section2">
+                <apex:pageBlockTable value="{!newReviewProcess}" var="ReviewProcess">
+                    <apex:column headerValue="Approval Stage">
+                        <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock"/>
+                            <apex:selectList size="1" value="{!ReviewStage}">
+                                <apex:selectOptions value="{!ReviewStages}"/>
+                            </apex:selectList>
+                        </apex:outputPanel>
+                    </apex:column>
+                    <!-- <apex:column headerValue="Review Date">
+                        <apex:inputField value="{!ReviewProcess.Review_Date__c}"/>
+                    </apex:column> -->
+                    <apex:column headerValue="">
+                        <apex:actionStatus id="add_Btn">                 
+                            <apex:facet name="stop">
+                                <apex:commandButton value="Add" action="{!addReview}" reRender="form0,form1,form2" status="add_Btn"/>
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                    <apex:commandButton value="Adding..." action="{!addReview}" reRender="form0,form1,form2" status="add_Btn" disabled="true"/>
+                                </apex:outputPanel>
+                             </apex:facet> 
+              </apex:actionStatus> 
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+         window.onload=setFocus
+    function setFocus()
+    {
+        document.getElementById("hideElement").focus();
+    } 
+    </script>
+</apex:page>

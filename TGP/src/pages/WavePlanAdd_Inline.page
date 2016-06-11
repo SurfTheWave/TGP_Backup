@@ -1,0 +1,283 @@
+<!--
+Author : Sushmant Hasthi
+Description : TO Add Waves to a particular Deal Locations
+
+Updated by        Story no                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+Nilesh Adkar    Story-0030 / MOB_016        04-Mar-13        Added flag for rendering of edit and add button
+
+-->
+<apex:page standardController="Deal_Location__c" title="addnewRecord" extensions="WavePlanAdd_InlineController" id="pg">
+<style>
+.reqSelect {
+}
+
+table.inlineEditTbl td{
+    height: 26px !important; 
+}
+table.inlineEditTbl input[type="text"] {
+    width: 80px;
+}
+body {
+    font-size: 75% important;
+}
+table.inlineEditTbl2 td{
+    height: 50px !important; 
+}
+
+#drop
+    {
+        border:2px dashed #000000;
+        -moz-border-radius:5px;
+        -webkit-border-radius:5px;
+        border-radius:5px;
+        padding:25px;
+        text-align:center;
+        font:20pt bold,"Vollkorn";color:#000000;
+        background-color:#66BDFF;
+    }
+    #b64data
+    {
+        width:100%;
+    }
+  
+     /* This is for the full screen DIV */
+    .popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+    
+        /* Dimensions */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        
+        /* Mouse */
+        cursor:wait;
+    }
+ 
+    /* This is for the message DIV */
+    .PopupPanel {
+        /* Background color */
+        border: solid 2px blue;
+        background-color: white;
+ 
+        /* Dimensions */
+        left: 50%;
+        width: 200px;
+        margin-left: -100px;
+        top: 50%;
+        height: 50px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+    }
+</style>
+ <!--   <apex:outputPanel id="refresh" rendered="true">
+ <apex:outputPanel id="refresh1" rendered="{!refreshPage}">
+  <script>
+   window.top.location='/{!Deal_Location__c.id}';
+  </script>
+ </apex:outputPanel>
+</apex:outputPanel> -->
+<apex:form id="formMsg">
+        <apex:pageMessages rendered="{!showMainMsg}"></apex:pageMessages>
+</apex:form> 
+<apex:form rendered="{!IF((is_WavePlanVersionActive==true || is_WavePlanVersionActive==false) && showForm==true,true,false)}" id="msg">
+    <apex:pageMessages />
+</apex:form>
+<apex:form rendered="{!IF(is_WavePlanVersionActive==true && showForm==true && isNA,true,false)}" id="form1">
+
+<apex:actionStatus startText="In progress..." id="myStatus" >
+    <apex:facet name="start">
+        <div>
+            <div class="popupBackground" />
+            <div class="PopupPanel">
+                <table border="0" width="100%" height="100%">
+                    <tr>
+                        <td align="center"><b>In progress...</b></td>
+                    </tr>
+                    <tr>
+                        <td align="center"><img src="{!$Resource.Loading}"/></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </apex:facet>
+</apex:actionStatus>
+    
+       <apex:pageBlock rendered="{!isAddVisible }" id="PB1">           
+       <apex:actionFunction name="addNewWavePlan" action="{!addNewWavePlan}" />           
+            <apex:pageBlockSection title="Add New Wave" columns="5" id="PBS1">                 
+                    
+                    <apex:pageBlockSectionItem id="PBSI1">   
+                    <apex:outputLabel value="Wave Name" />                 
+                      <apex:inputField value="{!newWavePlan.Wave_Label__c}" required="true" id="txtCallSign" onkeyup="Validate(this)"/>                        
+                    </apex:pageBlockSectionItem>
+
+                    
+                    <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Planned Go Live Date" />
+                        <c:noDateLink >
+                            <apex:inputField value="{!newWavePlan.GO_Live_Date_del__c}" required="true"/>
+                         </c:noDateLink>   
+                    </apex:pageBlockSectionItem>
+                    <!--<apex:column headerValue="Wave RAG Status">
+                        <apex:inputField value="{!newProfDetail.Wave_RAG_Status__c}" />
+                    </apex:column>
+                    <apex:column headerValue="Wave Completion Status(%)">
+                        <apex:inputField value="{!newProfDetail.Wave_Completion_Status__c}" />
+                    </apex:column> -->
+                <!--<apex:column headerValue="Number of Projected FTEs">
+                            <apex:inputField value="{!newProfDetail.Number_of_Projected_FTEs__c}" />
+                </apex:column>-->
+           <!--<apex:column headerValue="Comment">
+                        <apex:inputField value="{!newProfDetail.Wave_Comment__c}" />
+                    </apex:column>-->
+            
+                    <apex:pageBlockSectionItem >
+                        <apex:commandButton value="Add" action="{!checkweekendadd}" oncomplete="weekendcheck('{!isweekend}');"  rendered="{!is_WavePlanVersionActive}" reRender="msg,form1,form3" status="myStatus"/> <!-- onClick="specialcharecter(this.form)" -->
+                        
+                    </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>
+            </apex:pageBlock>
+       </apex:form>
+       
+       <apex:form id="form3" rendered="{!IF(showForm2 && isNA,true,false)}">
+       <apex:pageBlock >
+           <apex:actionFunction action="{!saveWavePlan}" name="SaveRecord" reRender="form3,msg"/>
+           <apex:actionFunction action="{!checkweekendupdate}" name="callcheckweekendupdate" reRender="msg" oncomplete="weekendcheckwhenupdate('{!isweekend}');"/>
+           <apex:actionFunction action="{!refreshWavePlanPage}" name="CancelRecord" reRender="form3,msg"/>
+            <apex:pageBlockButtons rendered="{!is_WavePlanVersionActived}">
+                <!--<apex:commandButton value="Save" id="saveButton" action="{!checkRecordDeactivated}"  reRender="msg" oncomplete="isDeactivated('{!isRecordDeactivate}');"/>-->
+                <apex:commandButton action="{!checkRecordDeactivated}" id="saveButton" value="Save" reRender="msg"  oncomplete="isDeactivated('{!isRecordDeactivate}','{!isweekend}');"/>
+                <apex:commandButton action="{!refreshWavePlanPage}" id="cancelButton" value="Cancel" reRender="form3,msg"  />
+            </apex:pageBlockButtons>            
+            <apex:pageBlockSection title="Wave Details" columns="1">
+                <apex:pageBlockTable value="{!AddingnewWavePlan}" var="NewWavePlan" styleClass="inlineEditTbl">
+                  
+                     <apex:column headerValue="Wave Name">
+                        <apex:outputField value="{!NewWavePlan.Wave_Label__c}">
+                            <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!NewWavePlan.NewActive__c==false}"/> 
+                        </apex:outputField>
+                    </apex:column>
+                    <apex:column headerValue="Planned Go Live Date">
+                        <apex:outputField value="{!NewWavePlan.GO_Live_Date_del__c}"> 
+                            <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" rendered="{!is_WavePlanVersionActive }" disabled="{!NewWavePlan.NewActive__c==false}"/> 
+                        </apex:outputField>  
+                    </apex:column>
+                    <!--<apex:column headerValue="Number of Projected FTEs">
+                      <apex:outputField value="{!NewWavePlan.Number_of_Projected_FTEs__c}"> 
+                          <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" rendered="{!is_WavePlanVersionActive }" disabled="{!NewWavePlan.NewActive__c==false}"/> 
+                      </apex:outputField> 
+                    </apex:column>-->
+                    <apex:column headerValue="Wave Process">
+                    <apex:outputField value="{!NewWavePlan.Hyperlink__c}">
+                    </apex:outputField>
+                    </apex:column>
+                    <apex:column headerValue="Active">
+                    <!--<apex:inputField value="{!NewWavePlan.NewActive__c}" rendered="{!NewWavePlan.NewActive__c==true}"/> -->
+                        <apex:outputField value="{!NewWavePlan.NewActive__c}" >
+                            <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!isEditable}"/>
+                        </apex:outputField>
+                    </apex:column> 
+                    <apex:column headerValue="Comments">
+                        <!--<apex:inputField value="{!NewWavePlan.Wave_Comment__c}"/>-->
+                        <apex:outputField value="{!NewWavePlan.Wave_Comment__c}"> 
+                          <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton" disabled="{!isEditable}"/> 
+                      </apex:outputField>
+                    </apex:column>
+                    
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+   </apex:form>
+   <script>
+   function isDeactivated(isRecordDeactivate,bool1)
+    {
+        if(isRecordDeactivate==1)
+        {
+            //weekendcheckwhenupdate(bool1);  
+            callcheckweekendupdate(); 
+        }
+        if(isRecordDeactivate==0)
+        {
+           //weekendcheckwhenupdate(bool1);
+           callcheckweekendupdate();
+        }
+       
+    }
+    function weekendcheck(bool)
+    {
+        if(bool=='false')
+        {
+            addNewWavePlan();
+        }
+        if(bool=='true')
+        {
+            var option=confirm('The Go-Live Date selected is a weekend. Are you sure you want to continue?');
+            if(option==true)
+            {
+                addNewWavePlan();
+            }
+            else
+            {
+               CancelRecord();
+            }
+        }
+        
+        
+    }
+     function weekendcheckwhenupdate(bool1)
+    {
+        
+        if(bool1=='false')
+        {
+            SaveRecord();
+        }
+        if(bool1=='true')
+        {
+            var option=confirm('The Go-Live Date selected is a weekend. Are you sure you want to continue?');
+            if(option==true)
+            {
+                SaveRecord();
+            }
+            else
+            {
+               CancelRecord();
+            }
+        }
+        
+        
+    }
+    
+function specialcharecter(form1)
+{
+//var iChars = "!`@#$%^&*()+=-[]\\\';,./{}|\":<>?~_?";  
+  var iChars = "*\\\/|\":<>?"; 
+  var data = document.getElementById('{!$Component.form1.PB1.PBS1.PBSI1.txtCallSign}').value;
+    for (var i = 0; i < data.length; i++)
+    {      
+        if (iChars.indexOf(data.charAt(i)) != -1)
+        {    
+        alert ("Wave Name can't contain any of the following characters: \n                 "+iChars);
+        //document.getElementById('{!$Component.form1.PB1.PBS1.PBSI1.txtCallSign}').value = "";
+        break;
+        return false; 
+        }
+    }
+}
+
+function Validate(txt) {
+            txt.value = txt.value.replace(/[*\\\/|\":<>?]+/g, '');
+        }
+   </script>
+</apex:page>

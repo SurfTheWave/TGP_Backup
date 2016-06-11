@@ -1,0 +1,68 @@
+<apex:page standardController="Opportunity" extensions="CreateApprovalDocument_VFC"  sidebar="true"  >
+    
+    <script>
+   
+     var url = location.href;
+     var match = url.match('&inline=1');
+    if (match != null) { 
+        var newUrl = url.replace('&inline=1', '');
+        window.top.location=newUrl;
+    }
+</script>
+  <apex:form id="frm1" >
+      <apex:pageblock id="pb1" title="Approval Request Details">
+        <apex:pageblockTable value="{!approvalrequestresult}" var="a" id="pbt1">
+                <apex:column value="{!a.approval_stage__r.approval_stage_type__c}"/>
+                <apex:column value="{!a.Version__c}"/>
+                <apex:column value="{!a.approval_request_type__c}"/>
+                <apex:column value="{!a.Approver__c}"/>
+         </apex:pageblockTable>
+      </apex:pageblock>
+   </apex:form>
+    <!--<apex:relatedList list="Opportunity_Documents__r" />
+   <apex:form id="frm2" >
+        <apex:inputhidden id="hidden1" value="{!approvalrequestid}"  />
+        <apex:inputHidden id="hidden2" value="{!opportunitydocumentsid}"  />
+        <apex:dynamicComponent componentValue="{!form}" id="dynamic" />
+        <apex:actionFunction name="callFun" action="{!createApprovalDocuments}"/>
+    </apex:form> -->
+    <apex:pagemessages >
+    </apex:pagemessages>
+   <apex:form id="frm3" >
+     <apex:pageblock id="pb2" title="Opportunity Documents">
+     <apex:pageBlockButtons location="top">
+     <apex:commandButton action="{!submitforapproval}" value="Submit for Approval"/>
+     <apex:commandButton action="{!sendReminderButtonAction}" value="Send for Reminder"/>
+     </apex:pageBlockButtons>
+     <apex:pageblockTable value="{!oppdoumentResultsList }" var="b" id="pbt2">
+     <apex:column width="25px">
+                        <apex:facet name="header">
+                            <apex:inputCheckbox onclick="checkAll(this,'checkedone')"/>
+                        </apex:facet>
+                    <apex:inputCheckbox value="{!b.checked}" id="checkedone"/>
+      </apex:column>
+      <apex:column headervalue="Opportunity Documents">
+                <apex:outputLink target="_self" value="/{!b.oppdoc.id}">{!b.oppdoc.name}</apex:outputLink> 
+                </apex:column> 
+                <apex:column value="{!b.oppdoc.Name}"/>
+                <apex:column value="{!b.oppdoc.document__c}"/>
+                <apex:column value="{!b.oppdoc.comments__c}"/>
+                <apex:column value="{!b.oppdoc.modified_by__c}"/>
+                <apex:column value="{!b.oppdoc.modified_date__c}"/>
+                <apex:column value="{!b.oppdoc.Service_Group__c}"/>
+       </apex:pageblockTable>
+       </apex:pageblock>
+       </apex:form>
+    <script type="text/javascript">
+        function checkAll(cb,cbid)
+            {
+                var inputElem = document.getElementsByTagName("input");                     
+                for(var i=0; i<inputElem.length; i++)
+                {             
+                     if(inputElem[i].id.indexOf(cbid)!=-1){                                        
+                        inputElem[i].checked = cb.checked;
+                    }
+                }
+            }
+    </script>
+</apex:page>

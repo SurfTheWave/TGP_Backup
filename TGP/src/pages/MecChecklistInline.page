@@ -1,0 +1,38 @@
+<!--
+Author :Malkeet Singh
+Story:MOB_034
+Description: This inline page is used to Track MEC checklist Hyperlink on Deal Page 
+
+Updated by          Story no                Update Date        Update details
+------------      -----------------        --------------    -------------------------------------------------------------
+
+-->
+
+<apex:page standardController="Deal_TGP__c" extensions="MecChecklistController" id="pg"  sidebar="true" showHeader="true">
+    <apex:form id="formMsg">
+        <apex:pageMessages rendered="{!showMainMsg}"></apex:pageMessages>
+    </apex:form>           
+    <apex:form id="form3" rendered="{!showForm}">
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlock >
+            <apex:pageBlockSection columns="2"  >
+                <apex:outputText value="Select Tab to Open" style="font-weight:bold;size:50;" rendered="{!viewItemList}" />
+                <apex:outputLabel rendered="{!viewItemList}" ></apex:outputLabel>
+                <apex:pageBlockSectionItem rendered="{!viewItemList}" >
+                    <apex:selectRadio value="{!itemValue}" style="font-weight:normal;" >
+                        <apex:selectOptions value="{!radioItems}"/>
+                    </apex:selectRadio><p/>
+                </apex:pageBlockSectionItem>
+                
+                    <apex:commandButton rendered="{!initiateMec }" value="Initiate MEC Checklist" action="{!getMecChecklistPage}"  />
+                    <apex:commandButton rendered="{!MecChecklist }" value="MEC Checklist" action="{!getMecChecklistPage}"/>
+                    <apex:commandButton rendered="{!ViewMecChecklist}" value="View MEC Checklist" action="{!getMecReadOnlyPage}"/>
+                    <apex:outputText rendered="{!NoPrivilige }" value="No Privilige to access MEC Checklist" style="font-weight:bold;font-size:70;"/>
+                
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    
+        
+    </apex:form>  
+    
+</apex:page>

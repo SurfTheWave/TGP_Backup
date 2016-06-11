@@ -1,0 +1,64 @@
+<apex:page controller="ReportCreationTabController" showHeader="true" sidebar="true" tabStyle="Mobilization_Reports__tab">
+<style>
+.activeTab {background-color: #236FBD; color:white; 
+         background-image:none}
+      .inactiveTab { background-color: lightgrey; color:black; 
+         background-image:none}
+</style>
+<script>
+var strurl = location.href;
+var newUrl = strurl.replace('&inline=1', '');
+if(newUrl != strurl )
+{
+    window.top.location=newUrl;
+}
+</script>  
+<script>
+    function f1()
+    {
+        var ua = navigator.userAgent.toLowerCase();
+        if(ua.indexOf('chrome')!= -1)
+        {
+            functionF1_ChromeFF();
+        }
+        else
+        {
+            functionF1_IE();
+        }
+        //window.top.location='/apex/ReportCreationTab?tab=tab1';
+    }
+    function f2()
+    {
+        var ua = navigator.userAgent.toLowerCase();
+        if(ua.indexOf('chrome')!= -1)
+        {
+            functionF2_ChromeFF();
+        }
+        else
+        {
+            functionF2_IE();
+        }       
+        //window.top.location='/apex/ReportCreationTab?tab=tab2';
+    }
+    
+</script>
+    <apex:form >
+        <apex:actionFunction name="functionF1_IE" action="{!functionF1}" oncomplete=""/>
+        <apex:actionFunction name="functionF2_IE" action="{!functionF2}" oncomplete=""/>
+
+        <apex:actionFunction name="functionF1_ChromeFF" action="{!functionF1}" />
+        <apex:actionFunction name="functionF2_ChromeFF" action="{!functionF2}" />        
+    </apex:form>
+
+    <apex:tabPanel switchType="server" value="{!selectedTab1}" id="theTabPanel" inactiveTabClass="inactiveTab" >
+        
+        <apex:tab label="Management Reports" name="tab1" id="tabOne" switchType="server" ontabenter="f1();" rendered="{!mobLeadershipUser}">
+            <apex:include pageName="ManagementReportCreation"/>
+        </apex:tab>
+        
+        <apex:tab label="Deal Specific Reports" name="tab2" id="tabTwo" switchType="server" ontabenter="f2();">
+            <apex:include pageName="DealSpecificReportCreation"/>
+        </apex:tab>
+   
+    </apex:tabPanel>    
+</apex:page>

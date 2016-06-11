@@ -1,0 +1,186 @@
+<apex:page standardController="Deal_TGP__c" extensions="DealGeneralInfo_Controller">
+<!-- <apex:variable value="{!Deal_TGP__c}" var="o"/>  -->
+
+  <apex:form id="form1">
+      <apex:pageMessages ></apex:pageMessages>
+      <apex:pageBlock rendered="{!flagDetail}">
+          <apex:pageBlockButtons location="top" >
+                           <apex:commandButton value="Edit" action="{!edit1}" rendered="{!saveEditButtonRender }"/>    
+         </apex:pageBlockButtons>
+         <div style="background-color : white;">
+           <apex:pageBlockSection id="dealInfo">
+              <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Deal Name</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Name}"/>                           
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Client Name</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Client_Name__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Watch List</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Watch_List__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Stage</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Stage__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                                        
+                                    <apex:outputlabel >Client Geo Area</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Client_Geo_Area__c}"/>                          
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Client Geo Unit</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Client_Geo_Unit__c}"/>                           
+               </apex:pageBlockSectionItem>               
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Risk Level</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Risk_Level__c}"/>                           
+               </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Operating Group</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Operating_Group__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >3rd Party Vendor dependency</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.X3rd_Party_Vendor_dependency__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >3rd Party Vendor dependency - Comments</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.X3rd_Party_Vendor_dependency_Comment__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Total Contract Value</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Total_Contract_Value__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Pricing Type</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Pricing_Type__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Start Date of Transition</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Start_Date_of_Transistion__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Deal FTE</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Total_No_Of_Projected_FTEs__c}"/>                           
+               </apex:pageBlockSectionItem>
+               
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Deal Category</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Deal_Category__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel ></apex:outputlabel>                         
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                        <apex:outputlabel >Operating Unit</apex:outputlabel>                           
+                                        <apex:outputField value="{!deal1.Operating_Unit__c}" />                     
+                   </apex:pageBlockSectionItem>              
+               </apex:pageBlockSection>             
+               <apex:pageblockSection columns="1">
+                   <apex:pageBlockSectionItem >                                                        
+                                        <apex:outputlabel >Deal Comments</apex:outputlabel>                           
+                                        <apex:outputField value="{!deal1.CommentForDealTracking__c}" style="width:800px;height:100px;"/>                     
+                   </apex:pageBlockSectionItem>
+               </apex:pageblockSection>
+              
+           
+           </div>
+           </apex:pageBlock>  
+           <!--<apex:variable value="{!Deal_TGP__c}" var="o"/>-->
+            <apex:pageBlock rendered="{!flagEdit}">
+            <apex:pageBlockButtons location="top" >              
+                           <apex:commandButton value="Save" action="{!saverecord}"  rendered="{!flagEdit}"/>
+                           <apex:commandButton value="Cancel" action="{!cancelRecord}" rendered="{!flagEdit}"/> 
+         </apex:pageBlockButtons>
+             <div style="background-color : white;">
+           <apex:pageBlockSection collapsible="false">
+              <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Deal Name</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Name}"/>                           
+              </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Client Name</apex:outputlabel>                           
+                                    <apex:inputField value="{!deal1.Client_Name__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Watch List</apex:outputlabel>                           
+                                    <apex:inputField value="{!deal1.Watch_List__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Stage</apex:outputlabel>                           
+                                    <apex:inputField value="{!deal1.Stage__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                                                   
+                                    <apex:outputlabel value="Client Geo Area"/> 
+                                          <apex:selectList size="1" value="{!clientGeoAreaMaster}" required="true" >
+                                            <apex:selectOptions value="{!clientGeoArea}" ></apex:selectOptions>
+                                          </apex:selectList>                                                 
+               </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >                                                                                   
+                                    <apex:outputlabel value="Client Geo Unit"/> 
+                                          <apex:selectList size="1" value="{!clientGeoUnitMaster}" required="true">
+                                            <apex:selectOptions value="{!clientGeoUnit}"></apex:selectOptions>
+                                          </apex:selectList>                                                
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Risk Level</apex:outputlabel>                           
+                                    <apex:inputField value="{!deal1.Risk_Level__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >
+                   <apex:outputlabel value="Operating Group"/>
+                       <apex:selectList size="1" value="{!operatingGroupMaster}" required="true">
+                           <apex:selectOptions value="{!operatingGroup}"></apex:selectOptions>
+                       </apex:selectList>         
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >3rd Party Vendor dependency</apex:outputlabel>                           
+                                    <apex:inputField value="{!deal1.X3rd_Party_Vendor_dependency__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >3rd Party Vendor dependency - Comments</apex:outputlabel>                           
+                                    <apex:inputField value="{!deal1.X3rd_Party_Vendor_dependency_Comment__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Total Contract Value</apex:outputlabel>                           
+                                    <apex:inputField value="{!deal1.Total_Contract_Value__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Pricing Type</apex:outputlabel>                           
+                                    <apex:inputField value="{!deal1.Pricing_Type__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Start Date of Transition</apex:outputlabel>                           
+                                    <apex:inputField value="{!deal1.Start_Date_of_Transistion__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Deal Category</apex:outputlabel>                           
+                                    <apex:inputField value="{!deal1.Deal_Category__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel >Deal FTE</apex:outputlabel>                           
+                                    <apex:outputField value="{!deal1.Total_No_Of_Projected_FTEs__c}"/>                           
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                    <apex:outputlabel ></apex:outputlabel>                         
+               </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >                                                        
+                                        <apex:outputlabel >Operating Unit</apex:outputlabel>                           
+                                        <!-- <apex:inputField value="{!deal1.Operating_Unit__c}" />  -->
+                                        <apex:selectList size="1" value="{!OperatingUnitValue}" required="true">
+                                            <apex:selectOptions value="{!OperatingUnit}"></apex:selectOptions>
+                                          </apex:selectList>                      
+                   </apex:pageBlockSectionItem> 
+               </apex:pageBlockSection>
+               <apex:pageBlockSection columns="1">
+                   <apex:pageBlockSectionItem >                                                        
+                                        <apex:outputlabel >Deal Comments</apex:outputlabel>                           
+                                        <apex:inputField value="{!deal1.CommentForDealTracking__c}" style="width:800px;height:100px;"/>                    
+                   </apex:pageBlockSectionItem>
+               </apex:pageBlockSection>
+            
+           </div>  
+      </apex:pageBlock>
+  </apex:form>
+</apex:page>

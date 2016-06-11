@@ -1,0 +1,231 @@
+<apex:page standardController="Opportunity_TGP__c"  extensions="OppOverviewTabController">
+<script>
+ function refresh(){
+  window.top.reload(true)
+ }
+</script>
+  <apex:variable value="{!Opportunity_TGP__c}" var="o"/>
+  <apex:form id="form1" >
+  <apex:outputPanel id="OverviewPanel">
+                <apex:pageBlock id="block1" rendered="{!flag}" >
+                    <apex:pageBlockButtons location="top">
+                      <apex:commandButton value="Edit" action="{!edit}" reRender="form1" rendered="{!addButtonRender}" />
+                    </apex:pageBlockButtons>
+                <!-- added for SOL_123 date: 18/04/2013 >>> Start -->
+                <apex:pageBlockSection title="Additional Opportunity Characteristics" collapsible="false" >
+                <apex:outputField value="{!o.Existing_Accenture_client__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.Existing_BPO_Client__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.Third_party_Advisors__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.Third_Party_Advisors_Comments__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.X3rd_Party_Vendors_in_scope__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.TCV__c}">
+                </apex:outputField>
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockSection title="Pricing Type" collapsible="false" >
+                <apex:outputField value="{!o.Fixed__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.FTE__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.Transaction_or_volume_based__c}">
+                </apex:outputField>
+                <apex:outputField value="{!o.TBD__c}">
+                </apex:outputField>
+                </apex:pageBlockSection>
+                <!-- added for SOL_123 date: 18/04/2013 >>> End -->
+                
+                <apex:pageBlockSection title="Opportunity Users" collapsible="false" >
+                <apex:outputField value="{!o.Enterprise_Solution_Architect_New__c}">
+                
+                </apex:outputField>
+                <apex:outputField value="{!o.Complex_Cost_Architect_New__c}">
+                
+                </apex:outputField>
+                <apex:outputField value="{!o.Oppotunity_QA__c}">
+                
+                </apex:outputField>
+                <apex:outputField value="{!o.BPO_Sales_Lead__c}">
+                
+                </apex:outputField>
+                <apex:outputField value="{!o.OG_Sales_Lead__c}">
+                
+                </apex:outputField>
+              
+                </apex:pageBlockSection>
+                
+                
+                <apex:pageBlockSection title="Opportunity Timeline" collapsible="false" >
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="RFI Recieved"/>
+                    <apex:outputField value="{!o.RFI_Received__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="RFI response due"/>
+                    <apex:outputField value="{!o.RFI_response_due__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="RFP Recieved"/>
+                    <apex:outputField value="{!o.RFP_Received__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Solution Workshop"/>
+                    <apex:outputField value="{!o.Solution_Workshop__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="RFP response due"/>
+                    <apex:outputField value="{!o.RFP_response_due__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="RFP Down Select"/>
+                    <apex:outputField value="{!o.RFP_Down_Select__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Presentations Orals"/>
+                    <apex:outputField value="{!o.Presentations_Orals__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Reference Checks and Site Visits"/>
+                    <apex:outputField value="{!o.Reference_Checks_and_Site_Visits__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Negotiations"/>
+                    <apex:outputField value="{!o.Negotiations__c}"/>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Contract"/>
+                    <apex:outputField value="{!o.Contract__c}"/>
+                    </apex:pageBlockSectionItem>
+                
+                
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Ramp up and Service Delivery"/>
+                    <apex:outputField value="{!o.Ramp_up_and_Service_Delivery__c}"/>
+                    </apex:pageBlockSectionItem>
+             </apex:pageBlockSection>
+                <apex:pageBlockSection title="Client Background" columns="1" collapsible="false">
+                 <apex:outputField value="{!o.Client_Overview__c}" style="width: 80%; height: 90px"/>
+                 <apex:outputField value="{!o.Link_to_client_website__c}" style="width: 30%; height: 20px"/>
+                 </apex:pageBlockSection>
+                </apex:pageBlock>
+                
+                <apex:pageBlock id="block2" rendered="{!flagEdit}" >
+                <apex:pageMessages id="msg"/>   
+                    <apex:pageBlockButtons location="top">
+                      <apex:commandButton value="Save" action="{!saverecord}"  onclick="refresh()" />
+                      <apex:commandButton value="Cancel" action="{!cancelRecord}" immediate="true"  reRender="form1" /> 
+                    </apex:pageBlockButtons>
+                
+                <!-- added for SOL_123 date: 18/04/2013 >>> Start -->
+                <apex:pageBlockSection title="Additional Opportunity Characteristics" collapsible="false" >
+               
+                <apex:inputField value="{!o.Existing_Accenture_client__c}">
+                </apex:inputField>
+                <apex:inputField value="{!o.Existing_BPO_Client__c}">
+                </apex:inputField>
+                <apex:inputField value="{!o.Third_party_Advisors__c}">
+                </apex:inputField>
+                <apex:inputField value="{!o.Third_Party_Advisors_Comments__c}">
+                </apex:inputField>
+                <apex:inputField value="{!o.TCV__c}">
+                </apex:inputField>
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockSection title="Pricing Type" collapsible="false" >
+                <apex:inputField value="{!o.Fixed__c}">
+                </apex:inputField>
+                <apex:inputField value="{!o.FTE__c}">
+                </apex:inputField>
+                <apex:inputField value="{!o.Transaction_or_volume_based__c}">
+                </apex:inputField>
+                <apex:inputField value="{!o.TBD__c}">
+                </apex:inputField>
+                </apex:pageBlockSection>
+                <!-- added for SOL_123 date: 18/04/2013 >>> End -->
+                
+                
+                
+                
+                <apex:pageBlockSection title="Opportunity Users" collapsible="false" >
+                <apex:pageBlockSectionItem >    
+                 <apex:outputLabel value="Lead Solution Architect - BPO"/>
+                 <apex:outputPanel styleClass="requiredInput" layout="block" >
+                 <apex:outputPanel styleClass="requiredBlock"/>  
+                <apex:inputField value="{!o.Enterprise_Solution_Architect_New__c}"/>
+                </apex:outputPanel>
+                 </apex:pageBlockSectionItem>
+                
+                <apex:inputField value="{!o.Complex_Cost_Architect_New__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.Oppotunity_QA__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.BPO_Sales_Lead__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.OG_Sales_Lead__c}">
+                
+                </apex:inputField>
+              
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockSection title="Opportunity Timeline" collapsible="false" >
+                <apex:inputField value="{!o.RFI_Received__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.RFI_response_due__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.RFP_Received__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.Solution_Workshop__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.RFP_response_due__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.RFP_Down_Select__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.Presentations_Orals__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.Reference_Checks_and_Site_Visits__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.Negotiations__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.Contract__c}">
+                
+                </apex:inputField>
+                <apex:inputField value="{!o.Ramp_up_and_Service_Delivery__c}">
+               
+                </apex:inputField>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection title="Client Background" columns="1" collapsible="false">
+                 <apex:inputField value="{!o.Client_Overview__c}" style="width: 80%; height: 90px"/>
+                <apex:inputField value="{!o.Link_to_client_website__c}" style="width: 30%; height: 20px"/>
+               
+                </apex:pageBlockSection>
+                </apex:pageBlock>
+                </apex:outputPanel> 
+</apex:form>
+                
+    
+</apex:page>

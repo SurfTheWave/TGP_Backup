@@ -1,0 +1,753 @@
+<!--
+Author : Mayank Tayal
+Story  :   MOB_029, MOB_030, MOB_031, MOB_032
+Description :As an application user, I should able to add Risks, Actions,Issues and Decisions from any module of Mobilization workbench and & maintain the same 
+
+Updated by        Story no.                Update Date        Update details
+------------    -----------------        --------------    -------------------------------------------------------------
+
+
+-->
+<apex:page controller="RAIDLog_InlineController" showHeader="false" sidebar="false">
+<style>
+.activeTab {background-color: #236FBD; color:white; 
+         background-image:none}
+      .inactiveTab { background-color: lightgrey; color:black; 
+         background-image:none}
+</style>
+<!-- <style>
+.reqSelect {
+}
+
+table.inlineEditTbl td{
+    height: 15px !important; 
+}
+table.inlineEditTbl input[type="text"] {
+    width: 80px;
+}
+body {
+    font-size: 75% important;
+}
+table.inlineEditTbl2 td{
+    height: 50px !important; 
+}
+
+</style> -->
+<script>
+    function doCancel()
+    {         
+        top.window.close('/apex/RAIDLog_Inline'); 
+    }
+</script>
+  <apex:form id="formMsg">
+        <apex:pageMessages rendered="{!showMainMsg}"></apex:pageMessages>
+  </apex:form>
+  <apex:form id="form1" rendered="{!IF(showForm && isNA,true,false)}">
+      <apex:pageBlock title="Module Information">
+      <apex:pageBlockSection columns="2">
+            <apex:outputText value="Deal Details" style="font-weight: bold; font-size:10pt; text-decoration : underline;"/>
+            <apex:outputLabel value=""/>
+            <apex:outputText value="{!itemActivity}" label="Item/Activity" rendered="{!itemDisplay}"/>
+            <apex:outputText value="{!dealName}" label="Deal Name" rendered="{!dealDisplay}"/>
+            <apex:outputText value="{!wavePlanVersionName}" label="High Level Mobilization Plan" rendered="{!wavePlanVersionDisplay}"/>
+            <apex:outputText value="{!locationName}" label="Deal Location" rendered="{!locationDisplay}"/>
+            <apex:outputText value="{!waveName}" label="Wave Name" rendered="{!waveDisplay}"/>                       
+      </apex:pageBlockSection>
+      <apex:tabPanel switchType="client" value="{!tabToRender}" id="theTabPanel" inactiveTabClass="inactiveTab">
+            <apex:tab label="Risks" name="tab1" id="tabOne">
+                <apex:outputPanel id="riskPanel">
+                    <apex:pageMessages rendered="{!showRiskSave}"/>
+                    <apex:pageBlock rendered="{!IF(isAddVisible,true,false)}">
+                        <apex:pageBlockButtons rendered="{!IF(isAddVisible,true,false)}" >
+                            <apex:commandButton action="{!saveRisksRAID}" value="Add Risk" /><!-- reRender="riskPanel,tabOne" /> -->
+                                <!-- <apex:actionSupport event="oncomplete" reRender="actionPanel,issuesPanel,decisionPanel,riskPanel,riskSummary"/>
+                            </apex:commandButton>  -->                                                      
+                            <apex:commandButton value="Cancel" onclick="doCancel();"/>
+                        </apex:pageBlockButtons>
+                        <apex:pageBlockSection columns="2">
+                        <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Risk Title"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!riskRAID.Title__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:outputField value="{!riskRAID.Module_Name__c}"/>
+                          
+                            <!-- <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Action Ref ID"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!riskRAID.Action_Ref_ID__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> -->
+                            
+                            <!-- Updated by: Shridhar Patankar User Story-Mob-142 Description:-All dropdown made required. Start-->
+
+
+
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Raised By(person)"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!riskRAID.Raised_By_person_New__c}" required="false"/>   
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Raised by Client/Accenture"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!riskRAID.Raised_by_Client_Accenture__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Assigned To"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!riskRAID.Assigned_To_New__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Owned by"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!riskRAID.Owned_by__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>                                                 
+                            <apex:outputField value="{!riskRAID.Date_Raised__c}"/>
+                            
+                            <apex:outputText label="Risk Age (days)" value="0"/>
+                            <!-- <apex:outputField value="{!riskRAID.Risk_Age_days__c}"/> -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Forum Raised"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!riskRAID.Forum_Raised__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>                           
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Workstream/Area"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!riskRAID.Workstream_Area__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>  
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Raised at level"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!riskRAID.Raised_at_level__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>  
+                            
+                            
+                                                        
+                            <apex:inputField value="{!riskRAID.Description__c}"/>
+                            <apex:inputField value="{!riskRAID.Mitigating_Actions__c}"/>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Risk Probability"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!riskRAID.Risk_Probability__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>  
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Risk Impact"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!riskRAID.Risk_Impact__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                            
+                            <apex:outputText label="Risk Rating" value="Please Select Risk Probability or Risk Impact"/>
+                            <!-- <apex:outputField value="{!riskRAID.Risk_Rating__c}"/> -->                            
+                            <apex:outputText label="Status" value="Open" /> <!-- style="font-family:arial;background-color:green;"/> -->
+                            <!-- <apex:outputField value="{!riskRAID.Status_Update__c}"/> -->
+                            <apex:inputField value="{!riskRAID.Risk_Review_Date__c}"/>
+                            <apex:outputText label="Days to RiskReview" value="0"/>
+                            <!-- <apex:outputField value="{!riskRAID.Days_to_Risk_Review__c}"/> -->
+                            <apex:inputField value="{!riskRAID.Target_Close_Date__c}"/>
+                            <apex:inputField value="{!riskRAID.Actual_Close_Date__c}"/>
+                            
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Primary Owner"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!riskRAID.Primary_Owner_New__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            
+                            <apex:inputField value="{!riskRAID.Secondary_Owner_New__c}"/>                            
+                        </apex:pageBlockSection>   
+                    </apex:pageBlock>
+                </apex:outputPanel>
+                <apex:outputPanel id="riskSummary">                    
+                    <apex:pageBlock id="riskSummary1">
+                        <apex:pageMessages rendered="{!showRiskMsg}" />
+                        <apex:pageBlockButtons rendered="{!IF(isEditVisible,true,false)}" >
+                            <apex:commandButton action="{!saveRisksRecords}" value="Save" id="saveButton1" />
+                                <!-- <apex:actionSupport event="oncomplete" reRender="riskSummary"/>
+                            </apex:commandButton> -->                                                       
+                            <apex:commandButton value="Cancel" action="{!cancelRisk}" id="cancelButton1" reRender="riskSection" /><!-- onclick="doCancel();" id="cancelButton1"/> -->
+                        </apex:pageBlockButtons>
+                        <apex:pageBlockSection title="Risk Summary" columns="1" id="riskSection">
+                            <apex:pageBlockTable value="{!listRiskRaidRecords}" var="profDetail" styleClass="inlineEditTbl">                                
+                                <apex:column headerValue="Risk Ref ID">
+                                    <apex:outputLink value="/{!profDetail.id}">
+                                        <apex:outputField value="{!profDetail.Serial_Number__c}" />
+                                    </apex:outputLink>
+                                </apex:column>
+                                <apex:column headerValue="Risk Title">                                    
+                                    <apex:outputField value="{!profDetail.Title__c}">
+                                        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/> 
+                                    </apex:outputField>                                    
+                                </apex:column> 
+                                <apex:column headerValue="Action Ref ID">
+                                        <apex:outputField value="{!profDetail.Action_Reference_ID__c}" /> 
+                                </apex:column>
+                               <apex:column headerValue="Action Title">
+                                        <apex:outputField value="{!profDetail.Action_Title__c}" /> 
+                                </apex:column>                                                                            
+                                  <apex:column headerValue="Decision Ref ID">
+                                        <apex:outputField value="{!profDetail.Decision_Reference_ID__c}" /> 
+                                  </apex:column> 
+                                  <apex:column headerValue="Decision Title">
+                                        <apex:outputField value="{!profDetail.Decision_Title__c}" /> 
+                                  </apex:column>                         
+                                
+                               
+                                <apex:column headerValue="Date Raised">
+                                    <apex:outputField value="{!profDetail.Date_Raised__c}" >
+                                        
+                                    </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Raised By (person)">
+                                    <apex:outputField value="{!profDetail.Raised_By_Person_New__c}" >
+                                        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/> 
+                                    </apex:outputField>
+                                </apex:column>                         
+                                <apex:column headerValue="Primary Owner">
+                                    <apex:outputField value="{!profDetail.Primary_Owner_New__c}">
+                                        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/> 
+                                    </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Status">
+                                    <apex:outputField value="{!profDetail.Status_Update__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Risk Age (days)">
+                                    <apex:outputField value="{!profDetail.Risk_Age_days__c}" />
+                                </apex:column>
+                                <!-- <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton1,cancelButton1"/>-->                              
+                            </apex:pageBlockTable>
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>                
+                </apex:outputPanel>
+            </apex:tab>
+            
+            <apex:tab label="Actions" name="tab2" id="tabTwo">                              
+                <apex:outputPanel id="actionPanel">
+                    <apex:pageMessages rendered="{!showActionSave}"/>                    
+                    <apex:pageBlock rendered="{!IF(isAddVisible,true,false)}">
+                        <apex:pageBlockButtons rendered="{!IF(isAddVisible,true,false)}">
+                            <apex:commandButton action="{!saveActionsRAID}" value="Add Action" /><!-- reRender="actionPanel,actionSummary" /> -->
+                                <!-- <apex:actionSupport event="oncomplete" reRender="actionPanel,issuesPanel,decisionPanel,riskPanel,actionSummary"/>
+                            </apex:commandButton> -->                                                       
+                            <apex:commandButton value="Cancel" onclick="doCancel();"/>
+                        </apex:pageBlockButtons>
+                        <apex:pageBlockSection columns="2">
+                             <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Action Title"/>
+                               <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!actionRAID.Action_Title__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                                <apex:outputField value="{!actionRAID.Module_Name__c}"/>
+                           
+   
+                                 <!--  <apex:outputlabel value="Risk Ref ID"/> -->
+                                <!-- <apex:inputField value="{!riskRAID.Serial_Number__c}"/> -->
+                                 
+                           <apex:selectList size="1" value="{!actionRAID.Risk_Ref_ID__c}">
+                                <apex:selectOptions value="{!RiskRefId}"></apex:selectOptions>                                                                 
+                           </apex:selectList>
+                            <apex:selectList size="1" value="{!actionRAID.Issue_Ref_ID__c}">
+                                <apex:selectOptions value="{!IssueRefId}"></apex:selectOptions>                                                                 
+                            </apex:selectList>
+                            
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Raised By(person)"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!actionRAID.Raised_By_person_New__c}" required="false"/>   
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Raised by Client/Accenture"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                   <apex:inputField value="{!actionRAID.Raised_by_Client_Accenture__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Assigned To"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!actionRAID.Assigned_To_New__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Owned by"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!actionRAID.Owned_by__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>    
+                                                     
+                            <apex:outputField value="{!actionRAID.Date_Raised__c}"/>
+                            <apex:outputText label="Action Age (days)" value="0"/>
+                            <!-- <apex:outputField value="{!actionRAID.Action_Age_days__c}"/> --> 
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Forum Raised"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                   <apex:inputField value="{!actionRAID.Forum_Raised__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>                           
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Workstream/Area"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                   <apex:inputField value="{!actionRAID.Workstream_Area__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>  
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Raised at level"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                   <apex:inputField value="{!actionRAID.Raised_at_level__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                            
+                            <apex:outputText label="Status" value="Open" /> <!-- style="font-family:arial;background-color:green;"/> -->
+                            <!-- <apex:outputField value="{!actionRAID.Status__c}"/> -->                            
+                            <apex:inputField value="{!actionRAID.Description__c}"/>                            
+                            <apex:inputField value="{!actionRAID.Updates__c}"/>                            
+                            <apex:inputField value="{!actionRAID.Target_Close_Date__c}"/>
+                            <apex:inputField value="{!actionRAID.Actual_Closed_Date__c}"/>
+                            <apex:outputText label="Action Due In (days)" value="0"/>
+                            <!-- <apex:outputField value="{!actionRAID.Action_Due_In_days__c}"/> -->
+                            
+                            <apex:inputField value="{!actionRAID.Action_Closure_Notes_Comments__c}"/>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Primary Owner"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                     <apex:inputField value="{!actionRAID.Primary_Owner_New__c}" required="false"/>  
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                           
+                            <apex:inputField value="{!actionRAID.Secondary_Owner_New__c}"/>
+                            <!-- <apex:inputText label="Risk Name" value="{!RiskName}"/>-->
+                        </apex:pageBlockSection>   
+                    </apex:pageBlock>
+                </apex:outputPanel>
+                <apex:outputPanel id="actionSummary">                    
+                    <apex:pageBlock >
+                        <apex:pageMessages rendered="{!showActionMsg}" />
+                        <apex:pageBlockButtons rendered="{!IF(isEditVisible,true,false)}">
+                            <apex:commandButton action="{!saveActionRecords}" value="Save" id="saveButton2" />
+                                <!-- <apex:actionSupport event="oncomplete" reRender="actionSummary"/>
+                            </apex:commandButton> -->                                                       
+                            <apex:commandButton value="Cancel" action="{!cancelAction}" id="cancelButton1" reRender="actionSection" /><!-- onclick="doCancel();" id="cancelButton2"/> -->
+                        </apex:pageBlockButtons>
+                        <apex:pageBlockSection title="Action Summary" columns="1" id="actionSection">
+                            <apex:pageBlockTable value="{!listActionRaidRecords}" var="profDetail" styleClass="inlineEditTbl">                                
+                                <apex:column headerValue="Action Ref ID">
+                                    <apex:outputLink value="/{!profDetail.id}">
+                                        <apex:outputField value="{!profDetail.Serial_Number__c}" />
+                                    </apex:outputLink>
+                                </apex:column>  
+                                <apex:column headerValue="Action Title">
+                                    <apex:outputField value="{!profDetail.Action_Title__c}" >                                       
+                                    </apex:outputField>
+                                </apex:column>                                
+                                 <apex:column headerValue="Risk Ref ID">
+                                        <apex:outputField value="{!profDetail.Risk_Ref_ID__r.Serial_Number__c}" />
+                                </apex:column> 
+                                 <apex:column headerValue="Risk Title">
+                                    <apex:outputField value="{!profDetail.Risk_Title__c}" >                                       
+                                    </apex:outputField>
+                                </apex:column>  
+                                
+                                 <apex:column headerValue="Issue Ref ID">
+                                        <apex:outputField value="{!profDetail.Issue_Ref_ID__r.Serial_Number__c}" />
+                                </apex:column>                                                               
+                                  <apex:column headerValue="Issue Title">
+                                    <apex:outputField value="{!profDetail.Issue_Title__c}" >
+                                       
+                                    </apex:outputField>                                                                                          
+                                </apex:column> 
+                                                                                            
+                                <apex:column headerValue="Date Raised">
+                                    <apex:outputField value="{!profDetail.Date_Raised__c}" >
+                                       
+                                    </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Raised By (person)">
+                                    <apex:outputField value="{!profDetail.Raised_By_Person_New__c}" >
+                                        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton2,cancelButton2"/>
+                                    </apex:outputField>
+                                </apex:column>                         
+                                <apex:column headerValue="Primary Owner">
+                                    <apex:outputField value="{!profDetail.Primary_Owner_New__c}">
+                                        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton2,cancelButton2"/>
+                                    </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Status">
+                                    <apex:outputField value="{!profDetail.Status_Update__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Action Age (days)">
+                                    <apex:outputField value="{!profDetail.Action_Age_days__c}" />
+                                </apex:column>
+                                <!-- <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton2,cancelButton2"/> -->                             
+                            </apex:pageBlockTable>
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>                
+                </apex:outputPanel>                
+            </apex:tab>
+                
+            <apex:tab label="Issues" name="tab3" id="tabThree">
+                <apex:outputPanel id="issuesPanel">
+                    <apex:pageMessages rendered="{!showIssueSave}"/>
+                    <apex:pageBlock rendered="{!IF(isAddVisible,true,false)}">
+                        <apex:pageBlockButtons rendered="{!IF(isAddVisible,true,false)}">
+                            <apex:commandButton action="{!saveIssuesRAID}" value="Add Issue" /><!-- reRender="issuesPanel,issueSummary" /> -->
+                                <!-- <apex:actionSupport event="oncomplete" reRender="actionPanel,issuesPanel,decisionPanel,riskPanel,issueSummary"/>
+                            </apex:commandButton> -->                                                        
+                            <apex:commandButton value="Cancel" onclick="doCancel();"/>
+                        </apex:pageBlockButtons>                        
+                        <apex:pageBlockSection columns="2">
+                              <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Issue Title"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!issueRAID.Title__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:outputField value="{!issueRAID.Module_Name__c}"/>
+                            
+                            <!-- <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Action Ref ID"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!issueRAID.Action_Ref_ID__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Raised By(person)"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!issueRAID.Raised_By_person_New__c}" required="false"/>       
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Raised by Client/Accenture"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                   <apex:inputField value="{!issueRAID.Raised_by_Client_Accenture__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Assigned To"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!issueRAID.Assigned_To_New__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Owned by"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!issueRAID.Owned_by__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>    
+                                               
+                            <apex:outputField value="{!issueRAID.Date_Raised__c}"/>
+                            <apex:outputText label="Issue Age (days)" value="0"/>
+                            <!-- <apex:outputField value="{!issueRAID.Issue_Age_days__c}"/> -->
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Forum Raised"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                   <apex:inputField value="{!issueRAID.Forum_Raised__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>                            
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Workstream/Area"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                   <apex:inputField value="{!issueRAID.Workstream_Area__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Raised at level"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                   <apex:inputField value="{!issueRAID.Raised_at_level__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>   
+                         
+                            <apex:inputField value="{!issueRAID.Description__c}"/>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Issue Severity"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                   <apex:inputField value="{!issueRAID.Issue_Severity__c}" required="false"/>   
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>   
+                                                     
+                            <apex:inputField value="{!issueRAID.Updates__c}"/>
+                            <apex:outputText label="Status" value="Open" /> <!-- style="font-family:arial;background-color:green;"/> -->
+                            <!-- <apex:outputField value="{!issueRAID.Status__c}"/> -->
+                            <apex:inputField value="{!issueRAID.Target_Close_Date__c}"/>
+                             <apex:inputField value="{!issueRAID.Actual_Close_Date__c}"/>
+                            <apex:outputText label="Issue Due In (days)" value="0"/>
+                            <!-- <apex:outputField value="{!issueRAID.Issue_Due_In_days__c}"/> -->
+                           
+                            <apex:inputField value="{!issueRAID.Issue_Closure_Notes_Comments__c}"/>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Primary Owner"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!issueRAID.Primary_Owner_New__c}" required="false"/>   
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                            
+                            <apex:inputField value="{!issueRAID.Secondary_Owner_New__c}"/>                            
+                        </apex:pageBlockSection>   
+                    </apex:pageBlock>
+                 </apex:outputPanel>
+                 <apex:outputPanel id="issueSummary">                    
+                    <apex:pageBlock >
+                        <apex:pageMessages rendered="{!showIssueMsg}" />
+                        <apex:pageBlockButtons rendered="{!IF(isEditVisible,true,false)}">
+                            <apex:commandButton action="{!saveIssuesRecords}" value="Save" id="saveButton" />
+                               <!-- <apex:actionSupport event="oncomplete" reRender="issueSummary"/>
+                            </apex:commandButton> -->                                                        
+                            <apex:commandButton value="Cancel" action="{!cancelIssue}" id="cancelButton1" reRender="issueSection" /><!-- onclick="doCancel();" id="cancelButton"/> -->
+                        </apex:pageBlockButtons>
+                        <apex:pageBlockSection title="Issue Summary" columns="1" id="issueSection">
+                            <apex:pageBlockTable value="{!listIssueRaidRecords}" var="profDetail" styleClass="inlineEditTbl">                                
+                                <apex:column headerValue="Issue Ref ID">
+                                    <apex:outputLink value="/{!profDetail.id}">
+                                        <apex:outputField value="{!profDetail.Serial_Number__c}" />
+                                    </apex:outputLink>
+                                </apex:column>
+                                <apex:column headerValue="Issue Title">                                    
+                                    <apex:outputField value="{!profDetail.Title__c}">
+                                        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                                    </apex:outputField>                                    
+                                </apex:column>
+                                  <apex:column headerValue="Action Ref ID">
+                                        <apex:outputField value="{!profDetail.Action_Reference_ID__c}" /> 
+                                  </apex:column> 
+                                <apex:column headerValue="Action Title">
+                                        <apex:outputField value="{!profDetail.Action_Title__c}" /> 
+                                  </apex:column> 
+
+                                        
+                                 <apex:column headerValue="Decision Ref ID">
+                                        <apex:outputField value="{!profDetail.Decision_Reference_ID__c}" /> 
+                                 </apex:column>                                                                   
+                                 <apex:column headerValue="Decision Title">
+                                        <apex:outputField value="{!profDetail.Decision_Title__c}" /> 
+                                 </apex:column>                               
+                                
+                                <apex:column headerValue="Date Raised">
+                                    <apex:outputField value="{!profDetail.Date_Raised__c}" >
+                                        
+                                    </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Raised By (person)">
+                                    <apex:outputField value="{!profDetail.Raised_By_Person_New__c}" >
+                                        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                                    </apex:outputField>
+                                </apex:column>                         
+                                <apex:column headerValue="Primary Owner">
+                                    <apex:outputField value="{!profDetail.Primary_Owner_New__c}">
+                                        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                                    </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Status">
+                                    <apex:outputField value="{!profDetail.Status_Update__c}" />
+                                </apex:column>
+                                <apex:column headerValue="Issue Age (days)">
+                                    <apex:outputField value="{!profDetail.Issue_Age_days__c}" />
+                                </apex:column>                                
+                            </apex:pageBlockTable>
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>                
+                </apex:outputPanel>
+            </apex:tab>
+            
+            <apex:tab label="Decisions" name="tab4" id="tabFour">
+                <apex:outputPanel id="decisionPanel">
+                    <apex:pageMessages rendered="{!showDecisionSave}"/>
+                    <apex:pageBlock rendered="{!IF(isAddVisible,true,false)}">
+                        <apex:pageBlockButtons rendered="{!IF(isAddVisible,true,false)}">
+                            <apex:commandButton action="{!saveDecisionRAID}" value="Add Decision" /><!-- reRender="decisionPanel,decisionSummary" /> -->
+                               <!-- <apex:actionSupport event="oncomplete" reRender="actionPanel,issuesPanel,decisionPanel,riskPanel,decisionSummary"/>
+                            </apex:commandButton> -->                                                     
+                            <apex:commandButton value="Cancel" onclick="doCancel();"/>
+                        </apex:pageBlockButtons>
+                        <apex:pageBlockSection columns="2">  
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Decision Title"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!decisioRAID.Decision_Title__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>                         
+                            <apex:outputField value="{!decisioRAID.Module_Name__c}"/>
+                            
+                             <apex:selectList size="1" value="{!decisioRAID.Risk_Ref_ID__c}">
+                                <apex:selectOptions value="{!RiskRefId}"></apex:selectOptions>                                                                 
+                             </apex:selectList> 
+                             <apex:selectList size="1" value="{!decisioRAID.Issue_Ref_ID__c}">
+                                <apex:selectOptions value="{!IssueRefId}"></apex:selectOptions>                                                                 
+                              </apex:selectList>  
+                                 
+                                                                                         
+                            
+                            <!-- <apex:inputField value="{!decisioRAID.Issue_Ref_ID__c}"/>                           
+                            <apex:inputField value="{!decisioRAID.Risk_Ref_ID__c}"/> -->
+                            <apex:outputField value="{!decisioRAID.Date_Raised__c}"/>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Raised By(person)"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!decisioRAID.Raised_By_Person_New__c}" required="false"/>       
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Forum Raised"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                 <apex:inputField value="{!decisioRAID.Forum_Raised__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>                             
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Assigned To"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!decisioRAID.Assigned_To_New__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Owned by"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!decisioRAID.Owned_by__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>  
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Workstream/Area"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                  <apex:inputField value="{!decisioRAID.Workstream_Area__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Raised at level"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                  <apex:inputField value="{!decisioRAID.Raised_at_level__c}" required="false"/>
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                            <apex:inputField value="{!decisioRAID.Target_Close_Date__c}"/>
+                             <apex:inputField value="{!decisioRAID.Actual_Close_Date__c}"/>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Decision Description"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!decisioRAID.Description__c}" required="false"/> 
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem>                                                                                                            
+                            <apex:inputField value="{!decisioRAID.Additional_Notes_Comments__c}"/>  
+                            <apex:pageBlockSectionItem >
+                                <apex:outputlabel value="Primary Owner"/>
+                                <apex:outputPanel styleClass="requiredInput" layout="block" >
+                                    <apex:outputPanel styleClass="requiredBlock"/>
+                                    <apex:inputField value="{!decisioRAID.Primary_Owner_New__c}" required="false"/>   
+                                </apex:outputPanel>
+                            </apex:pageBlockSectionItem> 
+                            
+                            <apex:inputField value="{!decisioRAID.Secondary_Owner_New__c}"/>   
+                        </apex:pageBlockSection>   
+                    </apex:pageBlock>
+                 </apex:outputPanel>
+                 <apex:outputPanel id="decisionSummary">                    
+                    <apex:pageBlock >
+                        <apex:pageMessages rendered="{!showDecisionMsg}" />
+                        <apex:pageBlockButtons rendered="{!IF(isEditVisible,true,false)}">
+                            <apex:commandButton action="{!saveDecisionRecords}" value="Save" id="saveButton" />
+                                <!-- <apex:actionSupport event="oncomplete" reRender="decisionSummary"/>
+                            </apex:commandButton> -->                                                       
+                            <apex:commandButton value="Cancel" action="{!cancelDecision}" id="cancelButton1" reRender="decisionSection" /><!-- onclick="doCancel();" id="cancelButton"/>-->
+                        </apex:pageBlockButtons>
+                        <apex:pageBlockSection title="Decision Summary" columns="1" id="decisionSection">
+                            <apex:pageBlockTable value="{!listDecisionRaidRecords}" var="profDetail" styleClass="inlineEditTbl">
+                                <apex:column headerValue="Decision Ref ID">
+                                    <apex:outputLink value="/{!profDetail.id}">
+                                        <apex:outputField value="{!profDetail.Serial_Number__c}" />
+                                    </apex:outputLink>
+                                </apex:column>
+                                <apex:column headerValue="Decision Title">
+                                    <apex:outputField value="{!profDetail.Decision_Title__c}" >   
+                                    </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Risk Ref ID">                              
+                                        <apex:outputField value="{!profDetail.Risk_Ref_ID__r.Serial_Number__c}" />                          
+                                </apex:column>   
+                                <apex:column headerValue="Risk Title">
+                                    <apex:outputField value="{!profDetail.Risk_Title__c}" >   
+                                    </apex:outputField>
+                                </apex:column>
+                                 <apex:column headerValue="Issue Ref ID">
+                                        <apex:outputField value="{!profDetail.Issue_Ref_ID__r.Serial_Number__c}" />
+                                </apex:column>   
+                                <apex:column headerValue="Issue Title">
+                                    <apex:outputField value="{!profDetail.Issue_Title__c}" >
+                                    </apex:outputField>                                                                                          
+                                </apex:column>                                                                                                                           
+                                <apex:column headerValue="Date Raised">
+                                    <apex:outputField value="{!profDetail.Date_Raised__c}" >
+                                       
+                                    </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Forum Raised">
+                                    <apex:outputField value="{!profDetail.Forum_Raised__c}" >
+                                        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                                    </apex:outputField>
+                                </apex:column>                         
+                                <apex:column headerValue="Decision Description">
+                                    <apex:outputField value="{!profDetail.Description__c}">
+                                        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                                    </apex:outputField>
+                                </apex:column>
+                                <apex:column headerValue="Raised By (person)">
+                                    <apex:outputField value="{!profDetail.Raised_By_Person_New__c}">
+                                        <apex:inlineEditSupport event="ondblClick" showOnEdit="saveButton,cancelButton"/>
+                                    </apex:outputField>
+                                </apex:column>                                
+                            </apex:pageBlockTable>
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>                
+                </apex:outputPanel>
+            </apex:tab>
+      </apex:tabPanel>
+    </apex:pageBlock>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,180 @@
+<apex:page controller="ExportExcelRAIDController" contentType="application/vnd.ms-excel#{!dealName.Name}_RAID_{!date1}.xls" cache="true">
+    <apex:outputText value="{!xlsHeader}"/>
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+     xmlns:o="urn:schemas-microsoft-com:office:office"
+     xmlns:x="urn:schemas-microsoft-com:office:excel"
+     xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+     xmlns:html="http://www.w3.org/TR/REC-html40">
+         <Styles>
+            <Style ss:ID="s1">
+                 <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                 <Borders>
+                     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                 </Borders>
+                 <Font ss:Bold="1"/>
+                    <Interior ss:Color="#CAE1FF" ss:Pattern="Solid"/>
+                 <NumberFormat/>
+                 <Protection/>
+            </Style>
+            <Style ss:ID="s2">
+                 <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+                 <Borders>
+                     <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+                     <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+                 </Borders>
+                 <Interior />
+                 <NumberFormat/>
+                 <Protection/>
+            </Style>
+         </Styles>
+         <Worksheet ss:Name="Risks">
+             <Table x:FullColumns="1" x:FullRows="1">
+             <Column ss:AutoFitWidth="1" ss:Width="80"/>
+             <Column ss:AutoFitWidth="1" ss:Width="100"/>
+             <Column ss:AutoFitWidth="1" ss:Width="120"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Module </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Title </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised On </Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised By </Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Primary Owner</Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Status </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk Age (days) </Data></Cell>
+                </Row>
+                <apex:repeat value="{!listRiskRaidRecords}" var="riskList">
+                     <Row>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Module__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Title__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!riskList.Raised_On__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Raised_By__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Primary_Owner__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Status__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!riskList.Risk_Age_Days__c}</Data></Cell>  
+                     </Row>
+                </apex:repeat>
+             </Table>
+         </Worksheet>
+         <Worksheet ss:Name="Issue">
+             <Table x:FullColumns="1" x:FullRows="1">
+             <Column ss:AutoFitWidth="1" ss:Width="80"/>
+             <Column ss:AutoFitWidth="1" ss:Width="100"/>
+             <Column ss:AutoFitWidth="1" ss:Width="120"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Issue </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Module </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Title </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised On </Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised By </Data></Cell>    
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Primary Owner </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Status </Data></Cell>
+                </Row>
+                <apex:repeat value="{!listIssueRaidRecords}" var="issueList">
+                     <Row>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Module__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Title__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!issueList.Raised_On__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Raised_By__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Primary_Owner__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!issueList.Status__c}</Data></Cell>
+                       
+                     </Row>
+                </apex:repeat>
+             </Table>
+         </Worksheet>
+         <Worksheet ss:Name="Actions">
+             <Table x:FullColumns="1" x:FullRows="1">
+             <Column ss:AutoFitWidth="1" ss:Width="80"/>
+             <Column ss:AutoFitWidth="1" ss:Width="100"/>
+             <Column ss:AutoFitWidth="1" ss:Width="120"/>
+             <Column ss:Width="90"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="80"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Action </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Module </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised On </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised By </Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Primary Owner </Data></Cell>   
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Status </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Action Age (days) </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Issue </Data></Cell>
+                   
+                </Row>
+                <apex:repeat value="{!listActionRaidRecords}" var="actionList">
+                     <Row>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Module__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!actionList.Raised_On__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Raised_By__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Primary_Owner__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Status__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Action_Age_days__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Risks__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!actionList.Issue__r.name}</Data></Cell>
+                     </Row>
+                </apex:repeat>
+             </Table>
+         </Worksheet>
+         <Worksheet ss:Name="Decisions">
+             <Table x:FullColumns="1" x:FullRows="1">
+             <Column ss:Width="80"/>
+             <Column ss:Width="100"/>
+             <Column ss:Width="120"/>
+             <Column ss:Width="100"/>
+             <Column ss:Width="120"/>
+             <Column ss:Width="120"/>
+             <Column ss:Width="70"/>
+             <Column ss:Width="80"/>
+             <Column ss:Width="100"/>
+             <Column ss:Width="180"/>
+             <Column ss:Width="180"/>
+                <Row>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Decision </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Module </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised On </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Raised By </Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Forum Raised </Data></Cell>
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Description </Data></Cell> 
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Risk </Data></Cell>     
+                    <Cell ss:StyleID="s1"><Data ss:Type="String" >Issue </Data></Cell>
+                   
+                </Row>
+                <apex:repeat value="{!listDecisionRaidRecords}" var="decisionList">
+                     <Row>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Module__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String"><apex:outputText value="{0,date, MM/dd/yyyy}"><apex:param value="{!decisionList.Raised_On__c}"/></apex:outputText></Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Raised_By__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Forum_Raised__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Decision_Description__c}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Risks__r.name}</Data></Cell>
+                        <Cell ss:StyleID="s2"><Data ss:Type="String">{!decisionList.Issue__r.name}</Data></Cell>
+    
+                     </Row>
+                </apex:repeat>
+             </Table>
+         </Worksheet>
+    </Workbook>
+</apex:page>

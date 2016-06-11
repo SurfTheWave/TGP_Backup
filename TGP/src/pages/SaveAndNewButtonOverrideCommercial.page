@@ -1,0 +1,2 @@
+<apex:page standardController="Commercial_Data__c" extensions="SObjectNewActionOverrideController" action="{!onLoadPage}">
+</apex:page>

@@ -1,0 +1,127 @@
+<apex:page standardController="Opportunity_TGP__c" extensions="SchedulingInlinePage_Controller">
+  <apex:variable var="userName" value="{!$User.FirstName} {!$User.LastName}"/>
+  <apex:variable var="userId" value="{!$User.Id}"/>
+  <apex:variable var="adminUser" value="{!$Profile.Name}"/>
+     <apex:pageMessages ></apex:pageMessages>
+  
+    <apex:form id="myForm">
+    
+    <apex:pageMessages ></apex:pageMessages>
+    
+    <apex:pageBlock >
+        <apex:pageBlockButtons location="top" >
+            
+            
+             <apex:actionStatus id="save_Btn">                 
+                            <apex:facet name="stop">
+                                <apex:commandButton value="Save" action="{!doSave}" rendered="{!addButtonRender}" reRender="myForm" status="save_Btn"/> 
+                            </apex:facet>
+                            <apex:facet name="start">
+                                <apex:outputPanel >
+                                   <apex:commandButton value="Saving..." action="{!doSave}" rendered="{!addButtonRender}" reRender="myForm" disabled="true" status="save_Btn"/>  
+                                </apex:outputPanel>
+                             </apex:facet> 
+              </apex:actionStatus> 
+            
+            <apex:commandButton value="Cancel" rendered="{!addButtonRender}" action="{!doCancel}"/>
+        </apex:pageBlockButtons>
+        
+        <apex:pageBlockTable value="{!lstSc}" var="a" id="NewPage" rendered="{!nonAdminUser}">
+          
+           <apex:column > 
+                 <apex:facet name="header">Role Name</apex:facet>
+                 <apex:outputText value="{!a.Role_Name__c}"/>
+             </apex:column>
+                         
+             <apex:column >
+                 <apex:facet name="header">User</apex:facet>
+                 <apex:outputText value="{!a.User_Master__r.name}"/>
+             </apex:column>
+             
+             <apex:column >
+                 <apex:facet name="header"> Current Week (in %)<br/>{!mondayDate}</apex:facet>
+                 <apex:inputText value="{!a.Current_week__c}" rendered="{!IF(a.User_SFDC_Id__c==userId,'true','false')}"/>
+                 <!--<apex:inputText value="{!a.Current_week_1__c}" rendered="{!IF(adminUser=='System Administrator','true','false')}"/>-->
+                 <apex:outputText value="{!a.Current_week__c}" rendered="{!IF(a.User_SFDC_Id__c!=userId,true,false)}" />
+             </apex:column>
+             
+             <apex:column >
+                 <apex:facet name="header">Current Week+1 (in %)<br/> {!nextMondayDate}</apex:facet>
+                 <apex:inputText value="{!a.Current_week_1__c}" rendered="{!IF(a.User_SFDC_Id__c==userId,'true','false')}"/>
+                 <apex:outputText value="{!a.Current_week_1__c}" rendered="{!IF(a.User_SFDC_Id__c!=userId,true,false)}" />
+                 
+             </apex:column>
+             
+             <apex:column >
+                 <apex:facet name="header"> Current Week+2 (in %)<br/> {!nextMondayDate1}</apex:facet>
+                 <apex:inputText value="{!a.Current_week_2__c}" rendered="{!IF(a.User_SFDC_Id__c==userId,'true','false')}"/>
+                 <apex:outputText value="{!a.Current_week_2__c}" rendered="{!IF(a.User_SFDC_Id__c!=userId,true,false)}" />
+                 
+             </apex:column>
+             <table><tr><th>Current Week+7</th></tr></table>
+             <apex:column >
+                 <apex:facet name="header"> Current Week+3 (in %)<br/> {!nextMondayDate2 }</apex:facet>
+                 <apex:inputText value="{!a.Current_week_3__c}" rendered="{!IF(a.User_SFDC_Id__c==userId,'true','false')}"/> 
+                 <apex:outputText value="{!a.Current_week_3__c}" rendered="{!IF(a.User_SFDC_Id__c!=userId,true,false)}" />
+                 
+             </apex:column>
+             
+             <apex:column >
+                 <apex:facet name="header">On Going (in %)</apex:facet>
+                 <apex:inputText value="{!a.Ongoing__c}" rendered="{!IF(a.User_SFDC_Id__c==userId,'true','false')}"/>        
+                 <apex:outputText value="{!a.Ongoing__c}" rendered="{!IF(a.User_SFDC_Id__c!=userId,true,false)}" />
+                 
+             </apex:column>
+             
+         </apex:pageBlockTable>
+         <apex:pageBlockTable value="{!lstSc}" var="a" id="NewPage1" rendered="{!isEdit}" >
+          
+           <apex:column > 
+                 <apex:facet name="header">Role Name</apex:facet>
+                 <apex:outputText value="{!a.Role_Name__c}"/>
+             </apex:column>
+                         
+             <apex:column >
+                 <apex:facet name="header">User</apex:facet>
+                 <apex:outputText value="{!a.User_Master__r.name}"/>
+             </apex:column>
+             
+             <apex:column >
+                 <apex:facet name="header"> Current Week (in %)<br/>{!mondayDate}</apex:facet>
+                 <apex:inputText value="{!a.Current_week__c}" />
+                
+             </apex:column>
+             
+             <apex:column >
+                 <apex:facet name="header">Current Week+1 (in %)<br/> {!nextMondayDate }</apex:facet>
+                 <apex:inputText value="{!a.Current_week_1__c}" />
+                 
+             </apex:column>
+             
+             <apex:column >
+                 <apex:facet name="header"> Current Week+2 (in %)<br/> {!nextMondayDate1}</apex:facet>
+                 <apex:inputText value="{!a.Current_week_2__c}" />
+                 
+                 
+             </apex:column>
+             <table><tr><th>Current Week+7</th></tr></table>
+             <apex:column >
+                 <apex:facet name="header"> Current Week+3 (in %)<br/> {!nextMondayDate2}</apex:facet>
+                 <apex:inputText value="{!a.Current_week_3__c}" /> 
+                 
+                 
+             </apex:column>
+             
+             <apex:column >
+                 <apex:facet name="header">On Going (in %)</apex:facet>
+                 <apex:inputText value="{!a.Ongoing__c}" />        
+                 
+                 
+             </apex:column>
+             
+         </apex:pageBlockTable>
+         
+          
+     </apex:pageBlock>
+   </apex:form>
+</apex:page>

@@ -1,0 +1,60 @@
+<apex:page controller="DashboardTaskController" standardStylesheets="true" sidebar="false" showHeader="false" tabStyle="Opportunity_TGP__c">
+<!--  close date will be null since we will only display open ones ...
+but might want to be more flexible here so management view will look different ... see class -->
+<!-- {!recordType}---{!num} -->
+    <apex:form id="taskList">
+
+        <apex:pageBlock id="pageBlock">
+
+            <apex:pageBlockTable value="{!tasks}" var="o" id="table">
+            
+            
+               <apex:column id="subject" headerValue="Subject">                    
+                    <apex:outputLink target="_parent" value="{!o.Opportunities_Rivew_And_Approval__c}" >
+                     <apex:outputField value="{!o.subject}"/>
+                    </apex:outputLink>
+                </apex:column>
+                
+              <apex:column headerValue="Opportunity Name"> 
+                    <apex:outputField value="{!o.Opportunity_Name__c}"/>
+                </apex:column>
+                
+                
+                <apex:column headerValue="Client Name"> 
+                    <apex:outputField value="{!o.Client_Name__c}"/>
+                </apex:column>
+                
+                <apex:column id="status" headerValue="Status"> 
+                    <apex:outputField value="{!o.Approval_Status__c}"/>
+                </apex:column>
+                
+                <apex:column id="rivewType" headerValue="Review Type"> 
+                    <apex:outputField value="{!o.Review_Type__c}"/>
+                </apex:column>
+                
+               
+                
+               <!-- <apex:column id="WhatId" headerValue="Related to" value="{!o.WhatId}"/>
+                <apex:column id="WhoId" headerValue="Contact/Lead" value="{!o.WhoId}"/>
+
+                
+                <apex:column id="Related To" headerValue="Comments">
+                    <apex:outputField value="{!o.Description}"/>
+                </apex:column>-->
+                
+             <!--  <apex:column id="RivewandApproval" headerValue="Review and Approval Url" >
+                    <apex:outputLink target="_blank" value="{!o.Opportunities_Rivew_And_Approval__c}" >Click here</apex:outputLink>
+                </apex:column> -->
+                
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        <apex:panelGrid columns="2">
+            <apex:commandLink action="{!previous}" rendered="{!hasPrevious}">Previous Page</apex:commandlink>
+            <apex:commandLink action="{!next}" rendered="{!hasNext}">Next Page</apex:commandlink>
+        </apex:panelGrid>
+       <!-- <apex:outputText id="numberOfItemsLeft" value="{!numLeft}" style="visibility:hidden"/>
+        <apex:actionFunction action="{!refreshNumbers}" immediate="true" name="refreshNumbers" rerender="numberOfItemsLeft, detail, table" oncomplete="checkIfNeedRefresh();"/>  -->
+        <apex:pageMessages />
+    </apex:form>
+
+</apex:page>
